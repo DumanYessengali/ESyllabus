@@ -11,11 +11,12 @@ var (
 )
 
 type Student struct {
-	ID          int
-	Username    string
-	Password    string
-	GroupName   string
-	SubjectName string
-	LifeTime    int
-	IsLast      bool
+	ID           int
+	Username     string
+	Password     string
+	GroupName    string
+	SubjectName  string
+	LifeTime     int
+	IsLast       bool
+	SyllabusName string
 }

@@ -11,7 +11,7 @@ import (
 
 func (app *application) getMainPage(w http.ResponseWriter, r *http.Request) {
 
-	students, err := app.student.GetAllStudents()
+	students, err := app.student.GetNameSyllabus()
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)

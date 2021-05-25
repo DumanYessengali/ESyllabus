@@ -13,15 +13,13 @@ import (
 const (
 	insertSql = "INSERT INTO student (username, password, group_name, subject_name, life_time, is_last)" +
 		" VALUES ($1,$2,$3,$4,$5,$6)"
-	getAllStudents       = "SELECT * FROM student"
-	getStudentById       = "SELECT * FROM student WHERE student_id=$1"
-	getStudentByUsername = "SELECT * FROM student WHERE username=$1"
-	deleteStudentById    = "DELETE FROM  student WHERE student_id=$1"
-	updateStudent        = "UPDATE student SET " +
+	getNameSyllabus   = "SELECT * FROM student"
+	getStudentById    = "SELECT * FROM student WHERE student_id=$1"
+	deleteStudentById = "DELETE FROM  student WHERE student_id=$1"
+	updateStudent     = "UPDATE student SET " +
 		"username=$1, password=$2, group_name=$3, subject_name=$4, life_time=$5, is_last=$6 " +
 		"WHERE student_id = $7"
-	auth                             = "SELECT student_id, password FROM student WHERE username = $1"
-	getRandomPredictionBySubjectName = "SELECT content FROM prediction WHERE subject_name=$1"
+	auth = "SELECT authorization_id, password FROM auth WHERE username = $1"
 )
 
 type StudentModel struct {
@@ -40,9 +38,9 @@ func (m *StudentModel) InsertStudent(username, password, group_name, subject_nam
 	return int(id), nil
 }
 
-func (m *StudentModel) GetAllStudents() ([]*models.Student, error) {
+func (m *StudentModel) GetNameSyllabus() ([]*models.Student, error) {
 	var students []*models.Student
-	rows, err := m.Pool.Query(context.Background(), getAllStudents)
+	rows, err := m.Pool.Query(context.Background(), getNameSyllabus)
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +75,7 @@ func (m *StudentModel) Authenticate(username, password string) (int, error) {
 	var pass string
 	row := m.Pool.QueryRow(context.Background(), auth, username)
 	err := row.Scan(&id, &pass)
+
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return 0, models.ErrInvalidCredentials
@@ -126,29 +125,4 @@ func (m *StudentModel) UpdateStudent(s *models.Student) error {
 func init() {
 
 	rand.Seed(time.Now().UnixNano())
-}
-
-func (m *StudentModel) GetPredictionBySubjectName(subjectName string) (string, error) {
-
-	var predictions []string
-	rows, err := m.Pool.Query(context.Background(), getRandomPredictionBySubjectName, subjectName)
-	if err != nil {
-		return "", err
-	}
-
-	for rows.Next() {
-		var p string
-		err = rows.Scan(&p)
-		if err != nil {
-			return "", err
-		}
-
-		predictions = append(predictions, p)
-	}
-	if err = rows.Err(); err != nil {
-		return "", err
-	}
-	rand.Seed(time.Now().UnixNano())
-	index := rand.Intn(len(predictions))
-	return predictions[index], nil
 }

@@ -71,31 +71,3 @@ func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 	app.session.Put(r, "flash", "You've been logged out successfully!")
 	http.Redirect(w, r, "/signin", http.StatusSeeOther)
 }
-
-func (app *application) getPrediction(w http.ResponseWriter, r *http.Request) {
-	id := app.session.GetInt(r, "authenticatedUserID")
-	student, _ := app.student.GetStudentById(id)
-	student.LifeTime -= 1
-	var isDied bool
-	if student.IsLast {
-		isDied = true
-	}
-	if student.IsLast && student.LifeTime == -2 {
-		app.student.DeleteStudentById(student.ID)
-		http.Redirect(w, r, "/signin", http.StatusSeeOther)
-		return
-	}
-	if student.LifeTime == 0 {
-		student.IsLast = true
-	}
-	prediction, _ := app.student.GetPredictionBySubjectName(student.SubjectName)
-	app.student.UpdateStudent(student)
-	flash := app.session.PopString(r, "flash")
-
-	app.render(w, r, "home.page.tmpl", &templateData{
-		Flash:      flash,
-		Student:    student,
-		Prediction: prediction,
-		IsDied:     isDied,
-	})
-}
