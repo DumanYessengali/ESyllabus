@@ -1,0 +1,101 @@
+package main
+
+import (
+	"errors"
+	"examFortune/pkg/forms"
+	"examFortune/pkg/models"
+	"net/http"
+)
+
+func (app *application) home(w http.ResponseWriter, r *http.Request) {
+	id := app.session.GetInt(r, "authenticatedUserID")
+	student, err := app.student.GetStudentById(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "home.page.tmpl", &templateData{
+		Flash:   flash,
+		Student: student,
+	})
+
+}
+
+//loginUserForm
+func (app *application) signInForm(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, "login.page.tmpl", &templateData{
+		Form: forms.New(nil),
+	})
+}
+
+//loginUser
+func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+	form := forms.New(r.PostForm)
+	username := form.Get("username")
+	password := form.Get("password")
+	id, err := app.student.Authenticate(username, password)
+	if err != nil {
+		if errors.Is(err, models.ErrInvalidCredentials) {
+			form.Errors.Add("generic", "Username or Password is incorrect")
+			app.render(w, r, "login.page.tmpl", &templateData{Form: form})
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+	app.session.Put(r, "authenticatedUserID", id)
+
+	if username == "admin" {
+		app.session.Put(r, "adminUserID", id)
+		http.Redirect(w, r, "/admin", http.StatusSeeOther)
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
+	app.session.Remove(r, "authenticatedUserID")
+	app.session.Remove(r, "adminUserID")
+	app.session.Put(r, "flash", "You've been logged out successfully!")
+	http.Redirect(w, r, "/signin", http.StatusSeeOther)
+}
+
+func (app *application) getPrediction(w http.ResponseWriter, r *http.Request) {
+	id := app.session.GetInt(r, "authenticatedUserID")
+	student, _ := app.student.GetStudentById(id)
+	student.LifeTime -= 1
+	var isDied bool
+	if student.IsLast {
+		isDied = true
+	}
+	if student.IsLast && student.LifeTime == -2 {
+		app.student.DeleteStudentById(student.ID)
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	if student.LifeTime == 0 {
+		student.IsLast = true
+	}
+	prediction, _ := app.student.GetPredictionBySubjectName(student.SubjectName)
+	app.student.UpdateStudent(student)
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "home.page.tmpl", &templateData{
+		Flash:      flash,
+		Student:    student,
+		Prediction: prediction,
+		IsDied:     isDied,
+	})
+}

@@ -2,15 +2,17 @@ package main
 
 import (
 	"examFortune/pkg/forms"
+	"examFortune/pkg/models"
 	"html/template"
 	"path/filepath"
 )
 
 type templateData struct {
-	Form       *forms.Form
-	Flash      string
-	Prediction string
-
+	Form            *forms.Form
+	Flash           string
+	Student         *models.Student
+	Prediction      string
+	Students        []*models.Student
 	IsAdmin         bool
 	IsAuthenticated bool
 	IsDied          bool

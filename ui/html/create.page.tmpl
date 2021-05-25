@@ -1,0 +1,45 @@
+
+{{template "base" .}}
+{{define "title"}}Create a New Snippet{{end}}
+{{define "main"}}
+<form action='/admin/create' method='POST'>
+{{with .Form}}
+
+<div>
+<label>Username:</label>
+{{with .Errors.Get "username"}}
+<label class='error'>{{.}}</label>
+{{end}}
+<input type='text' name='username' value='{{.Get "username"}}'>
+</div>
+
+<div>
+<label>Password:</label>
+{{with .Errors.Get "password"}}
+<label class='error'>{{.}}</label>
+{{end}}
+<input type='password' name='password' value='{{.Get "password"}}'>
+</div>
+
+<div>
+<label>groupName:</label>
+{{with .Errors.Get "groupName"}}
+<label class='error'>{{.}}</label>
+{{end}}
+<input type='text' name='groupName' value='{{.Get "groupName"}}'>
+</div>
+
+<div>
+<label>subjectName:</label>
+{{with .Errors.Get "subjectName"}}
+<label class='error'>{{.}}</label>
+{{end}}
+<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
+</div>
+
+<div>
+<input type='submit' value='Create Student'>
+</div>
+{{end}}
+</form>
+{{end}}

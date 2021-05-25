@@ -1,0 +1,38 @@
+{{template "base" .}}
+{{define "title"}}Home{{end}}
+{{define "main"}}
+
+<table class="cinereousTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Group name</th>
+            <th>Subject name</th>
+            <th>Life time</th>
+            <th>Is last</th>
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+     {{range .Students}}
+        <tr>
+
+            <td>#{{.ID}}</td>
+            <td>{{.Username}}</td>
+            <td>{{.Password}}</td>
+            <td>{{.GroupName}}</td>
+            <td>{{.SubjectName}}</td>
+            <td>{{.LifeTime}}</td>
+            <td>{{.IsLast}}</td>
+            <td>
+                <a href="https://localhost:4000/admin/delete?id={{.ID}}"  class="myButton">&nbsp;Delete </a>
+            </td>
+        </tr>
+        {{end}}
+        </tbody>
+        </tr>
+</table><br>
+          <a href="https://localhost:4000/admin/create" class="myButton">&nbsp;Create </a>
+{{end}}

@@ -21,9 +21,6 @@ func (app *application) notFound(w http.ResponseWriter) {
 	app.clientError(w, http.StatusNotFound)
 }
 
-func (app *application) isAuthenticated(r *http.Request) bool {
-	return app.session.Exists(r, "authenticatedUserID")
-}
 func (app *application) render(w http.ResponseWriter, r *http.Request, name string, td *templateData) {
 	ts, ok := app.templateCache[name]
 	if !ok {
@@ -40,6 +37,10 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	}
 	buf.WriteTo(w)
 }
+
+func (app *application) isAuthenticated(r *http.Request) bool {
+	return app.session.Exists(r, "authenticatedUserID")
+}
 func (app *application) addDefaultData(td *templateData, r *http.Request) *templateData {
 	if td == nil {
 		td = &templateData{}
@@ -49,6 +50,7 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 	td.IsAdmin = app.isAdmin(r)
 	return td
 }
+
 func (app *application) isAdmin(r *http.Request) bool {
 	return app.session.Exists(r, "adminUserID")
 }
