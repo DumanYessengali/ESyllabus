@@ -11,10 +11,12 @@ import (
 )
 
 const (
-	insertSql = "INSERT INTO student (username, password, group_name, subject_name, life_time, is_last)" +
+	insertTeacher = "INSERT INTO"
+	insertSql     = "INSERT INTO student (username, password, group_name, subject_name, life_time, is_last)" +
 		" VALUES ($1,$2,$3,$4,$5,$6)"
 	getNameSyllabus   = "SELECT * FROM student"
 	getStudentById    = "SELECT * FROM student WHERE student_id=$1"
+	getRoleByUsername = "SELECT authorization_id, role FROM auth WHERE username=$1"
 	deleteStudentById = "DELETE FROM  student WHERE student_id=$1"
 	updateStudent     = "UPDATE student SET " +
 		"username=$1, password=$2, group_name=$3, subject_name=$4, life_time=$5, is_last=$6 " +
@@ -26,7 +28,7 @@ type StudentModel struct {
 	Pool *pgxpool.Pool
 }
 
-func (m *StudentModel) InsertStudent(username, password, group_name, subject_name string) (int, error) {
+func (m *StudentModel) InsertSyllabus(username, password, group_name, subject_name string) (int, error) {
 
 	var id uint64
 	row := m.Pool.QueryRow(context.Background(), insertSql,
@@ -96,6 +98,20 @@ func (m *StudentModel) GetStudentById(id int) (*models.Student, error) {
 	s := &models.Student{}
 	err := m.Pool.QueryRow(context.Background(), getStudentById, id).
 		Scan(&s.ID, &s.Username, &s.Password, &s.GroupName, &s.SubjectName, &s.LifeTime, &s.IsLast)
+	if err != nil {
+		if err.Error() == "no rows in result set" {
+			return nil, models.ErrNoRecord
+		} else {
+			return nil, err
+		}
+	}
+	return s, nil
+}
+
+func (m *StudentModel) GetRoleByUsername(username string) (*models.Student, error) {
+	s := &models.Student{}
+	err := m.Pool.QueryRow(context.Background(), getRoleByUsername, username).
+		Scan(&s.ID, &s.Role)
 	if err != nil {
 		if err.Error() == "no rows in result set" {
 			return nil, models.ErrNoRecord

@@ -19,4 +19,5 @@ type Student struct {
 	LifeTime     int
 	IsLast       bool
 	SyllabusName string
+	Role         string
 }

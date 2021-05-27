@@ -4,6 +4,7 @@ import (
 	"errors"
 	"examFortune/pkg/forms"
 	"examFortune/pkg/models"
+	"fmt"
 	"net/http"
 )
 
@@ -56,12 +57,20 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	app.session.Put(r, "authenticatedUserID", id)
-
-	if username == "admin" {
+	role, err := app.student.GetRoleByUsername(username)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
+	if role.Role == "teacher" {
+		fmt.Print(role.ID)
 		app.session.Put(r, "adminUserID", id)
 		http.Redirect(w, r, "/admin", http.StatusSeeOther)
 		return
+	} else if role.Role == "student" {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
+
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 

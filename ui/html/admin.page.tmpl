@@ -5,13 +5,7 @@
 <table class="cinereousTable">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Password</th>
-            <th>Group name</th>
-            <th>Subject name</th>
-            <th>Life time</th>
-            <th>Is last</th>
+            <th>Название силлабуса</th>
             <th> </th>
         </tr>
     </thead>
@@ -20,12 +14,6 @@
         <tr>
 
             <td>#{{.ID}}</td>
-            <td>{{.Username}}</td>
-            <td>{{.Password}}</td>
-            <td>{{.GroupName}}</td>
-            <td>{{.SubjectName}}</td>
-            <td>{{.LifeTime}}</td>
-            <td>{{.IsLast}}</td>
             <td>
                 <a href="https://localhost:4000/admin/delete?id={{.ID}}"  class="myButton">&nbsp;Delete </a>
             </td>

@@ -50,7 +50,7 @@ func (app *application) createStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.student.InsertStudent(form.Get("username"), form.Get("password"), form.Get("groupName"), form.Get("subjectName"))
+	app.student.InsertSyllabus(form.Get("username"), form.Get("password"), form.Get("groupName"), form.Get("subjectName"))
 
 	app.session.Put(r, "flash", "Student successfully created!")
 
