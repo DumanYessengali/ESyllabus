@@ -131,29 +131,41 @@ func (m *PgModel) Authenticate(username, password string) (int, error) {
 //}
 //
 
-func (m *PgModel) GetSyllabusById(id int) (*models.TopicWeek, *models.StudentTopicWeek, *models.Syllabus, error) {
-	topic := &models.TopicWeek{}
-	independent := &models.StudentTopicWeek{}
-	syllabus := &models.Syllabus{}
+func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.StudentTopicWeek, []*models.Syllabus, error) {
 
-	err := m.Pool.QueryRow(context.Background(), selectTopicWithPlan, id).
-		Scan(&topic.LectureTopic, &topic.LectureHours, &topic.PracticeTopic, &topic.PracticeHours, &topic.Assignment, &topic.WeekNumber)
+	var topic []*models.TopicWeek
+	var independent []*models.StudentTopicWeek
+	var syllabus []*models.Syllabus
 
-	err = m.Pool.QueryRow(context.Background(), selectIndependentStudyTopic, id).
-		Scan(&independent.WeekNumber, &independent.Topics, &independent.Hours, &independent.RecommendedLiterature, &independent.SubmissionForm)
-
-	err = m.Pool.QueryRow(context.Background(), selectSyllabusTableRow, id).
-		Scan(&syllabus.Title)
-
-	err = m.Pool.QueryRow(context.Background(), selectSyllabusInfo, id).
-		Scan(&syllabus.Credits, &syllabus.Goals, &syllabus.SkillsCompetences, &syllabus.Objectives, &syllabus.LearningOutcomes, &syllabus.Prerequisites, &syllabus.Postrequisites, &syllabus.Instructors)
+	rows1, err := m.Pool.Query(context.Background(), selectTopicWithPlan, id)
+	rows2, err := m.Pool.Query(context.Background(), selectIndependentStudyTopic, id)
+	rows3, err := m.Pool.Query(context.Background(), selectSyllabusTableRow, id)
+	rows4, err := m.Pool.Query(context.Background(), selectSyllabusInfo, id)
 	if err != nil {
-		if err.Error() == "no rows in result set" {
-			return nil, nil, nil, models.ErrNoRecord
-		} else {
+		return nil, nil, nil, err
+	}
+
+	for rows1.Next() && rows2.Next() && rows3.Next() && rows4.Next() {
+		t := &models.TopicWeek{}
+		i := &models.StudentTopicWeek{}
+		s := &models.Syllabus{}
+		err = rows1.Scan(&t.LectureTopic, &t.LectureHours, &t.PracticeTopic, &t.PracticeHours, &t.Assignment, &t.WeekNumber)
+		err = rows2.Scan(&i.WeekNumber, &i.Topics, &i.Hours, &i.RecommendedLiterature, &i.SubmissionForm)
+		err = rows3.Scan(&s.Title)
+		err = rows4.Scan(&s.Credits, &s.Goals, &s.SkillsCompetences, &s.Objectives, &s.LearningOutcomes, &s.Prerequisites, &s.Postrequisites, &s.Instructors)
+
+		if err != nil {
 			return nil, nil, nil, err
 		}
+
+		topic = append(topic, t)
+		independent = append(independent, i)
+		syllabus = append(syllabus, s)
 	}
+	if err = rows1.Err(); err != nil {
+		return nil, nil, nil, err
+	}
+
 	return topic, independent, syllabus, nil
 }
 

@@ -77,19 +77,26 @@ func (app *application) deleteStudent(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getSyllabusById(w http.ResponseWriter, r *http.Request) {
-	syllabus, err := app.student.GetNameSyllabus()
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
-		if errors.Is(err, models.ErrNoRecord) {
-			app.notFound(w)
-		} else {
-			app.serverError(w, err)
-		}
+		app.notFound(w)
 		return
 	}
 
+	topic, independent, syllabus, err := app.student.GetSyllabusById(id)
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+	fmt.Println(syllabus)
+	fmt.Println(independent)
+	fmt.Println(topic)
 	flash := app.session.PopString(r, "flash")
+
 	app.render(w, r, "select.page.tmpl", &templateData{
-		Flash:    flash,
-		Syllabus: syllabus,
+		Flash:       flash,
+		Syllabus:    syllabus,
+		Topic:       topic,
+		Independent: independent,
 	})
 }
