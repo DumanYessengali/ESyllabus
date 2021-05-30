@@ -1,33 +1,31 @@
 package main
 
 import (
-	"errors"
 	"examFortune/pkg/forms"
-	"examFortune/pkg/models"
 	"fmt"
 	"net/http"
 )
 
-func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	id := app.session.GetInt(r, "authenticatedUserID")
-	student, err := app.student.GetStudentById(id)
-	if err != nil {
-		if errors.Is(err, models.ErrNoRecord) {
-			app.notFound(w)
-		} else {
-			app.serverError(w, err)
-		}
-		return
-	}
-
-	flash := app.session.PopString(r, "flash")
-
-	app.render(w, r, "home.page.tmpl", &templateData{
-		Flash:   flash,
-		Student: student,
-	})
-
-}
+//func (app *application) home(w http.ResponseWriter, r *http.Request) {
+//	id := app.session.GetInt(r, "authenticatedUserID")
+//	student, err := app.student.GetStudentById(id)
+//	if err != nil {
+//		if errors.Is(err, models.ErrNoRecord) {
+//			app.notFound(w)
+//		} else {
+//			app.serverError(w, err)
+//		}
+//		return
+//	}
+//
+//	flash := app.session.PopString(r, "flash")
+//
+//	app.render(w, r, "home.page.tmpl", &templateData{
+//		Flash:   flash,
+//		//Student: student,
+//	})
+//
+//}
 
 //loginUserForm
 func (app *application) signInForm(w http.ResponseWriter, r *http.Request) {
@@ -48,12 +46,12 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 	password := form.Get("password")
 	id, err := app.student.Authenticate(username, password)
 	if err != nil {
-		if errors.Is(err, models.ErrInvalidCredentials) {
-			form.Errors.Add("generic", "Username or Password is incorrect")
-			app.render(w, r, "login.page.tmpl", &templateData{Form: form})
-		} else {
-			app.serverError(w, err)
-		}
+		//if errors.Is(err, models.ErrInvalidCredentials) {
+		form.Errors.Add("generic", "Username or Password is incorrect")
+		app.render(w, r, "login.page.tmpl", &templateData{Form: form})
+		//} else {
+		//	app.serverError(w, err)
+		//}
 		return
 	}
 	app.session.Put(r, "authenticatedUserID", id)
@@ -65,6 +63,7 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 		fmt.Print(role.ID)
 		app.session.Put(r, "adminUserID", id)
 		http.Redirect(w, r, "/admin", http.StatusSeeOther)
+		app.student.GetNameSyllabus()
 		return
 	} else if role.Role == "student" {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -72,6 +71,7 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+
 }
 
 func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {

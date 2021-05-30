@@ -10,17 +10,19 @@
         </tr>
     </thead>
     <tbody>
-     {{range .Students}}
-        <tr>
+     {{range .Syllabus}}
 
-            <td>#{{.ID}}</td>
+
+        <tr>
+            <td>
+                #{{.Title}}
+            </td>
             <td>
                 <a href="https://localhost:4000/admin/delete?id={{.ID}}"  class="myButton">&nbsp;Delete </a>
             </td>
         </tr>
         {{end}}
         </tbody>
-        </tr>
 </table><br>
           <a href="https://localhost:4000/admin/create" class="myButton">&nbsp;Create </a>
 {{end}}

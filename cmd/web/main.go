@@ -18,7 +18,8 @@ type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
 	session       *sessions.Session
-	student       *postgres.StudentModel
+	student       *postgres.PgModel
+	syllabus      *postgres.SyllabusModel
 	templateCache map[string]*template.Template
 }
 
@@ -51,7 +52,7 @@ func main() {
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		session:       session,
-		student:       &postgres.StudentModel{Pool: pool},
+		student:       &postgres.PgModel{Pool: pool},
 		templateCache: templateCache,
 	}
 

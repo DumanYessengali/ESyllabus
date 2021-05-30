@@ -10,9 +10,9 @@ import (
 type templateData struct {
 	Form            *forms.Form
 	Flash           string
-	Student         *models.Student
+	syllabus        *models.Syllabus
 	Prediction      string
-	Students        []*models.Student
+	Syllabus        []*models.Syllabus
 	IsAdmin         bool
 	IsAuthenticated bool
 	IsDied          bool

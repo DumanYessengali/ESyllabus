@@ -10,14 +10,51 @@ var (
 	ErrDuplicateEmail     = errors.New("models: duplicate email")
 )
 
-type Student struct {
-	ID           int
-	Username     string
-	Password     string
-	GroupName    string
-	SubjectName  string
-	LifeTime     int
-	IsLast       bool
-	SyllabusName string
-	Role         string
+type Syllabus struct {
+	ID                int
+	Title             string
+	Teacher           *TeacherInfo
+	Credits           int
+	Goals             string
+	SkillsCompetences string
+	Objectives        string
+	LearningOutcomes  string
+	Prerequisites     string
+	Postrequisites    string
+	Instructors       string
+	SyllabusInfoID    int
+	Table1            []*TopicWeek
+	Table2            []*StudentTopicWeek
+}
+type TeacherInfo struct {
+	ID        int
+	FullName  string
+	Degree    string
+	Rank      string
+	Position  string
+	Contacts  string
+	Interests string
+}
+
+type TopicWeek struct {
+	WeekNumber    int
+	LectureTopic  string
+	LectureHours  int
+	PracticeTopic string
+	PracticeHours int
+	Assignment    string
+}
+
+type StudentTopicWeek struct {
+	WeekNumber            int
+	Topics                string
+	Hours                 int
+	RecommendedLiterature string
+	SubmissionForm        string
+}
+type User struct {
+	ID       int
+	Username string
+	Password string
+	Role     string
 }

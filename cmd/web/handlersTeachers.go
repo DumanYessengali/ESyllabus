@@ -9,9 +9,11 @@ import (
 	"strconv"
 )
 
-func (app *application) getMainPage(w http.ResponseWriter, r *http.Request) {
+func (app *application) getMainPageTeacher(w http.ResponseWriter, r *http.Request) {
 
-	students, err := app.student.GetNameSyllabus()
+	app.student.GetTeacherId()
+	//fmt.Print(app.syllabus.GetAllSyllabuses(1))
+	syllabus, err := app.student.GetNameSyllabus()
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)
@@ -22,10 +24,9 @@ func (app *application) getMainPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	flash := app.session.PopString(r, "flash")
-
 	app.render(w, r, "admin.page.tmpl", &templateData{
 		Flash:    flash,
-		Students: students,
+		Syllabus: syllabus,
 	})
 }
 
