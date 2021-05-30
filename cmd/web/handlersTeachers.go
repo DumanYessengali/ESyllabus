@@ -75,3 +75,21 @@ func (app *application) deleteStudent(w http.ResponseWriter, r *http.Request) {
 
 	app.render(w, r, "afterDelete.page.tmpl", &templateData{})
 }
+
+func (app *application) getSyllabusById(w http.ResponseWriter, r *http.Request) {
+	syllabus, err := app.student.GetNameSyllabus()
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+	app.render(w, r, "select.page.tmpl", &templateData{
+		Flash:    flash,
+		Syllabus: syllabus,
+	})
+}

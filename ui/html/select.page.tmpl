@@ -14,12 +14,14 @@
 
 
         <tr>
-            <td><a href="https://localhost:4000/admin/syllabusinfo?id={{.SyllabusInfoID}}">
+            <td>
                 #{{.Title}}
-                </a>
             </td>
             <td>
-                <a href="https://localhost:4000/admin/delete?id={{.SyllabusInfoID}}"  class="myButton">&nbsp;Delete </a>
+                #{{.ID}}
+            </td>
+            <td>
+               {{.Goals}}
             </td>
         </tr>
         {{end}}

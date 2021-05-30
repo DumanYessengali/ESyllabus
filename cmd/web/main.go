@@ -15,11 +15,11 @@ import (
 )
 
 type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
-	session       *sessions.Session
-	student       *postgres.PgModel
-	syllabus      *postgres.SyllabusModel
+	errorLog *log.Logger
+	infoLog  *log.Logger
+	session  *sessions.Session
+	student  *postgres.PgModel
+	//syllabus      *postgres.SyllabusModel
 	templateCache map[string]*template.Template
 }
 
@@ -49,10 +49,11 @@ func main() {
 	session.Secure = true
 
 	app := &application{
-		errorLog:      errorLog,
-		infoLog:       infoLog,
-		session:       session,
-		student:       &postgres.PgModel{Pool: pool},
+		errorLog: errorLog,
+		infoLog:  infoLog,
+		session:  session,
+		student:  &postgres.PgModel{Pool: pool},
+		//syllabus:       &postgres.SyllabusModel{Pool: pool},
 		templateCache: templateCache,
 	}
 

@@ -1,6 +1,7 @@
 package postgres
 
 //
+//
 //import (
 //"context"
 //"examFortune/pkg/models"
@@ -27,8 +28,8 @@ package postgres
 //
 //
 //func (m *SyllabusModel) GetAllSyllabuses(teacherId int) ([]*models.Syllabus, error) {
-//	syllabuses := [...]*models.Syllabus{}
-//	syllabusIds := [...]int{}
+//	var syllabuses []*models.Syllabus
+//	var syllabusIds []int
 //
 //	fmt.Println("aLL SYLLABUS")
 //	rows, err := m.Pool.Query(context.Background(), getSyllabusByTeacherId, teacherId)
