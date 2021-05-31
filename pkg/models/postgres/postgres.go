@@ -148,25 +148,32 @@ func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.Studen
 		return nil, nil, nil, nil, err
 	}
 
-	for rows1.Next() && rows2.Next() && rows3.Next() && rows4.Next() && rows5.Next() {
-		t := &models.TopicWeek{}
-		i := &models.StudentTopicWeek{}
+	for rows3.Next() && rows4.Next() && rows5.Next() {
+
 		s := &models.Syllabus{}
 		te := &models.TeacherInfo{}
-		err = rows1.Scan(&t.LectureTopic, &t.LectureHours, &t.PracticeTopic, &t.PracticeHours, &t.Assignment, &t.WeekNumber)
-		err = rows2.Scan(&i.WeekNumber, &i.Topics, &i.Hours, &i.RecommendedLiterature, &i.SubmissionForm)
+
 		err = rows3.Scan(&s.Title)
 		err = rows4.Scan(&s.Credits, &s.Goals, &s.SkillsCompetences, &s.Objectives, &s.LearningOutcomes, &s.Prerequisites, &s.Postrequisites, &s.Instructors)
 		err = rows5.Scan(&te.FullName, &te.Degree, &te.Rank, &te.Position, &te.Contacts, &te.Interests)
 		if err != nil {
 			return nil, nil, nil, nil, err
 		}
-		fmt.Println(t.LectureTopic)
-		topic = append(topic, t)
-		independent = append(independent, i)
+
 		syllabus = append(syllabus, s)
 		teacher = append(teacher, te)
 	}
+
+	for rows1.Next() && rows2.Next() {
+		t := &models.TopicWeek{}
+		i := &models.StudentTopicWeek{}
+		err = rows1.Scan(&t.LectureTopic, &t.LectureHours, &t.PracticeTopic, &t.PracticeHours, &t.Assignment, &t.WeekNumber)
+		err = rows2.Scan(&i.WeekNumber, &i.Topics, &i.Hours, &i.RecommendedLiterature, &i.SubmissionForm)
+
+		topic = append(topic, t)
+		independent = append(independent, i)
+	}
+
 	if err = rows1.Err(); err != nil {
 		return nil, nil, nil, nil, err
 	}
