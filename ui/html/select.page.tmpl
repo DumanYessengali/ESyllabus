@@ -2,10 +2,10 @@
 {{define "title"}}Home{{end}}
 {{define "main"}}
     <table>
-        <h1>Syllabus</h1>
+        <p align="center" style="font-size:30px;">Syllabus</p>
         <thead>
             <tr>
-                <th>General information</th>
+                <th colspan=2 style="padding: 0 40% 0 35%;">General information</th>
             </tr>
         </thead>
         <tbody>
@@ -42,14 +42,18 @@
                         {{.Postrequisites}}
                     </td>
                </tr>
-               <tr>
+            {{end}}
+                <tr>
                     <td>
                         Lecturer(s)
                     </td>
                     <td>
-
+                        {{range .Teacher}}
+                            {{.FullName}}, {{.Degree}}, {{.Rank}}, {{.Position}}, {{.Contacts}}, {{.Interests}}
+                        {{end}}
                     </td>
                </tr>
+            {{range .Syllabus}}
                <tr>
                     <td>
                         Course goal(s)
@@ -93,4 +97,95 @@
             {{end}}
         </tbody>
     </table>
+    <table>
+        <p align="center" style="font-size:25px;">Lecture! practical/seminar/laboratory session plans</p>
+        <tbody>
+             <tr>
+                    <td>
+                        Week Number
+                    </td>
+                    <td>
+                        Lecture Topic
+                    </td>
+                    <td>
+                        Lecture Hours
+                    </td>
+                    <td>
+                        Practice Topic
+                    </td>
+                    <td>
+                        Practice Hours
+                    </td>
+                    <td>
+                        Assignment
+                    </td>
+               </tr>
+            {{range .Topic}}
+               <tr>
+                    <td>
+                        {{.WeekNumber}}
+                    </td>
+                    <td>
+                        {{.LectureTopic}}
+                    </td>
+                    <td>
+                        {{.LectureHours}}
+                    </td>
+                    <td>
+                        {{.PracticeTopic}}
+                    </td>
+                    <td>
+                        {{.PracticeHours}}
+                    </td>
+                    <td>
+                        {{.Assignment}}
+                    </td>
+               </tr>
+            {{end}}
+        </tbody>
+    </table>
+    <table>
+        <p align="center" style="font-size:25px;">List of assignments for Student Independent Study</p>
+        <tbody>
+             <tr>
+                    <td>
+                        Week Number
+                    </td>
+                    <td>
+                        Topics
+                    </td>
+                    <td>
+                        Hours
+                    </td>
+                    <td>
+                        Recommended Literature
+                    </td>
+                    <td>
+                        Submission Form
+                    </td>
+               </tr>
+            {{range .Independent}}
+               <tr>
+                    <td>
+                        {{.WeekNumber}}
+                    </td>
+                    <td>
+                        {{.Topics}}
+                    </td>
+                    <td>
+                        {{.Hours}}
+                    </td>
+                    <td>
+                        {{.RecommendedLiterature}}
+                    </td>
+                    <td>
+                        {{.SubmissionForm}}
+                    </td>
+               </tr>
+            {{end}}
+        </tbody>
+    </table>
 {{end}}
+
+
+

@@ -83,14 +83,13 @@ func (app *application) getSyllabusById(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	topic, independent, syllabus, err := app.student.GetSyllabusById(id)
+	topic, independent, syllabus, teacher, err := app.student.GetSyllabusById(id)
+
 	if err != nil {
 		app.notFound(w)
 		return
 	}
-	fmt.Println(syllabus)
-	fmt.Println(independent)
-	fmt.Println(topic)
+
 	flash := app.session.PopString(r, "flash")
 
 	app.render(w, r, "select.page.tmpl", &templateData{
@@ -98,5 +97,6 @@ func (app *application) getSyllabusById(w http.ResponseWriter, r *http.Request) 
 		Syllabus:    syllabus,
 		Topic:       topic,
 		Independent: independent,
+		Teacher:     teacher,
 	})
 }

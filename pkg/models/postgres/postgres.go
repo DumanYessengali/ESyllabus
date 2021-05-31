@@ -34,6 +34,7 @@ const (
 	selectSyllabusTableRow = "select name FROM  syllabus WHERE syllabus_info_id=$1"
 	selectSyllabusInfo     = "select credits_num,goals,skills_competences,objectives,learning_outcomes,prerequisites,postrequisites,instructors " +
 		"FROM syllabus_info WHERE syllabus_info_id=$1"
+	selectTeacherInfo = "select fullname, degree, rank, position, contacts, interests from teacher where authorization_id = $1"
 )
 
 type PgModel struct {
@@ -131,45 +132,47 @@ func (m *PgModel) Authenticate(username, password string) (int, error) {
 //}
 //
 
-func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.StudentTopicWeek, []*models.Syllabus, error) {
+func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.StudentTopicWeek, []*models.Syllabus, []*models.TeacherInfo, error) {
 
 	var topic []*models.TopicWeek
 	var independent []*models.StudentTopicWeek
 	var syllabus []*models.Syllabus
+	var teacher []*models.TeacherInfo
 
 	rows1, err := m.Pool.Query(context.Background(), selectTopicWithPlan, id)
 	rows2, err := m.Pool.Query(context.Background(), selectIndependentStudyTopic, id)
 	rows3, err := m.Pool.Query(context.Background(), selectSyllabusTableRow, id)
 	rows4, err := m.Pool.Query(context.Background(), selectSyllabusInfo, id)
+	rows5, err := m.Pool.Query(context.Background(), selectTeacherInfo, authID)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 
-	for rows1.Next() && rows2.Next() && rows3.Next() && rows4.Next() {
+	for rows1.Next() && rows2.Next() && rows3.Next() && rows4.Next() && rows5.Next() {
 		t := &models.TopicWeek{}
 		i := &models.StudentTopicWeek{}
 		s := &models.Syllabus{}
+		te := &models.TeacherInfo{}
 		err = rows1.Scan(&t.LectureTopic, &t.LectureHours, &t.PracticeTopic, &t.PracticeHours, &t.Assignment, &t.WeekNumber)
 		err = rows2.Scan(&i.WeekNumber, &i.Topics, &i.Hours, &i.RecommendedLiterature, &i.SubmissionForm)
 		err = rows3.Scan(&s.Title)
 		err = rows4.Scan(&s.Credits, &s.Goals, &s.SkillsCompetences, &s.Objectives, &s.LearningOutcomes, &s.Prerequisites, &s.Postrequisites, &s.Instructors)
-
+		err = rows5.Scan(&te.FullName, &te.Degree, &te.Rank, &te.Position, &te.Contacts, &te.Interests)
 		if err != nil {
-			return nil, nil, nil, err
+			return nil, nil, nil, nil, err
 		}
-
+		fmt.Println(t.LectureTopic)
 		topic = append(topic, t)
 		independent = append(independent, i)
 		syllabus = append(syllabus, s)
+		teacher = append(teacher, te)
 	}
 	if err = rows1.Err(); err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 
-	return topic, independent, syllabus, nil
+	return topic, independent, syllabus, teacher, nil
 }
-
-//
 
 func (m *PgModel) GetRoleByUsername(username string) (*models.User, error) {
 	s := &models.User{}

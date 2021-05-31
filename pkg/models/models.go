@@ -26,6 +26,7 @@ type Syllabus struct {
 	Table1            []*TopicWeek
 	Table2            []*StudentTopicWeek
 }
+
 type TeacherInfo struct {
 	ID        int
 	FullName  string
@@ -52,6 +53,7 @@ type StudentTopicWeek struct {
 	RecommendedLiterature string
 	SubmissionForm        string
 }
+
 type User struct {
 	ID       int
 	Username string

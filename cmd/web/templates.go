@@ -15,6 +15,7 @@ type templateData struct {
 	Syllabus        []*models.Syllabus
 	Topic           []*models.TopicWeek
 	Independent     []*models.StudentTopicWeek
+	Teacher         []*models.TeacherInfo
 	IsAdmin         bool
 	IsAuthenticated bool
 	IsDied          bool
