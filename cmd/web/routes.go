@@ -20,6 +20,7 @@ func (app *application) routes() http.Handler {
 	mux.Get("/admin/syllabusinfo", dynamicMiddleware.ThenFunc(app.getSyllabusById))
 
 	mux.Get("/", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.home))
+	mux.Get("/syllabusinfo", dynamicMiddleware.ThenFunc(app.getSyllabusById))
 	mux.Get("/signin", dynamicMiddleware.ThenFunc(app.signInForm))
 	mux.Post("/signin", dynamicMiddleware.ThenFunc(app.signIn))
 	mux.Post("/logout", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.logoutUser))

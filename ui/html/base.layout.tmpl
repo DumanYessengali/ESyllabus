@@ -81,9 +81,12 @@
             </header>
             <nav>
                 <div>
-                    <a href='/'>Home</a>
+
                     {{if .IsAdmin}}
-                        <a href='/admin'>Home</a>
+                        <a href='/admin'>Admin</a>
+                    {{end}}
+                    {{if not .IsAdmin}}
+                         <a href='/'>Home</a>
                     {{end}}
                 </div>
                 <div>
