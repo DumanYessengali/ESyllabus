@@ -11,8 +11,8 @@ import (
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	//id := app.session.GetInt(r, "authenticatedUserID")
 
-	app.student.GetTeacherId()
-	syllabus, err := app.student.GetNameSyllabus()
+	app.student.GetStudentId()
+	syllabus, err := app.student.GetNameSyllabusWithStudent()
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)

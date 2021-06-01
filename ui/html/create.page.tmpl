@@ -4,7 +4,7 @@
     <form action='/admin/create' method='POST'>
         {{with .Form}}
             <div>
-                <label>Syllabus title:</label>
+                <label>Discipline name:</label>
                     {{with .Errors.Get "title"}}
                         <label class='error'>{{.}}</label>
                     {{end}}
@@ -210,10 +210,10 @@
                     <div>
                         <div>
                             <label>Week number</label>
-                                {{with .Errors.Get "week_num"}}
+                                {{with .Errors.Get "week_num2"}}
                                     <label class='error'>{{.}}</label>
                                 {{end}}
-                            <input type='text' name='week_num' value='{{.Get "week_num"}}'>
+                            <input type='text' name='week_num2' value='{{.Get "week_num2"}}'>
                         </div>
 
                         <div>

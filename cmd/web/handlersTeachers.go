@@ -108,8 +108,36 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	form := forms.New(r.PostForm)
-	form.Required("username", "password", "groupName", "subjectName")
-	form.MaxLength("username", 100)
+	form.Required(
+		"title",
+		"fullname",
+		"degree",
+		"rank",
+		"position",
+		"contacts",
+		"interests",
+		"subjectName",
+		"credits_num",
+		"course_goal",
+		"skills",
+		"objectives",
+		"outcomes",
+		"prerequisites",
+		"post_requisites",
+		"instructors",
+		"week_num",
+		"lecture",
+		"lecture_h",
+		"practice",
+		"practice_h",
+		"assignment",
+		"week_num2",
+		"table2_topic",
+		"hours",
+		"literature",
+		"submission",
+	)
+	//form.MaxLength("username", 100)
 
 	if !form.Valid() {
 		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
@@ -118,7 +146,7 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 	//form.Get("username")
 	syllabus := &models.Syllabus{
 		ID:                0,
-		Title:             "",
+		Title:             form.Get("title"),
 		Teacher:           nil,
 		Credits:           0,
 		Goals:             "",
@@ -132,7 +160,10 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 		Table1:            nil,
 		Table2:            nil,
 	}
-	syllabusId, _ := app.student.InsertSyllabus(syllabus, 1, 1, "test")
+
+	teacherId, _ := app.student.GetTeacherId()
+	syllabusId, _ := app.student.InsertSyllabus(syllabus, teacherId, 1, form.Get("title"))
+
 	fmt.Println(syllabusId)
 
 	app.session.Put(r, "flash", "Syllabus successfully created!")

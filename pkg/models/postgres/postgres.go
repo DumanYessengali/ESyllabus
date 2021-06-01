@@ -14,10 +14,11 @@ import (
 const (
 	insertSql = "INSERT INTO student (username, password, group_name, subject_name, life_time, is_last)" +
 		" VALUES ($1,$2,$3,$4,$5,$6)"
-	getNameSyllabus   = "select syllabus_id,name,syllabus_info_id from syllabus where teacher_id=$1"
-	getTeacherId      = "SELECT teacher_id from teacher where authorization_id=$1"
-	getRoleByUsername = "SELECT authorization_id, role FROM auth WHERE username=$1"
-	auth              = "SELECT authorization_id, password FROM auth WHERE username = $1"
+	getNameSyllabusWithTeacher = "select syllabus_id,name,syllabus_info_id from syllabus where teacher_id=$1"
+	getNameSyllabusWithStudent = "select syllabus_id,name,syllabus_info_id from syllabus where syllabus_id=(select syllabus_id from student_syllabus where student_id=$1)"
+	getTeacherId               = "SELECT teacher_id from teacher where authorization_id=$1"
+	getRoleByUsername          = "SELECT authorization_id, role FROM auth WHERE username=$1"
+	auth                       = "SELECT authorization_id, password FROM auth WHERE username = $1"
 
 	deleteTopicWithPlan                 = "delete from topic where plan_id=(select plan_id from session_plan where syllabus_info_id=$1)"
 	deleteSessionPlanWithSyllabusInfoId = "DELETE FROM session_plan WHERE syllabus_info_id=$1"
@@ -52,11 +53,39 @@ type PgModel struct {
 }
 
 var authID int
-var teacherIDWithSyllabus int
+var iDFromSyllabus int
+var Role string
+
+func (m *PgModel) GetRole() string {
+	return Role
+}
+
+func (m *PgModel) GetNameSyllabusWithStudent() ([]*models.Syllabus, error) {
+	var students []*models.Syllabus
+	rows, err := m.Pool.Query(context.Background(), getNameSyllabusWithStudent, iDFromSyllabus)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		s := &models.Syllabus{}
+		err = rows.Scan(&s.ID, &s.Title, &s.SyllabusInfoID)
+		if err != nil {
+			return nil, err
+		}
+
+		students = append(students, s)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return students, nil
+}
 
 func (m *PgModel) GetNameSyllabus() ([]*models.Syllabus, error) {
 	var students []*models.Syllabus
-	rows, err := m.Pool.Query(context.Background(), getNameSyllabus, teacherIDWithSyllabus)
+	rows, err := m.Pool.Query(context.Background(), getNameSyllabusWithTeacher, iDFromSyllabus)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +114,7 @@ func (m *PgModel) GetTeacherId() (int, error) {
 		fmt.Println(err.Error())
 	}
 	fmt.Println("Teacher id", id)
-	teacherIDWithSyllabus = id
+	iDFromSyllabus = id
 	return id, nil
 }
 
@@ -125,60 +154,6 @@ func (m *PgModel) Authenticate(username, password string) (int, error) {
 	return id, nil
 }
 
-//func (m *PgModel) Get(id int) (*models.Student, error) {
-//	return nil, nil
-//}
-////
-//
-//func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.StudentTopicWeek, []*models.Syllabus, []*models.TeacherInfo, error) {
-//
-//	var topic []*models.TopicWeek
-//	var independent []*models.StudentTopicWeek
-//	var syllabus []*models.Syllabus
-//	var teacher []*models.TeacherInfo
-//
-//	rows1, err := m.Pool.Query(context.Background(), selectTopicWithPlan, id)
-//	rows2, err := m.Pool.Query(context.Background(), selectIndependentStudyTopic, id)
-//	rows3, err := m.Pool.Query(context.Background(), selectSyllabusTableRow, id)
-//	rows4, err := m.Pool.Query(context.Background(), selectSyllabusInfo, id)
-//	rows5, err := m.Pool.Query(context.Background(), selectTeacherInfo, authID)
-//	if err != nil {
-//		return nil, nil, nil, nil, err
-//	}
-//
-//	for rows3.Next() && rows4.Next() && rows5.Next() {
-//
-//		s := &models.Syllabus{}
-//		te := &models.TeacherInfo{}
-//
-//		err = rows3.Scan(&s.Title)
-//		err = rows4.Scan(&s.Credits, &s.Goals, &s.SkillsCompetences, &s.Objectives, &s.LearningOutcomes, &s.Prerequisites, &s.Postrequisites, &s.Instructors)
-//		err = rows5.Scan(&te.FullName, &te.Degree, &te.Rank, &te.Position, &te.Contacts, &te.Interests)
-//		if err != nil {
-//			return nil, nil, nil, nil, err
-//		}
-//
-//		syllabus = append(syllabus, s)
-//		teacher = append(teacher, te)
-//	}
-//
-//	for rows1.Next() && rows2.Next() {
-//		t := &models.TopicWeek{}
-//		i := &models.StudentTopicWeek{}
-//		err = rows1.Scan(&t.LectureTopic, &t.LectureHours, &t.PracticeTopic, &t.PracticeHours, &t.Assignment, &t.WeekNumber)
-//		err = rows2.Scan(&i.WeekNumber, &i.Topics, &i.Hours, &i.RecommendedLiterature, &i.SubmissionForm)
-//
-//		topic = append(topic, t)
-//		independent = append(independent, i)
-//	}
-//
-//	if err = rows1.Err(); err != nil {
-//		return nil, nil, nil, nil, err
-//	}
-//
-//	return topic, independent, syllabus, teacher, nil
-//}
-
 func (m *PgModel) GetRoleByUsername(username string) (*models.User, error) {
 	s := &models.User{}
 	err := m.Pool.QueryRow(context.Background(), getRoleByUsername, username).
@@ -190,24 +165,26 @@ func (m *PgModel) GetRoleByUsername(username string) (*models.User, error) {
 			return nil, err
 		}
 	}
+	fmt.Println(s.Role)
+	Role = s.Role
 	return s, nil
 }
 
 //
 ///*func (m *PgModel) DeleteStudentByUsername(username string) error {
-//	_, err := m.Pool.Exec(context.Background(), deleteStudentByUsername, username)
-//	if err != nil {
-//		return err
-//	}
-//	return nil
+//  _, err := m.Pool.Exec(context.Background(), deleteStudentByUsername, username)
+//  if err != nil {
+//      return err
+//  }
+//  return nil
 //}*/
 //
 //func (m *PgModel) UpdateStudent(s *models.Student) error {
-//	_, err := m.Pool.Exec(context.Background(), updateStudent, s.Username, s.Password, s.GroupName, s.SubjectName, s.LifeTime, s.IsLast, s.ID)
-//	if err != nil {
-//		return err
-//	}
-//	return nil
+//  _, err := m.Pool.Exec(context.Background(), updateStudent, s.Username, s.Password, s.GroupName, s.SubjectName, s.LifeTime, s.IsLast, s.ID)
+//  if err != nil {
+//      return err
+//  }
+//  return nil
 //}
 //
 func init() {
@@ -290,7 +267,7 @@ func (m *PgModel) GetStudentId() (int, error) {
 		fmt.Println(err.Error())
 	}
 	fmt.Println("Student id", id)
-	teacherIDWithSyllabus = id
+	iDFromSyllabus = id
 	return id, nil
 }
 func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.StudentTopicWeek, []*models.Syllabus, []*models.TeacherInfo, error) {
