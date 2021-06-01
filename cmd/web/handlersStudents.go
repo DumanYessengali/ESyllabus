@@ -1,31 +1,34 @@
 package main
 
 import (
+	"errors"
 	"examFortune/pkg/forms"
+	"examFortune/pkg/models"
 	"fmt"
 	"net/http"
 )
 
-//func (app *application) home(w http.ResponseWriter, r *http.Request) {
-//	id := app.session.GetInt(r, "authenticatedUserID")
-//	student, err := app.student.GetStudentById(id)
-//	if err != nil {
-//		if errors.Is(err, models.ErrNoRecord) {
-//			app.notFound(w)
-//		} else {
-//			app.serverError(w, err)
-//		}
-//		return
-//	}
-//
-//	flash := app.session.PopString(r, "flash")
-//
-//	app.render(w, r, "home.page.tmpl", &templateData{
-//		Flash:   flash,
-//		//Student: student,
-//	})
-//
-//}
+func (app *application) home(w http.ResponseWriter, r *http.Request) {
+	//id := app.session.GetInt(r, "authenticatedUserID")
+
+	app.student.GetTeacherId()
+	syllabus, err := app.student.GetNameSyllabus()
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+	app.render(w, r, "home.page.tmpl", &templateData{
+		Flash:    flash,
+		Syllabus: syllabus,
+	})
+
+}
 
 //loginUserForm
 func (app *application) signInForm(w http.ResponseWriter, r *http.Request) {

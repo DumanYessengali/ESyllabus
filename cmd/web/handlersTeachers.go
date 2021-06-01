@@ -36,27 +36,27 @@ func (app *application) createStudentFormAdmin(w http.ResponseWriter, r *http.Re
 	})
 }
 
-func (app *application) createStudent(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	form := forms.New(r.PostForm)
-	form.Required("username", "password", "groupName", "subjectName")
-	form.MaxLength("username", 100)
-
-	if !form.Valid() {
-		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
-		return
-	}
-
-	app.student.InsertSyllabus(form.Get("username"), form.Get("password"), form.Get("groupName"), form.Get("subjectName"))
-
-	app.session.Put(r, "flash", "Student successfully created!")
-
-	http.Redirect(w, r, fmt.Sprintf("/admin"), http.StatusSeeOther)
-}
+//func (app *application) createStudent(w http.ResponseWriter, r *http.Request) {
+//	if err := r.ParseForm(); err != nil {
+//		app.serverError(w, err)
+//		return
+//	}
+//
+//	form := forms.New(r.PostForm)
+//	form.Required("username", "password", "groupName", "subjectName")
+//	form.MaxLength("username", 100)
+//
+//	if !form.Valid() {
+//		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
+//		return
+//	}
+//
+//	app.student.InsertSyllabus(form.Get("username"), form.Get("password"), form.Get("groupName"), form.Get("subjectName"))
+//
+//	app.session.Put(r, "flash", "Student successfully created!")
+//
+//	http.Redirect(w, r, fmt.Sprintf("/admin"), http.StatusSeeOther)
+//}
 
 func (app *application) deleteStudent(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
@@ -99,4 +99,43 @@ func (app *application) getSyllabusById(w http.ResponseWriter, r *http.Request) 
 		Independent: independent,
 		Teacher:     teacher,
 	})
+}
+
+func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+	form.Required("username", "password", "groupName", "subjectName")
+	form.MaxLength("username", 100)
+
+	if !form.Valid() {
+		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
+		return
+	}
+	//form.Get("username")
+	syllabus := &models.Syllabus{
+		ID:                0,
+		Title:             "",
+		Teacher:           nil,
+		Credits:           0,
+		Goals:             "",
+		SkillsCompetences: "",
+		Objectives:        "",
+		LearningOutcomes:  "",
+		Prerequisites:     "",
+		Postrequisites:    "",
+		Instructors:       "",
+		SyllabusInfoID:    0,
+		Table1:            nil,
+		Table2:            nil,
+	}
+	syllabusId, _ := app.student.InsertSyllabus(syllabus, 1, 1, "test")
+	fmt.Println(syllabusId)
+
+	app.session.Put(r, "flash", "Syllabus successfully created!")
+
+	http.Redirect(w, r, fmt.Sprintf("/admin"), http.StatusSeeOther)
 }

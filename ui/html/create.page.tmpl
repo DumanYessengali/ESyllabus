@@ -1,1168 +1,261 @@
-
 {{template "base" .}}
 {{define "title"}}Create Syllabus{{end}}
 {{define "main"}}
-<form action='/admin/create' method='POST'>
-{{with .Form}}
-
-<div>
-<label>Syllabus title:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='title' value='{{.Get "username"}}'>
-</div>
-<label>Teacher info:</label>
-<div>
-<label>Full name:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='fullname' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Degree:</label>
-{{with .Errors.Get "groupName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='degree' value='{{.Get "groupName"}}'>
-</div>
-
-<div>
-<label>Rank:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='rank' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Position:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='position' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Contacts:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='contacts' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Scientific interests:</label>
-{{with .Errors.Get "groupName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='interests' value='{{.Get "groupName"}}'>
-</div>
-
-<div>
-<label>Discipline title:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='title' value='{{.Get "subjectName"}}'>
-</div>
-<div>
-
-<label>Number of credits:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='credits_num' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Course goal(s):</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='course_goal' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Skills & Competences:</label>
-{{with .Errors.Get "groupName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='skills' value='{{.Get "groupName"}}'>
-</div>
-
-<div>
-<label>Course objectives::</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='objectives' value='{{.Get "subjectName"}}'>
-</div>
-<div>
-<label> Course learning outcomes:
-:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='outcomes' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Prerequisites:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='prerequisites' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Post-requisites:</label>
-{{with .Errors.Get "groupName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='post_requisites' value='{{.Get "groupName"}}'>
-</div>
-
-
-
-<div>
-<label>Instructors:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='instructors'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-
-
-
-
-
-
-
-<label>Lecture! practical/seminar/laboratory sessiion plan:</label>
-<div style="display:grid">
-<input class="hide" id="hd-11" type="checkbox" >
-<label for="hd-11">Week 1!</label>
-<div><div>
-    <div>
-   <div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-<input class="hide" id="hd-12" type="checkbox" >
-<label for="hd-12">Week 2!</label>
-<div><div>
-      <div>
-     <div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-<input class="hide" id="hd-13" type="checkbox" >
-<label for="hd-13">Week 3!</label>
-<div><div>
-    <div>
-   <div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-<input class="hide" id="hd-14" type="checkbox" >
-<label for="hd-14">Week 4!</label>
-<div><div>
-
-    <div>
-<div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-<input class="hide" id="hd-15" type="checkbox" >
-<label for="hd-15">Week 5!</label>
-<div><div>
-    <div>
- <div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-<input class="hide" id="hd-16" type="checkbox" >
-<label for="hd-16">Week 6!</label>
-<div><div>
-    <div>
-   <div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-<input class="hide" id="hd-17" type="checkbox" >
-<label for="hd-17">Week 7!</label>
-<div><div>
-    <div>
-  <div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-<input class="hide" id="hd-18" type="checkbox" >
-<label for="hd-18">Week 8!</label>
-<div><div>
-    <div>
-<div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-<input class="hide" id="hd-19" type="checkbox" >
-<label for="hd-19">Week 9!</label>
-<div><div>
-    <div>
- <div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-<input class="hide" id="hd-20" type="checkbox" >
-<label for="hd-20">Week 10!</label>
-<div><div>
-
-    <div>
-<div>
-<label>Week number:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture:</label>
-{{with .Errors.Get "username"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='username' value='{{.Get "username"}}'>
-</div>
-
-<div>
-<label>Lecture hours:</label>
-{{with .Errors.Get "password"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='password' name='password' value='{{.Get "password"}}'>
-</div>
-
-<div>
-<label>Practice:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Practice hours:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-<div>
-<label>Assignment:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-     </div></div></div>
-
-
-</div>
-<div>
-<label>Total time:</label>
-{{with .Errors.Get "subjectName"}}
-<label class='error'>{{.}}</label>
-{{end}}
-<input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-</div>
-
-
-
-
-
-
-<label>List of assignments for Student Independent Study:</label>
-
-<div style="display:grid">
-<input class="hide" id="hd-1" type="checkbox" >
-<label for="hd-1">Week 1!</label>
-<div><div>
-    <div>
-    <label>Week number</label>
-    {{with .Errors.Get "username"}}
-    <label class='error'>{{.}}</label>
-    {{end}}
-    <input type='text' name='username' value='{{.Get "username"}}'>
-    </div>
-
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-<input class="hide" id="hd-2" type="checkbox" >
-<label for="hd-2">Week 2!</label>
-<div><div>
-      <div>
-      <label>Week number</label>
-      {{with .Errors.Get "username"}}
-      <label class='error'>{{.}}</label>
-      {{end}}
-      <input type='text' name='username' value='{{.Get "username"}}'>
-      </div>
-
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-<input class="hide" id="hd-3" type="checkbox" >
-<label for="hd-3">Week 3!</label>
-<div><div>
-    <div>
-    <label>Week number</label>
-    {{with .Errors.Get "username"}}
-    <label class='error'>{{.}}</label>
-    {{end}}
-    <input type='text' name='username' value='{{.Get "username"}}'>
-    </div>
-
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-<input class="hide" id="hd-4" type="checkbox" >
-<label for="hd-4">Week 4!</label>
-<div><div>
-
-    <div>
-    <label>Week number</label>
-    {{with .Errors.Get "username"}}
-    <label class='error'>{{.}}</label>
-    {{end}}
-    <input type='text' name='username' value='{{.Get "username"}}'>
-    </div>
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-<input class="hide" id="hd-5" type="checkbox" >
-<label for="hd-5">Week 5!</label>
-<div><div>
-    <div>
-    <label>Week number</label>
-    {{with .Errors.Get "username"}}
-    <label class='error'>{{.}}</label>
-    {{end}}
-    <input type='text' name='username' value='{{.Get "username"}}'>
-    </div>
-
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-<input class="hide" id="hd-6" type="checkbox" >
-<label for="hd-6">Week 6!</label>
-<div><div>
-    <div>
-    <label>Week number</label>
-    {{with .Errors.Get "username"}}
-    <label class='error'>{{.}}</label>
-    {{end}}
-    <input type='text' name='username' value='{{.Get "username"}}'>
-    </div>
-
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-<input class="hide" id="hd-7" type="checkbox" >
-<label for="hd-7">Week 7!</label>
-<div><div>
-    <div>
-    <label>Week number</label>
-    {{with .Errors.Get "username"}}
-    <label class='error'>{{.}}</label>
-    {{end}}
-    <input type='text' name='username' value='{{.Get "username"}}'>
-    </div>
-
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-<input class="hide" id="hd-8" type="checkbox" >
-<label for="hd-8">Week 8!</label>
-<div><div>
-    <div>
-    <label>Week number</label>
-    {{with .Errors.Get "username"}}
-    <label class='error'>{{.}}</label>
-    {{end}}
-    <input type='text' name='username' value='{{.Get "username"}}'>
-    </div>
-
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-<input class="hide" id="hd-9" type="checkbox" >
-<label for="hd-9">Week 9!</label>
-<div><div>
-    <div>
-    <label>Week number</label>
-    {{with .Errors.Get "username"}}
-    <label class='error'>{{.}}</label>
-    {{end}}
-    <input type='text' name='username' value='{{.Get "username"}}'>
-    </div>
-
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-<input class="hide" id="hd-10" type="checkbox" >
-<label for="hd-10">Week 10!</label>
-<div><div>
-
-    <div>
-    <label>Week number</label>
-    {{with .Errors.Get "username"}}
-    <label class='error'>{{.}}</label>
-    {{end}}
-    <input type='text' name='username' value='{{.Get "username"}}'>
-    </div>
-     <div>
-     <label>Topic:</label>
-     {{with .Errors.Get "password"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='password' name='password' value='{{.Get "password"}}'>
-     </div>
-
-     <div>
-     <label>Hours:</label>
-     {{with .Errors.Get "groupName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='groupName' value='{{.Get "groupName"}}'>
-     </div>
-
-     <div>
-     <label>Recommended literature and other sources (links):</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div>
-
-     <div>
-     <label>Form of submission:</label>
-     {{with .Errors.Get "subjectName"}}
-     <label class='error'>{{.}}</label>
-     {{end}}
-     <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
-     </div></div></div>
-
-
-</div>
-
-
-
-<div>
-<input type='submit' value='Create Student'>
-</div>
-
-
-
-{{end}}
-</form>
+    <form action='/admin/create' method='POST'>
+        {{with .Form}}
+            <div>
+                <label>Syllabus title:</label>
+                    {{with .Errors.Get "title"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='title' value='{{.Get "title"}}'>
+            </div>
+            <label>Teacher info:</label>
+            <div>
+                <label>Full name:</label>
+                    {{with .Errors.Get "fullname"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='fullname' value='{{.Get "fullname"}}'>
+            </div>
+
+            <div>
+                <label>Degree:</label>
+                    {{with .Errors.Get "degree"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='degree' value='{{.Get "degree"}}'>
+            </div>
+
+            <div>
+                <label>Rank:</label>
+                    {{with .Errors.Get "rank"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='rank' value='{{.Get "rank"}}'>
+            </div>
+
+            <div>
+                <label>Position:</label>
+                    {{with .Errors.Get "position"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='position' value='{{.Get "position"}}'>
+            </div>
+
+            <div>
+                <label>Contacts:</label>
+                    {{with .Errors.Get "contacts"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='contacts' value='{{.Get "contacts"}}'>
+            </div>
+
+            <div>
+                <label>Scientific interests:</label>
+                    {{with .Errors.Get "interests"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='interests' value='{{.Get "interests"}}'>
+            </div>
+
+            <div>
+                <label>Discipline title:</label>
+                    {{with .Errors.Get "subjectName"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
+            </div>
+            <div>
+                <label>Number of credits:</label>
+                    {{with .Errors.Get "credits_num"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='credits_num' value='{{.Get "credits_num"}}'>
+            </div>
+
+            <div>
+                <label>Course goal(s):</label>
+                    {{with .Errors.Get "course_goal"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='course_goal' value='{{.Get "course_goal"}}'>
+            </div>
+
+            <div>
+                <label>Skills & Competences:</label>
+                    {{with .Errors.Get "skills"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='skills' value='{{.Get "skills"}}'>
+            </div>
+
+            <div>
+                <label>Course objectives::</label>
+                    {{with .Errors.Get "objectives"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='objectives' value='{{.Get "objectives"}}'>
+            </div>
+            <div>
+                <label> Course learning outcomes:</label>
+                    {{with .Errors.Get "outcomes"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='outcomes' value='{{.Get "outcomes"}}'>
+            </div>
+
+            <div>
+                <label>Prerequisites:</label>
+                    {{with .Errors.Get "prerequisites"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='prerequisites' value='{{.Get "prerequisites"}}'>
+            </div>
+
+            <div>
+                <label>Post-requisites:</label>
+                    {{with .Errors.Get "post_requisites"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='post_requisites' value='{{.Get "post_requisites"}}'>
+            </div>
+
+            <div>
+                <label>Instructors:</label>
+                    {{with .Errors.Get "instructors"}}
+                        <label class='instructors'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='instructors' value='{{.Get "instructors"}}'>
+            </div>
+
+
+
+
+
+
+
+
+
+            <label>Lecture! practical/seminar/laboratory sessiion plan:</label>
+            <div style="display:grid">
+                <input class="hide" id="hd-11" type="checkbox" >
+                <label for="hd-11">Week 1!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num' value='{{.Get "week_num"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture' value='{{.Get "lecture"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h' value='{{.Get "lecture_h"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice' value='{{.Get "practice"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h' value='{{.Get "practice_h"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment' value='{{.Get "assignment"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <label>List of assignments for Student Independent Study:</label>
+
+            <div style="display:grid">
+                <input class="hide" id="hd-1" type="checkbox" >
+                <label for="hd-1">Week 1!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_num"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_num' value='{{.Get "week_num"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic' value='{{.Get "table2_topic"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours' value='{{.Get "hours"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature' value='{{.Get "literature"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission' value='{{.Get "submission"}}'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div>
+                <input type='submit' value='Create Student'>
+            </div>
+        {{end}}
+    </form>
 {{end}}
