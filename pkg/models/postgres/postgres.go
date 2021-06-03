@@ -28,14 +28,15 @@ const (
 	deleteSyllabusTableRow              = "DELETE FROM  syllabus WHERE syllabus_info_id=$1"
 	deleteSyllabusInfo                  = "DELETE FROM syllabus_info WHERE syllabus_info_id=$1"
 
-	selectTopicWithPlan = "select lecture,lecture_hours,practice,practice_hours,assignment,week_number " +
+	selectTopicWithPlan = "select topic_id, lecture,lecture_hours,practice,practice_hours,assignment,week_number " +
 		"from topic where plan_id=(select plan_id from session_plan where syllabus_info_id=$1)"
-	selectIndependentStudyTopic = "select week_numbers,topics,hours,recommended_literature,sudmission_form " +
+	selectIndependentStudyTopic = "select independent_study_topic_id, week_numbers,topics,hours,recommended_literature,sudmission_form " +
 		"from independent_study_topic where independent_study_plan_id=(select independent_study_plan_id from independent_study_plan where syllabus_info_id=$1)"
 	selectSyllabusTableRow = "select name FROM  syllabus WHERE syllabus_info_id=$1"
-	selectSyllabusInfo     = "select credits_num,goals,skills_competences,objectives,learning_outcomes,prerequisites,postrequisites,instructors " +
+	selectSyllabusInfo     = "select syllabus_info_id,credits_num,goals,skills_competences,objectives,learning_outcomes,prerequisites,postrequisites,instructors " +
 		"FROM syllabus_info WHERE syllabus_info_id=$1"
-	selectTeacherInfo  = "select fullname, degree, rank, position, contacts, interests from teacher where authorization_id = $1"
+	selectTeacherInfo = "select fullname, degree, rank, position, contacts, interests from teacher where authorization_id = $1"
+
 	insertSyllabus     = "insert into syllabus (teacher_id, syllabus_info_id, discipline_id, name) values ($1, $2, $3, $4) returning syllabus_id"
 	insertSyllabusInfo = "insert into syllabus_info(credits_num, goals, skills_competences, objectives, learning_outcomes," +
 		"prerequisites, postrequisites, instructors) values($1, $2, $3, $4, $5, $6, $7, $8) returning syllabus_info_id"
@@ -46,6 +47,17 @@ const (
 	insertIndependentStudyPlanTopic = "insert into independent_study_topic (week_numbers, topics, hours, recommended_literature, sudmission_form, independent_study_plan_id)" +
 		"values ($1, $2, $3, $4, $5, $6) returning independent_study_topic_id"
 	GetStudentId = "SELECT student_id from student where authorization_id=$1"
+
+	updateTopicWeek = "update topic set lecture=$1, lecture_hours=$2, " +
+		"practice=$3, practice_hours=$4, assignment=$5, week_number=$6 where topic_id=$7"
+
+	updateSyllabusInfo = "update syllabus_info " +
+		"set credits_num=$1, goals=$2, skills_competences=$3, objectives=$4, learning_outcomes=$5," +
+		"prerequisites=$6, postrequisites=$7, instructors=$8 " +
+		"where syllabus_info_id=$9"
+
+	updateStudentTopicWeek = "update independent_study_topic set week_numbers=$1, topics=$2, " +
+		"hours=$3, recommended_literature=$4, submission_form=$5 where independent_study_topic_id=$6"
 )
 
 type PgModel struct {
@@ -278,7 +290,7 @@ func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.Studen
 
 	topic, err := m.selectTopicWithPlan(id)
 	independent, err = m.selectIndependentStudyTopic(id)
-	syllabus, err = m.selectSyllabusTableRow(id)
+	syllabus, err = m.SelectSyllabusTableRow(id)
 	teacher, err = m.selectTeacherInfo()
 	if err != nil {
 		return nil, nil, nil, nil, err
@@ -294,9 +306,11 @@ func (m *PgModel) selectTopicWithPlan(id int) ([]*models.TopicWeek, error) {
 	}
 	for rows1.Next() {
 		t := &models.TopicWeek{}
-		err = rows1.Scan(&t.LectureTopic, &t.LectureHours, &t.PracticeTopic, &t.PracticeHours, &t.Assignment, &t.WeekNumber)
+		err = rows1.Scan(&t.TopicWeekID, &t.LectureTopic, &t.LectureHours, &t.PracticeTopic, &t.PracticeHours, &t.Assignment, &t.WeekNumber)
 		topic = append(topic, t)
+
 	}
+
 	if err = rows1.Err(); err != nil {
 		return nil, err
 	}
@@ -311,8 +325,9 @@ func (m *PgModel) selectIndependentStudyTopic(id int) ([]*models.StudentTopicWee
 	}
 	for rows2.Next() {
 		i := &models.StudentTopicWeek{}
-		err = rows2.Scan(&i.WeekNumber, &i.Topics, &i.Hours, &i.RecommendedLiterature, &i.SubmissionForm)
+		err = rows2.Scan(&i.StudentTopicWeekID, &i.WeekNumber, &i.Topics, &i.Hours, &i.RecommendedLiterature, &i.SubmissionForm)
 		independent = append(independent, i)
+
 	}
 	if err = rows2.Err(); err != nil {
 		return nil, err
@@ -320,7 +335,7 @@ func (m *PgModel) selectIndependentStudyTopic(id int) ([]*models.StudentTopicWee
 	return independent, nil
 }
 
-func (m *PgModel) selectSyllabusTableRow(id int) ([]*models.Syllabus, error) {
+func (m *PgModel) SelectSyllabusTableRow(id int) ([]*models.Syllabus, error) {
 	var syllabus []*models.Syllabus
 	rows3, err := m.Pool.Query(context.Background(), selectSyllabusTableRow, id)
 	rows4, err := m.Pool.Query(context.Background(), selectSyllabusInfo, id)
@@ -332,7 +347,7 @@ func (m *PgModel) selectSyllabusTableRow(id int) ([]*models.Syllabus, error) {
 		s := &models.Syllabus{}
 
 		err = rows3.Scan(&s.Title)
-		err = rows4.Scan(&s.Credits, &s.Goals, &s.SkillsCompetences, &s.Objectives, &s.LearningOutcomes, &s.Prerequisites, &s.Postrequisites, &s.Instructors)
+		err = rows4.Scan(&s.SyllabusInfoID, &s.Credits, &s.Goals, &s.SkillsCompetences, &s.Objectives, &s.LearningOutcomes, &s.Prerequisites, &s.Postrequisites, &s.Instructors)
 
 		if err != nil {
 			return nil, err
@@ -366,4 +381,39 @@ func (m *PgModel) selectTeacherInfo() ([]*models.TeacherInfo, error) {
 	}
 
 	return teacher, nil
+}
+
+func (m *PgModel) UpdateSyllabusInfo(syllabus *models.Syllabus, id int) error {
+	_, err := m.Pool.Exec(context.Background(), updateSyllabusInfo,
+		syllabus.Credits, syllabus.Goals, syllabus.SkillsCompetences, syllabus.Objectives,
+		syllabus.LearningOutcomes, syllabus.Prerequisites, syllabus.Postrequisites,
+		syllabus.Instructors, id)
+
+	fmt.Println(syllabus.Credits, syllabus.Prerequisites, syllabus.Postrequisites)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *PgModel) UpdateTopicWeek(tw *models.TopicWeek) error {
+	var topicId uint32
+	err := m.Pool.QueryRow(context.Background(), updateTopicWeek,
+		tw.LectureTopic, tw.LectureHours, tw.PracticeTopic, tw.PracticeHours,
+		tw.Assignment, tw.WeekNumber, tw.TopicWeekID).Scan(&topicId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *PgModel) UpdateStudentTopicWeek(tw *models.StudentTopicWeek) error {
+	var topicId uint32
+	err := m.Pool.QueryRow(context.Background(), updateStudentTopicWeek,
+		tw.WeekNumber, tw.Topics, tw.Hours, tw.SubmissionForm,
+		tw.StudentTopicWeekID).Scan(&topicId)
+	if err != nil {
+		return err
+	}
+	return nil
 }

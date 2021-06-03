@@ -1,0 +1,116 @@
+{{template "base" .}}
+{{define "title"}}Create Syllabus{{end}}
+{{define "main"}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <table>
+ {{range .Syllabus}}
+ <form action="https://localhost:4000/admin/updateSyllabuss?id={{.SyllabusInfoID}}" method="POST">
+        <p align="center" style="font-size:30px;">Syllabus</p>
+        <thead >
+            <tr>
+                <th colspan=2 style="padding: 0 40% 0 35%;">General information</th>
+            </tr>
+        </thead>
+        <tbody>
+
+               <tr>
+                    <td >
+                        Course title
+                    </td>
+                    <td >
+                        <input type="text" name="Title" placeholder="Title" value="{{.Title}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Number of credits
+                    </td>
+                    <td>
+                        <input type="text" name="Credits" placeholder="Credits" value="{{.Credits}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Prerequisites
+                    </td>
+                    <td>
+                         <input type="text" name="Prerequisites" placeholder="Title" value="{{.Prerequisites}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Postrequisites
+                    </td>
+                    <td>
+                        <input type="text" name="Postrequisites" placeholder="Credits" value="{{.Postrequisites}}"/>
+                    </td>
+               </tr>
+
+               <tr>
+                    <td>
+                        Course goal(s)
+                    </td>
+                    <td>
+                        <input type="text" name="Goals" placeholder="Goals" value="{{.Goals}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                         Course objectives:
+                    </td>
+                    <td>
+                        <input type="text" name="Objectives" placeholder="Objectives" value="{{.Objectives}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                         Skills & competences
+                    </td>
+                    <td>
+                        <input type="text" name="SkillsCompetences" placeholder="SkillsCompetences" value="{{.SkillsCompetences}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Course learning outcomes
+                    </td>
+                    <td>
+                         <input type="text" name="LearningOutcomes" placeholder="LearningOutcomes" value="{{.LearningOutcomes}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Course instructor(s)
+                    </td>
+                    <td>
+                        <input type="text" name="Instructors" placeholder="Goals" value="{{.Instructors}}"/>
+                    </td>
+
+               </tr>
+
+                   <th colspan=2 >
+                     <input  type="submit" value="Update">
+                    </th>
+
+            {{end}}
+        </tbody>
+    </table>
+
+
+
+
+
+    </form>
+{{end}}

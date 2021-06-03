@@ -93,10 +93,18 @@
                     <td>
                         {{.Instructors}}
                     </td>
+
+               </tr>
+               <tr>
+                   <td>
+                      <a href="https://localhost:4000/admin/updateSyllabus?id={{.SyllabusInfoID}}"  class="myButton">&nbsp;Update </a>
+                    </td>
                </tr>
             {{end}}
         </tbody>
-    </table><br><br><br>
+    </table>
+
+    <br><br><br>
     <table>
         <p align="center" style="font-size:25px;">Lecture! practical/seminar/laboratory session plans</p>
         <tbody>
@@ -119,6 +127,9 @@
                     <td>
                         Assignment
                     </td>
+                    <td>
+                        Update
+                    </td>
                </tr>
             {{range .Topic}}
                <tr>
@@ -139,6 +150,9 @@
                     </td>
                     <td>
                         {{.Assignment}}
+                    </td>
+                    <td>
+                        <a href="https://localhost:4000/admin/updateTopic?id={{.TopicWeekID}}"  class="myButton">&nbsp;Update </a>
                     </td>
                </tr>
             {{end}}
@@ -163,6 +177,9 @@
                     <td>
                         Submission Form
                     </td>
+                    <td>
+                        Update
+                    </td>
                </tr>
             {{range .Independent}}
                <tr>
@@ -180,6 +197,9 @@
                     </td>
                     <td>
                         {{.SubmissionForm}}
+                    </td>
+                    <td>
+                        <a href="https://localhost:4000/admin/deleteIndep?id="  class="myButton">&nbsp;Update </a>
                     </td>
                </tr>
             {{end}}
