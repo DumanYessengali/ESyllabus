@@ -38,6 +38,7 @@ type TeacherInfo struct {
 }
 
 type TopicWeek struct {
+	TopicWeekID   int
 	WeekNumber    int
 	LectureTopic  string
 	LectureHours  int
@@ -47,6 +48,7 @@ type TopicWeek struct {
 }
 
 type StudentTopicWeek struct {
+	StudentTopicWeekID    int
 	WeekNumber            int
 	Topics                string
 	Hours                 int
