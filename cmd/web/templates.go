@@ -8,17 +8,19 @@ import (
 )
 
 type templateData struct {
-	Form            *forms.Form
-	Flash           string
-	Prediction      string
-	syllabus        *models.Syllabus
-	Syllabus        []*models.Syllabus
-	Topic           []*models.TopicWeek
-	Independent     []*models.StudentTopicWeek
-	Teacher         []*models.TeacherInfo
-	IsAdmin         bool
-	IsAuthenticated bool
-	IsDied          bool
+	Form             *forms.Form
+	Flash            string
+	Prediction       string
+	syllabus         *models.Syllabus
+	Syllabus         []*models.Syllabus
+	TopicOneRow      *models.TopicWeek
+	IndepTopicOneRow *models.StudentTopicWeek
+	Topic            []*models.TopicWeek
+	Independent      []*models.StudentTopicWeek
+	Teacher          []*models.TeacherInfo
+	IsAdmin          bool
+	IsAuthenticated  bool
+	IsDied           bool
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {

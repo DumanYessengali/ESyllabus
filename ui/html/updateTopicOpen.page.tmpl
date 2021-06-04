@@ -1,0 +1,87 @@
+{{template "base" .}}
+{{define "title"}}Create Syllabus{{end}}
+{{define "main"}}
+
+
+
+<table>
+<p align="center" style="font-size:30px;">Syllabus</p>
+{{with .TopicOneRow}}
+ <form action="https://localhost:4000/admin/updateTopic?id={{.TopicWeekID}}" method="POST">
+
+        <thead >
+            <tr>
+                <th colspan=2 style="padding: 0 40% 0 35%;">Lecture! practical/seminar/laboratory session plans</th>
+            </tr>
+        </thead>
+        <tbody>
+
+               <tr>
+                    <td >
+                        Week Number
+                    </td>
+                    <td >
+                        <input type="text" name="WeekNumber" placeholder="WeekNumber" value="{{.WeekNumber}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Lecture Topic
+                    </td>
+                    <td>
+                        <input type="text" name="LectureTopic" placeholder="LectureTopic" value="{{.LectureTopic}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Lecture Hours
+                    </td>
+                    <td>
+                        <input type="text" name="LectureHours" placeholder="LectureHours" value="{{.LectureHours}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Practice Topic
+                    </td>
+                    <td>
+                        <input type="text" name="PracticeTopic" placeholder="PracticeTopic" value="{{.PracticeTopic}}"/>
+                    </td>
+               </tr>
+
+               <tr>
+                    <td>
+                        Practice Hours
+                    </td>
+                    <td>
+                        <input type="text" name="PracticeHours" placeholder="PracticeHours" value="{{.PracticeHours}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                         Assignment
+                    </td>
+                    <td>
+                         <input type="text" name="Assignment" placeholder="Assignment" value="{{.Assignment}}"/>
+                    </td>
+               </tr>
+
+
+
+                   <th colspan=2 >
+                     <input  type="submit" value="Update">
+                    </th>
+
+            {{end}}
+        </tbody>
+    </table>
+
+
+
+
+
+    </form>
+
+
+
+{{end}}

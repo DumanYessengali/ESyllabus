@@ -28,6 +28,8 @@ const (
 	deleteSyllabusTableRow              = "DELETE FROM  syllabus WHERE syllabus_info_id=$1"
 	deleteSyllabusInfo                  = "DELETE FROM syllabus_info WHERE syllabus_info_id=$1"
 
+	selectOnlyOneTopic  = "select topic_id, lecture,lecture_hours,practice,practice_hours,assignment,week_number from topic where topic_id=$1 "
+	selectOnlyOneIndep  = "select independent_study_topic_id, week_numbers,topics,hours,recommended_literature,sudmission_form from independent_study_topic where independent_study_topic_id=$1 "
 	selectTopicWithPlan = "select topic_id, lecture,lecture_hours,practice,practice_hours,assignment,week_number " +
 		"from topic where plan_id=(select plan_id from session_plan where syllabus_info_id=$1)"
 	selectIndependentStudyTopic = "select independent_study_topic_id, week_numbers,topics,hours,recommended_literature,sudmission_form " +
@@ -57,7 +59,7 @@ const (
 		"where syllabus_info_id=$9"
 
 	updateStudentTopicWeek = "update independent_study_topic set week_numbers=$1, topics=$2, " +
-		"hours=$3, recommended_literature=$4, submission_form=$5 where independent_study_topic_id=$6"
+		"hours=$3, recommended_literature=$4, sudmission_form=$5 where independent_study_topic_id=$6"
 )
 
 type PgModel struct {
@@ -288,7 +290,7 @@ func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.Studen
 	var syllabus []*models.Syllabus
 	var teacher []*models.TeacherInfo
 
-	topic, err := m.selectTopicWithPlan(id)
+	topic, err := m.SelectTopicWithPlan(id)
 	independent, err = m.selectIndependentStudyTopic(id)
 	syllabus, err = m.SelectSyllabusTableRow(id)
 	teacher, err = m.selectTeacherInfo()
@@ -298,7 +300,7 @@ func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.Studen
 
 	return topic, independent, syllabus, teacher, nil
 }
-func (m *PgModel) selectTopicWithPlan(id int) ([]*models.TopicWeek, error) {
+func (m *PgModel) SelectTopicWithPlan(id int) ([]*models.TopicWeek, error) {
 	var topic []*models.TopicWeek
 	rows1, err := m.Pool.Query(context.Background(), selectTopicWithPlan, id)
 	if err != nil {
@@ -396,24 +398,53 @@ func (m *PgModel) UpdateSyllabusInfo(syllabus *models.Syllabus, id int) error {
 	return nil
 }
 
-func (m *PgModel) UpdateTopicWeek(tw *models.TopicWeek) error {
-	var topicId uint32
-	err := m.Pool.QueryRow(context.Background(), updateTopicWeek,
+func (m *PgModel) UpdateTopicWeek(tw *models.TopicWeek, id int) error {
+
+	_, err := m.Pool.Exec(context.Background(), updateTopicWeek,
 		tw.LectureTopic, tw.LectureHours, tw.PracticeTopic, tw.PracticeHours,
-		tw.Assignment, tw.WeekNumber, tw.TopicWeekID).Scan(&topicId)
+		tw.Assignment, tw.WeekNumber, id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (m *PgModel) UpdateStudentTopicWeek(tw *models.StudentTopicWeek) error {
-	var topicId uint32
-	err := m.Pool.QueryRow(context.Background(), updateStudentTopicWeek,
-		tw.WeekNumber, tw.Topics, tw.Hours, tw.SubmissionForm,
-		tw.StudentTopicWeekID).Scan(&topicId)
+func (m *PgModel) SelecOnlyOneTopic(id int) (*models.TopicWeek, error) {
+	t := &models.TopicWeek{}
+	err := m.Pool.QueryRow(context.Background(), selectOnlyOneTopic, id).
+		Scan(&t.TopicWeekID, &t.LectureTopic, &t.LectureHours, &t.PracticeTopic, &t.PracticeHours, &t.Assignment, &t.WeekNumber)
+	if err != nil {
+		if err.Error() == "no rows in result set" {
+			return nil, models.ErrNoRecord
+		} else {
+			return nil, err
+		}
+	}
+
+	return t, nil
+}
+
+func (m *PgModel) UpdateStudentTopicWeek(tw *models.StudentTopicWeek, id int) error {
+
+	_, err := m.Pool.Exec(context.Background(), updateStudentTopicWeek,
+		tw.WeekNumber, tw.Topics, tw.Hours, tw.RecommendedLiterature, tw.SubmissionForm, id)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (m *PgModel) SelecOnlyOneIndep(id int) (*models.StudentTopicWeek, error) {
+	i := &models.StudentTopicWeek{}
+	err := m.Pool.QueryRow(context.Background(), selectOnlyOneIndep, id).
+		Scan(&i.StudentTopicWeekID, &i.WeekNumber, &i.Topics, &i.Hours, &i.RecommendedLiterature, &i.SubmissionForm)
+	if err != nil {
+		if err.Error() == "no rows in result set" {
+			return nil, models.ErrNoRecord
+		} else {
+			return nil, err
+		}
+	}
+
+	return i, nil
 }

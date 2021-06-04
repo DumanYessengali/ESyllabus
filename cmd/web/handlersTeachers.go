@@ -136,11 +136,12 @@ func (app *application) updateSyllabuss(w http.ResponseWriter, r *http.Request) 
 	http.Redirect(w, r, url+strconv.Itoa(id), http.StatusSeeOther)
 }
 
-func (app *application) updateTopic(w http.ResponseWriter, r *http.Request) {
+func (app *application) updateTopicOpen(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	fmt.Println(id)
-	syllabus, err := app.student.GetNameSyllabus()
+
+	topic, err := app.student.SelecOnlyOneTopic(id)
 	if err != nil {
 		app.notFound(w)
 		return
@@ -155,10 +156,108 @@ func (app *application) updateTopic(w http.ResponseWriter, r *http.Request) {
 	}
 
 	flash := app.session.PopString(r, "flash")
-	app.render(w, r, "updateSyllabus.page.tmpl", &templateData{
-		Flash:    flash,
-		Syllabus: syllabus,
+	app.render(w, r, "updateTopicOpen.page.tmpl", &templateData{
+		Flash:       flash,
+		TopicOneRow: topic,
 	})
+}
+
+func (app *application) updateTopic(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	if r.Method != http.MethodPost {
+		w.Header().Set("Allow", http.MethodPost)
+		app.clientError(w, http.StatusMethodNotAllowed)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+
+	weekNumber, _ := strconv.ParseInt(form.Get("WeekNumber"), 10, 64)
+	lectureHours, _ := strconv.ParseInt(form.Get("LectureHours"), 10, 64)
+	practiceHours, _ := strconv.ParseInt(form.Get("PracticeHours"), 10, 64)
+	topic := &models.TopicWeek{
+		WeekNumber:    int(weekNumber),
+		LectureTopic:  form.Get("LectureTopic"),
+		LectureHours:  int(lectureHours),
+		PracticeTopic: form.Get("PracticeTopic"),
+		PracticeHours: int(practiceHours),
+		Assignment:    form.Get("Assignment"),
+	}
+	fmt.Println("L hOURS", int(lectureHours))
+	err = app.student.UpdateTopicWeek(topic, id)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		fmt.Println("Hello")
+		println(err.Error())
+		return
+	}
+	url := "/admin"
+	http.Redirect(w, r, url, http.StatusSeeOther)
+}
+
+func (app *application) updateIndepTopicOpen(w http.ResponseWriter, r *http.Request) {
+
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	fmt.Println(id)
+
+	indep, err := app.student.SelecOnlyOneIndep(id)
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		println(err.Error())
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+	app.render(w, r, "updateIndepTopicOpen.page.tmpl", &templateData{
+		Flash:            flash,
+		IndepTopicOneRow: indep,
+	})
+}
+func (app *application) updateIndepTopic(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	if r.Method != http.MethodPost {
+		w.Header().Set("Allow", http.MethodPost)
+		app.clientError(w, http.StatusMethodNotAllowed)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+
+	weekNumber, _ := strconv.ParseInt(form.Get("WeekNumber"), 10, 64)
+	hours, _ := strconv.ParseInt(form.Get("Hours"), 10, 64)
+	indep := &models.StudentTopicWeek{
+		WeekNumber:            int(weekNumber),
+		Topics:                form.Get("Topics"),
+		Hours:                 int(hours),
+		RecommendedLiterature: form.Get("RecommendedLiterature"),
+		SubmissionForm:        form.Get("SubmissionForm"),
+	}
+
+	err = app.student.UpdateStudentTopicWeek(indep, id)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		println(err.Error())
+		return
+	}
+	url := "/admin"
+	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
 func (app *application) getSyllabusById(w http.ResponseWriter, r *http.Request) {

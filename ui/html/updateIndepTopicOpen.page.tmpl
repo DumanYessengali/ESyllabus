@@ -1,0 +1,78 @@
+{{template "base" .}}
+{{define "title"}}Create Syllabus{{end}}
+{{define "main"}}
+
+
+
+<table>
+<p align="center" style="font-size:30px;">Syllabus</p>
+{{with .IndepTopicOneRow}}
+ <form action="https://localhost:4000/admin/updateIndep?id={{.StudentTopicWeekID}}" method="POST">
+
+        <thead >
+            <tr>
+                <th colspan=2 style="padding: 0 40% 0 35%;">Lecture! practical/seminar/laboratory session plans</th>
+            </tr>
+        </thead>
+        <tbody>
+
+               <tr>
+                    <td >
+                        Week Number
+                    </td>
+                    <td >
+                        <input type="text" name="WeekNumber" placeholder="WeekNumber" value="{{.WeekNumber}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Topic
+                    </td>
+                    <td>
+                        <input type="text" name="Topics" placeholder="Topics" value="{{.Topics}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Hours
+                    </td>
+                    <td>
+                        <input type="text" name="Hours" placeholder="Hours" value="{{.Hours}}"/>
+                    </td>
+               </tr>
+               <tr>
+                    <td>
+                        Recommended Literature
+                    </td>
+                    <td>
+                        <input type="text" name="RecommendedLiterature" placeholder="RecommendedLiterature" value="{{.RecommendedLiterature}}"/>
+                    </td>
+               </tr>
+
+               <tr>
+                    <td>
+                        Submission Form
+                    </td>
+                    <td>
+                        <input type="text" name="SubmissionForm" placeholder="SubmissionForm" value="{{.SubmissionForm}}"/>
+                    </td>
+               </tr>
+
+
+                   <th colspan=2 >
+                     <input  type="submit" value="Update">
+                    </th>
+
+            {{end}}
+        </tbody>
+    </table>
+
+
+
+
+
+    </form>
+
+
+
+{{end}}
