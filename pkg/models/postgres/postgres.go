@@ -31,9 +31,9 @@ const (
 	selectOnlyOneTopic  = "select topic_id, lecture,lecture_hours,practice,practice_hours,assignment,week_number from topic where topic_id=$1 "
 	selectOnlyOneIndep  = "select independent_study_topic_id, week_numbers,topics,hours,recommended_literature,sudmission_form from independent_study_topic where independent_study_topic_id=$1 "
 	selectTopicWithPlan = "select topic_id, lecture,lecture_hours,practice,practice_hours,assignment,week_number " +
-		"from topic where plan_id=(select plan_id from session_plan where syllabus_info_id=$1)"
+		"from topic where plan_id=(select plan_id from session_plan where syllabus_info_id=$1) order by week_number"
 	selectIndependentStudyTopic = "select independent_study_topic_id, week_numbers,topics,hours,recommended_literature,sudmission_form " +
-		"from independent_study_topic where independent_study_plan_id=(select independent_study_plan_id from independent_study_plan where syllabus_info_id=$1)"
+		"from independent_study_topic where independent_study_plan_id=(select independent_study_plan_id from independent_study_plan where syllabus_info_id=$1) order by week_numbers"
 	selectSyllabusTableRow = "select name FROM  syllabus WHERE syllabus_info_id=$1"
 	selectSyllabusInfo     = "select syllabus_info_id,credits_num,goals,skills_competences,objectives,learning_outcomes,prerequisites,postrequisites,instructors " +
 		"FROM syllabus_info WHERE syllabus_info_id=$1"

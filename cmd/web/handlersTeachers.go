@@ -426,6 +426,7 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 		"submission10",
 	)
 	//form.MaxLength("username", 100)
+	fmt.Println("Pered valid")
 	if !form.Valid() {
 		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
 		return
