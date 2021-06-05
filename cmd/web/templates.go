@@ -11,6 +11,7 @@ type templateData struct {
 	Form             *forms.Form
 	Flash            string
 	Prediction       string
+	AssessmentType   *models.Assessment
 	syllabus         *models.Syllabus
 	Syllabus         []*models.Syllabus
 	TopicOneRow      *models.TopicWeek

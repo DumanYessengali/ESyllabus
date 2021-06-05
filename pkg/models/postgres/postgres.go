@@ -7,13 +7,10 @@ import (
 	"examFortune/pkg/models"
 	"fmt"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"math/rand"
-	"time"
+	"strings"
 )
 
 const (
-	insertSql = "INSERT INTO student (username, password, group_name, subject_name, life_time, is_last)" +
-		" VALUES ($1,$2,$3,$4,$5,$6)"
 	getNameSyllabusWithTeacher = "select syllabus_id,name,syllabus_info_id from syllabus where teacher_id=$1"
 	getNameSyllabusWithStudent = "select syllabus_id,name,syllabus_info_id from syllabus where syllabus_id=(select syllabus_id from student_syllabus where student_id=$1)"
 	getTeacherId               = "SELECT teacher_id from teacher where authorization_id=$1"
@@ -37,11 +34,11 @@ const (
 	selectSyllabusTableRow = "select name FROM  syllabus WHERE syllabus_info_id=$1"
 	selectSyllabusInfo     = "select syllabus_info_id,credits_num,goals,skills_competences,objectives,learning_outcomes,prerequisites,postrequisites,instructors " +
 		"FROM syllabus_info WHERE syllabus_info_id=$1"
-	selectTeacherInfo = "select fullname, degree, rank, position, contacts, interests from teacher where authorization_id = $1"
+	selectTeacherInfo = "select fullname, degree, rank, position, contacts, interests from teacher where teacher_id=(select teacher_id from syllabus where syllabus_info_id=$1)"
 
 	insertSyllabus     = "insert into syllabus (teacher_id, syllabus_info_id, discipline_id, name) values ($1, $2, $3, $4) returning syllabus_id"
 	insertSyllabusInfo = "insert into syllabus_info(credits_num, goals, skills_competences, objectives, learning_outcomes," +
-		"prerequisites, postrequisites, instructors) values($1, $2, $3, $4, $5, $6, $7, $8) returning syllabus_info_id"
+		"prerequisites, postrequisites, instructors,assessment_id) values($1, $2, $3, $4, $5, $6, $7, $8,$9) returning syllabus_info_id"
 	insertSessionPlan  = "insert into session_plan(total_time, syllabus_info_id) values($1, $2) returning plan_id"
 	insertSessionTopic = "insert into topic (lecture, lecture_hours, practice, practice_hours, assignment, week_number, plan_id)" +
 		"values ($1, $2, $3, $4, $5, $6, $7) returning topic_id"
@@ -60,6 +57,9 @@ const (
 
 	updateStudentTopicWeek = "update independent_study_topic set week_numbers=$1, topics=$2, " +
 		"hours=$3, recommended_literature=$4, sudmission_form=$5 where independent_study_topic_id=$6"
+
+	selectAssessment = "select assessment_id, assessment_title1, points_num1, assessment_title2, points_num2 from assessment " +
+		"where assessment_id=(select assessment_id from syllabus_info where syllabus_info_id=$1)"
 )
 
 type PgModel struct {
@@ -184,33 +184,16 @@ func (m *PgModel) GetRoleByUsername(username string) (*models.User, error) {
 	return s, nil
 }
 
+//func init() {
 //
-///*func (m *PgModel) DeleteStudentByUsername(username string) error {
-//  _, err := m.Pool.Exec(context.Background(), deleteStudentByUsername, username)
-//  if err != nil {
-//      return err
-//  }
-//  return nil
-//}*/
-//
-//func (m *PgModel) UpdateStudent(s *models.Student) error {
-//  _, err := m.Pool.Exec(context.Background(), updateStudent, s.Username, s.Password, s.GroupName, s.SubjectName, s.LifeTime, s.IsLast, s.ID)
-//  if err != nil {
-//      return err
-//  }
-//  return nil
+//	rand.Seed(time.Now().UnixNano())
 //}
-//
-func init() {
-
-	rand.Seed(time.Now().UnixNano())
-}
 
 func (m *PgModel) InsertSyllabusInfo(syllabus *models.Syllabus) (int, error) {
 	var syllabusInfoId uint32
 	row := m.Pool.QueryRow(context.Background(), insertSyllabusInfo,
 		syllabus.Credits, syllabus.Goals, syllabus.SkillsCompetences, syllabus.Objectives,
-		syllabus.LearningOutcomes, syllabus.Prerequisites, syllabus.Postrequisites, syllabus.Instructors)
+		syllabus.LearningOutcomes, syllabus.Prerequisites, syllabus.Postrequisites, syllabus.Instructors, syllabus.Assessment)
 	err := row.Scan(&syllabusInfoId)
 	if err != nil {
 		return 0, err
@@ -284,21 +267,23 @@ func (m *PgModel) GetStudentId() (int, error) {
 	iDFromSyllabus = id
 	return id, nil
 }
-func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.StudentTopicWeek, []*models.Syllabus, []*models.TeacherInfo, error) {
+func (m *PgModel) GetSyllabusById(id int) ([]*models.TopicWeek, []*models.StudentTopicWeek, []*models.Syllabus, []*models.TeacherInfo, *models.Assessment, error) {
 	var topic []*models.TopicWeek
 	var independent []*models.StudentTopicWeek
 	var syllabus []*models.Syllabus
 	var teacher []*models.TeacherInfo
+	var assessment *models.Assessment
 
 	topic, err := m.SelectTopicWithPlan(id)
 	independent, err = m.selectIndependentStudyTopic(id)
 	syllabus, err = m.SelectSyllabusTableRow(id)
-	teacher, err = m.selectTeacherInfo()
+	teacher, err = m.selectTeacherInfo(id)
+	assessment, err = m.SelectAssesmentInfo(id)
 	if err != nil {
-		return nil, nil, nil, nil, err
+		return nil, nil, nil, nil, nil, err
 	}
 
-	return topic, independent, syllabus, teacher, nil
+	return topic, independent, syllabus, teacher, assessment, nil
 }
 func (m *PgModel) SelectTopicWithPlan(id int) ([]*models.TopicWeek, error) {
 	var topic []*models.TopicWeek
@@ -363,10 +348,10 @@ func (m *PgModel) SelectSyllabusTableRow(id int) ([]*models.Syllabus, error) {
 	return syllabus, nil
 }
 
-func (m *PgModel) selectTeacherInfo() ([]*models.TeacherInfo, error) {
+func (m *PgModel) selectTeacherInfo(id int) ([]*models.TeacherInfo, error) {
 	var teacher []*models.TeacherInfo
 
-	rows5, err := m.Pool.Query(context.Background(), selectTeacherInfo, authID)
+	rows5, err := m.Pool.Query(context.Background(), selectTeacherInfo, id)
 	if err != nil {
 		return nil, err
 	}
@@ -447,4 +432,28 @@ func (m *PgModel) SelecOnlyOneIndep(id int) (*models.StudentTopicWeek, error) {
 	}
 
 	return i, nil
+}
+
+func (m *PgModel) SelectAssesmentInfo(id int) (*models.Assessment, error) {
+	a := &models.Assessment{}
+	var ass1 string
+	var point1 string
+	var ass2 string
+	var point2 string
+
+	err := m.Pool.QueryRow(context.Background(), selectAssessment, id).
+		Scan(&a.AssessmentId, &ass1, &point1, &ass2, &point2)
+	if err != nil {
+		if err.Error() == "no rows in result set" {
+			return nil, models.ErrNoRecord
+		} else {
+			return nil, err
+		}
+	}
+	a.Assignment1 = strings.Split(ass1, "//n")
+	a.PointsNum1 = strings.Split(point1, "//n")
+	a.Assignment2 = strings.Split(ass2, "//n")
+	a.PointsNum2 = strings.Split(point2, "//n")
+
+	return a, nil
 }

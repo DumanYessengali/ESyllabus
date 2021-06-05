@@ -95,11 +95,7 @@
                     </td>
 
                </tr>
-               <tr>
-                   <td>
-                      <a href="https://localhost:4000/admin/updateSyllabus?id={{.SyllabusInfoID}}"  class="myButton">&nbsp;Update </a>
-                    </td>
-               </tr>
+
             {{end}}
         </tbody>
     </table>
@@ -127,9 +123,7 @@
                     <td>
                         Assignment
                     </td>
-                    <td>
-                        Update
-                    </td>
+
                </tr>
             {{range .Topic}}
                <tr>
@@ -151,9 +145,7 @@
                     <td>
                         {{.Assignment}}
                     </td>
-                    <td>
-                        <a href="https://localhost:4000/admin/updateTopicOpen?id={{.TopicWeekID}}"  class="myButton">&nbsp;Update </a>
-                    </td>
+
                </tr>
             {{end}}
         </tbody>
@@ -177,9 +169,7 @@
                     <td>
                         Submission Form
                     </td>
-                    <td>
-                        Update
-                    </td>
+
                </tr>
             {{range .Independent}}
                <tr>
@@ -198,9 +188,7 @@
                     <td>
                         {{.SubmissionForm}}
                     </td>
-                    <td>
-                        <a href="https://localhost:4000/admin/updateIndepOpen?id={{.StudentTopicWeekID}}"  class="myButton">&nbsp;Update </a>
-                    </td>
+
                </tr>
             {{end}}
         </tbody>

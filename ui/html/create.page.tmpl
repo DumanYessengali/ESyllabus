@@ -128,7 +128,13 @@
                     {{end}}
                 <input type='text' name='instructors' value='{{.Get "instructors"}}'>
             </div>
-
+              <div>
+                    <label>Assessment type:</label>
+                        {{with .Errors.Get "Assessment"}}
+                            <label class='Assessment'>{{.}}</label>
+                        {{end}}
+                    <input type='text' name='assessment' value='{{.Get "Assessment"}}'>
+                </div>
 
 
 
@@ -1150,6 +1156,10 @@
                     </div>
                 </div>
             </div>
+
+
+
+
             <div>
                 <input type='submit' value='Create Student'>
             </div>

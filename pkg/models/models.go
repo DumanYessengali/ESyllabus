@@ -23,6 +23,7 @@ type Syllabus struct {
 	Postrequisites    string
 	Instructors       string
 	SyllabusInfoID    int
+	Assessment        int
 	Table1            []*TopicWeek
 	Table2            []*StudentTopicWeek
 }
@@ -61,4 +62,12 @@ type User struct {
 	Username string
 	Password string
 	Role     string
+}
+
+type Assessment struct {
+	AssessmentId int
+	Assignment1  []string
+	PointsNum1   []string
+	Assignment2  []string
+	PointsNum2   []string
 }

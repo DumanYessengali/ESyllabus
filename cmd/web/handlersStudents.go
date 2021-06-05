@@ -9,7 +9,6 @@ import (
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	//id := app.session.GetInt(r, "authenticatedUserID")
 
 	app.student.GetStudentId()
 	syllabus, err := app.student.GetNameSyllabusWithStudent()
