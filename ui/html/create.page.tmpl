@@ -10,54 +10,6 @@
                     {{end}}
                 <input type='text' name='title' value='{{.Get "title"}}'>
             </div>
-            <label>Teacher info:</label>
-            <div>
-                <label>Full name:</label>
-                    {{with .Errors.Get "fullname"}}
-                        <label class='error'>{{.}}</label>
-                    {{end}}
-                <input type='text' name='fullname' value='{{.Get "fullname"}}'>
-            </div>
-
-            <div>
-                <label>Degree:</label>
-                    {{with .Errors.Get "degree"}}
-                        <label class='error'>{{.}}</label>
-                    {{end}}
-                <input type='text' name='degree' value='{{.Get "degree"}}'>
-            </div>
-
-            <div>
-                <label>Rank:</label>
-                    {{with .Errors.Get "rank"}}
-                        <label class='error'>{{.}}</label>
-                    {{end}}
-                <input type='text' name='rank' value='{{.Get "rank"}}'>
-            </div>
-
-            <div>
-                <label>Position:</label>
-                    {{with .Errors.Get "position"}}
-                        <label class='error'>{{.}}</label>
-                    {{end}}
-                <input type='text' name='position' value='{{.Get "position"}}'>
-            </div>
-
-            <div>
-                <label>Contacts:</label>
-                    {{with .Errors.Get "contacts"}}
-                        <label class='error'>{{.}}</label>
-                    {{end}}
-                <input type='text' name='contacts' value='{{.Get "contacts"}}'>
-            </div>
-
-            <div>
-                <label>Scientific interests:</label>
-                    {{with .Errors.Get "interests"}}
-                        <label class='error'>{{.}}</label>
-                    {{end}}
-                <input type='text' name='interests' value='{{.Get "interests"}}'>
-            </div>
 
             <div>
                 <label>Discipline title:</label>
@@ -139,8 +91,8 @@
 
 
             <div style="display:grid">
-                <input class="hide" id="hd-10" type="checkbox" >
-                <label for="hd-10">Assessment type:</label>
+                <input class="hide" id="hd-25" type="checkbox" >
+                <label for="hd-25">Assessment type:</label>
                 <div>
                     <div>
                         <div>
