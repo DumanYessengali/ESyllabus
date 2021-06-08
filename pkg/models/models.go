@@ -15,6 +15,7 @@ type Syllabus struct {
 	Title             string
 	Teacher           *TeacherInfo
 	Credits           int
+	Discipline        string
 	Goals             string
 	SkillsCompetences string
 	Objectives        string
@@ -26,6 +27,10 @@ type Syllabus struct {
 	Assessment        int
 	Table1            []*TopicWeek
 	Table2            []*StudentTopicWeek
+}
+type Discipline struct {
+	DisciplineId int
+	Title        string
 }
 
 type TeacherInfo struct {

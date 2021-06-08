@@ -112,10 +112,8 @@ func (app *application) updateSyllabuss(w http.ResponseWriter, r *http.Request) 
 
 	form := forms.New(r.PostForm)
 
-	cred, _ := strconv.ParseInt(form.Get("Credits"), 10, 64)
 	syllabus := &models.Syllabus{
 		Title:             form.Get("Title"),
-		Credits:           int(cred),
 		Goals:             form.Get("Goals"),
 		SkillsCompetences: form.Get("SkillsCompetences"),
 		Objectives:        form.Get("Objectives"),
@@ -261,6 +259,7 @@ func (app *application) updateIndepTopic(w http.ResponseWriter, r *http.Request)
 }
 
 func (app *application) getSyllabusById(w http.ResponseWriter, r *http.Request) {
+
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
 		app.notFound(w)
@@ -312,8 +311,10 @@ func (app *application) getSyllabusByIdForStudents(w http.ResponseWriter, r *htt
 }
 
 func (app *application) createSyllabusGet(w http.ResponseWriter, r *http.Request) {
+	discipline, _ := app.student.SelectAllDiscipline()
 	app.render(w, r, "create.page.tmpl", &templateData{
-		Form: forms.New(nil),
+		Form:       forms.New(nil),
+		Discipline: discipline,
 	})
 }
 
@@ -453,7 +454,6 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cred, _ := strconv.ParseInt(form.Get("credits_num"), 10, 64)
 	assesment, _ := strconv.ParseInt(form.Get("assessment"), 10, 64)
 	week1_1, _ := strconv.ParseInt(form.Get("week_num"), 10, 64)
 	week1_2, _ := strconv.ParseInt(form.Get("week_num1"), 10, 64)
@@ -689,7 +689,6 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 	syllabus := &models.Syllabus{
 		ID:                0,
 		Title:             form.Get("title"),
-		Credits:           int(cred),
 		Goals:             form.Get("course_goal"),
 		SkillsCompetences: form.Get("skills"),
 		Objectives:        form.Get("objectives"),
@@ -705,11 +704,13 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(syllabus.Goals)
 	fmt.Println("week number: ", form.Get("week_num"))
+	//disciplineId, _ := strconv.ParseInt(form.Get("discipline"), 10, 64)
 	teacherId, _ := app.student.GetTeacherId()
-	syllabusId, _ := app.student.InsertSyllabus(syllabus, teacherId, 1, form.Get("title"))
-
-	fmt.Println(syllabusId)
-
+	syllabusId, sId, _ := app.student.InsertSyllabus(syllabus, teacherId, form.Get("title"))
+	dId, _ := strconv.ParseInt(r.PostFormValue("discipline"), 10, 64)
+	disciplineId, _ := app.student.InsertDiscipline(int(dId), sId)
+	fmt.Println(syllabusId, disciplineId)
+	fmt.Println(" disciplineId ", dId)
 	app.session.Put(r, "flash", "Syllabus successfully created!")
 
 	http.Redirect(w, r, fmt.Sprintf("/admin"), http.StatusSeeOther)

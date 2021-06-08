@@ -2,6 +2,11 @@
 {{define "title"}}Create Syllabus{{end}}
 {{define "main"}}
     <form action='/admin/create' method='POST'>
+       <select name="discipline">
+                   {{range .Discipline}}
+                       <option value="{{.DisciplineId}}">{{.Title}}</option>
+                   {{end}}
+               </select>
         {{with .Form}}
             <div>
                 <label>Discipline name:</label>
@@ -18,13 +23,7 @@
                     {{end}}
                 <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
             </div>
-            <div>
-                <label>Number of credits:</label>
-                    {{with .Errors.Get "credits_num"}}
-                        <label class='error'>{{.}}</label>
-                    {{end}}
-                <input type='text' name='credits_num' value='{{.Get "credits_num"}}'>
-            </div>
+
 
             <div>
                 <label>Course goal(s):</label>
