@@ -73,6 +73,8 @@
            .hide:checked + label:before {
                content: "\2212";
            }
+
+
             </style>
         </head>
         <body>
@@ -83,14 +85,23 @@
                 <div>
 
                     {{if .IsAdmin}}
-                        <a href='/admin'>Admin</a>
+
+                        <a href='/admin'>Confirmed</a>
+                        <a href='/inProcess'>In process</a>
+                        <a href='/approvement'>Adjustment</a>
+
                     {{end}}
-                    {{if not .IsAdmin}}
+                    {{if not .IsAdmin }}
                          <a href='/'>Home</a>
+
                     {{end}}
                 </div>
                 <div>
+                 {{if  .IsAdmin}}
+                      <a href="https://localhost:4000/admin/create" >Create </a>
+                            {{end}}
                     {{if .IsAuthenticated}}
+
                         <form action='/logout' method='POST'>
                             <button>Logout</button>
                         </form>

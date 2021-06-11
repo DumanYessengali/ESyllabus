@@ -65,10 +65,15 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 		fmt.Print(role.ID)
 		app.session.Put(r, "adminUserID", id)
 		http.Redirect(w, r, "/admin", http.StatusSeeOther)
-		app.student.GetNameSyllabus()
+		app.student.GetNameSyllabus("confirmed")
 		return
 	} else if role.Role == "student" {
+		app.session.Put(r, "adminStudentsID", id)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	} else if role.Role == "coordinator" {
+		app.session.Put(r, "adminCoordinatorID", id)
+		http.Redirect(w, r, "/coordinator", http.StatusSeeOther)
 		return
 	}
 

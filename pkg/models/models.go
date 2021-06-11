@@ -15,6 +15,7 @@ type Syllabus struct {
 	Title             string
 	Teacher           *TeacherInfo
 	Credits           int
+	Status            string
 	Discipline        string
 	Goals             string
 	SkillsCompetences string

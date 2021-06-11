@@ -11,11 +11,13 @@ import (
 )
 
 const (
-	getNameSyllabusWithTeacher = "select syllabus_id,name,syllabus_info_id from syllabus where teacher_id=$1"
-	getNameSyllabusWithStudent = "select syllabus_id,name,syllabus_info_id from syllabus where syllabus_id=(select syllabus_id from student_syllabus where student_id=$1)"
-	getTeacherId               = "SELECT teacher_id from teacher where authorization_id=$1"
-	getRoleByUsername          = "SELECT authorization_id, role FROM auth WHERE username=$1"
-	auth                       = "SELECT authorization_id, password FROM auth WHERE username = $1"
+	getNameSyllabusWithTeacher    = "select syllabus_id,name,syllabus_info_id,status from syllabus where teacher_id=$1 "
+	getNameSyllabusForCoordinator = "select s.syllabus_id,s.name,s.syllabus_info_id,s.status\nfrom syllabus s\ninner join syllabus_info si on s.syllabus_info_id = si.syllabus_info_id\ninner join discipline d on si.discipline_id = d.discipline_id\ninner join coordinator_discipline cd on d.discipline_id = cd.discipline_id\nwhere cd.coordinator_id=$1 and s.status=$2"
+	getNameSyllabusWithStudent    = "select syllabus_id,name,syllabus_info_id from syllabus where syllabus_id=(select syllabus_id from student_syllabus where student_id=$1)"
+	getTeacherId                  = "SELECT teacher_id from teacher where authorization_id=$1"
+	getCoordinatorId              = "SELECT coordinator_id from coordinator where authid=$1"
+	getRoleByUsername             = "SELECT authorization_id, role FROM auth WHERE username=$1"
+	auth                          = "SELECT authorization_id, password FROM auth WHERE username = $1"
 
 	deleteTopicWithPlan                 = "delete from topic where plan_id=(select plan_id from session_plan where syllabus_info_id=$1)"
 	deleteSessionPlanWithSyllabusInfoId = "DELETE FROM session_plan WHERE syllabus_info_id=$1"
@@ -38,7 +40,7 @@ const (
 		"FROM syllabus_info WHERE syllabus_info_id=$1"
 	selectTeacherInfo = "select fullname, degree, rank, position, contacts, interests from teacher where teacher_id=(select teacher_id from syllabus where syllabus_info_id=$1)"
 
-	insertSyllabus     = "insert into syllabus (teacher_id, syllabus_info_id, name) values ($1, $2,$3) returning syllabus_id"
+	insertSyllabus     = "insert into syllabus (teacher_id, syllabus_info_id, name,status) values ($1, $2,$3,$4) returning syllabus_id"
 	insertDiscipline   = "update syllabus_info set discipline_id=$1 where syllabus_info_id=$2 returning discipline_id"
 	insertSyllabusInfo = "insert into syllabus_info( goals, skills_competences, objectives, learning_outcomes," +
 		"prerequisites, postrequisites, instructors,assessment_id) values($1, $2, $3, $4, $5, $6, $7, $8) returning syllabus_info_id"
@@ -63,6 +65,8 @@ const (
 
 	selectAssessment = "select assessment_id, assessment_title1, points_num1, assessment_title2, points_num2 from assessment " +
 		"where assessment_id=(select assessment_id from syllabus_info where syllabus_info_id=$1)"
+
+	updateStatus = "update syllabus set status=$1 where syllabus_info_id=$2"
 )
 
 type PgModel struct {
@@ -100,7 +104,7 @@ func (m *PgModel) GetNameSyllabusWithStudent() ([]*models.Syllabus, error) {
 	return students, nil
 }
 
-func (m *PgModel) GetNameSyllabus() ([]*models.Syllabus, error) {
+func (m *PgModel) GetNameSyllabus(status string) ([]*models.Syllabus, error) {
 	var students []*models.Syllabus
 	rows, err := m.Pool.Query(context.Background(), getNameSyllabusWithTeacher, iDFromSyllabus)
 	if err != nil {
@@ -109,12 +113,39 @@ func (m *PgModel) GetNameSyllabus() ([]*models.Syllabus, error) {
 
 	for rows.Next() {
 		s := &models.Syllabus{}
-		err = rows.Scan(&s.ID, &s.Title, &s.SyllabusInfoID)
+		err = rows.Scan(&s.ID, &s.Title, &s.SyllabusInfoID, &s.Status)
 		if err != nil {
 			return nil, err
 		}
+		if s.Status == status {
+			students = append(students, s)
+		}
 
-		students = append(students, s)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return students, nil
+}
+
+func (m *PgModel) GetNameSyllabusFromCoordinator(status string) ([]*models.Syllabus, error) {
+	var students []*models.Syllabus
+	rows, err := m.Pool.Query(context.Background(), getNameSyllabusForCoordinator, iDFromSyllabus, status)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		s := &models.Syllabus{}
+		err = rows.Scan(&s.ID, &s.Title, &s.SyllabusInfoID, &s.Status)
+		if err != nil {
+			return nil, err
+		}
+		if s.Status == status {
+			students = append(students, s)
+		}
+
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
@@ -135,6 +166,19 @@ func (m *PgModel) GetTeacherId() (int, error) {
 	return id, nil
 }
 
+func (m *PgModel) GetCoordinatorId() (int, error) {
+	var id int
+	err := m.Pool.QueryRow(context.Background(), getCoordinatorId, authID).
+		Scan(&id)
+	if err != nil {
+		fmt.Println(id)
+		fmt.Println(err.Error())
+	}
+	fmt.Println("Coordinator id", id)
+	iDFromSyllabus = id
+	return id, nil
+}
+
 func (m *PgModel) DeleteStudentById(id int) error {
 	_, err := m.Pool.Exec(context.Background(), deleteStudentSyllabus, id)
 	_, err = m.Pool.Exec(context.Background(), deleteTopicWithPlan, id)
@@ -148,6 +192,14 @@ func (m *PgModel) DeleteStudentById(id int) error {
 		return err
 	}
 
+	return nil
+}
+
+func (m *PgModel) SendSyllabus(id int) error {
+	_, err := m.Pool.Exec(context.Background(), updateStatus, "approvement", id)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -251,7 +303,7 @@ func (m *PgModel) InsertSyllabus(syllabus *models.Syllabus, teacherId int, name 
 	syllabusInfoId, err := m.InsertSyllabusInfo(syllabus)
 	_, err = m.InsertSessionPlan(syllabus.Table1, syllabusInfoId)
 	_, err = m.InsertIndependentStudyPlan(syllabus.Table2, syllabusInfoId)
-	row := m.Pool.QueryRow(context.Background(), insertSyllabus, teacherId, syllabusInfoId, name)
+	row := m.Pool.QueryRow(context.Background(), insertSyllabus, teacherId, syllabusInfoId, name, "in_process")
 	err = row.Scan(&syllabusId)
 	fmt.Println("Ot dushi syllabusInfoId", syllabusInfoId)
 	if err != nil {

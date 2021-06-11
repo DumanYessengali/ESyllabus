@@ -9,11 +9,12 @@ import (
 	"strconv"
 )
 
-func (app *application) getMainPageTeacher(w http.ResponseWriter, r *http.Request) {
+func (app *application) getMainPageTeacherConfirmed(w http.ResponseWriter, r *http.Request) {
 
 	app.student.GetTeacherId()
-	//fmt.Print(app.syllabus.GetAllSyllabuses(1))
-	syllabus, err := app.student.GetNameSyllabus()
+
+	syllabus, err := app.student.GetNameSyllabus("confirmed")
+
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)
@@ -24,7 +25,77 @@ func (app *application) getMainPageTeacher(w http.ResponseWriter, r *http.Reques
 	}
 
 	flash := app.session.PopString(r, "flash")
+
 	app.render(w, r, "admin.page.tmpl", &templateData{
+		Flash:    flash,
+		Syllabus: syllabus,
+	})
+}
+
+func (app *application) getMainPageCoordinator(w http.ResponseWriter, r *http.Request) {
+
+	app.student.GetCoordinatorId()
+
+	syllabus, err := app.student.GetNameSyllabusFromCoordinator("approvement")
+
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "coordinator.page.tmpl", &templateData{
+		Flash:    flash,
+		Syllabus: syllabus,
+	})
+}
+
+func (app *application) getMainPageTeacherInProcess(w http.ResponseWriter, r *http.Request) {
+
+	app.student.GetTeacherId()
+
+	syllabus, err := app.student.GetNameSyllabus("in_process")
+
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "inProcess.page.tmpl", &templateData{
+		Flash:    flash,
+		Syllabus: syllabus,
+	})
+}
+
+func (app *application) getMainPageTeacherApprovement(w http.ResponseWriter, r *http.Request) {
+
+	app.student.GetTeacherId()
+
+	syllabus, err := app.student.GetNameSyllabus("approvement")
+
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "adjustment.page.tmpl", &templateData{
 		Flash:    flash,
 		Syllabus: syllabus,
 	})
@@ -51,6 +122,24 @@ func (app *application) getMainPageTeacher(w http.ResponseWriter, r *http.Reques
 //
 //	http.Redirect(w, r, fmt.Sprintf("/admin"), http.StatusSeeOther)
 //}
+
+func (app *application) sendSyllabus(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+
+	err = app.student.SendSyllabus(id)
+
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		println(err.Error())
+		return
+	}
+
+	http.Redirect(w, r, "/inProcess", http.StatusSeeOther)
+}
 
 func (app *application) deleteStudent(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
@@ -195,7 +284,7 @@ func (app *application) updateTopic(w http.ResponseWriter, r *http.Request) {
 		println(err.Error())
 		return
 	}
-	url := "/admin"
+	url := "/inProcess"
 	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
@@ -254,7 +343,7 @@ func (app *application) updateIndepTopic(w http.ResponseWriter, r *http.Request)
 		println(err.Error())
 		return
 	}
-	url := "/admin"
+	url := "/inProcess"
 	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
@@ -713,5 +802,5 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(" disciplineId ", dId)
 	app.session.Put(r, "flash", "Syllabus successfully created!")
 
-	http.Redirect(w, r, fmt.Sprintf("/admin"), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/inProcess"), http.StatusSeeOther)
 }

@@ -12,12 +12,12 @@
         <tbody>
          {{range .Syllabus}}
             <tr>
-                <td style="text-align:left">
+                <td><a href="https://localhost:4000/syllabusinfo?id={{.SyllabusInfoID}}">
                     #{{.Title}}
+                    </a>
                 </td>
-                <td style="text-align:right">
-
-                    <a href="https://localhost:4000/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Go</a>
+                <td style="color:blue">
+                    Waiting for confirmation.
                 </td>
             </tr>
             {{end}}

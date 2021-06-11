@@ -12,17 +12,25 @@
             {{range .Syllabus}}
                <tr>
                     <td>
-                        Course title
+                        Syllabus title
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{.Title}}
                     </td>
                </tr>
+                 <tr>
+                     <td>
+                         Discipline
+                     </td>
+                     <td style="text-align:left">
+                         {{.Discipline}}
+                     </td>
+                </tr>
                <tr>
                     <td>
                         Number of credits
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{.Credits}}
                     </td>
                </tr>
@@ -30,7 +38,7 @@
                     <td>
                         Prerequisites
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{.Prerequisites}}
                     </td>
                </tr>
@@ -38,7 +46,7 @@
                     <td>
                         Postrequisites
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{.Postrequisites}}
                     </td>
                </tr>
@@ -47,7 +55,7 @@
                     <td>
                         Lecturer(s)
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{range .Teacher}}
                             {{.FullName}}, {{.Degree}}, {{.Rank}}, {{.Position}}, {{.Contacts}}, {{.Interests}}
                         {{end}}
@@ -55,10 +63,10 @@
                </tr>
             {{range .Syllabus}}
                <tr>
-                    <td>
+                    <td >
                         Course goal(s)
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{.Goals}}
                     </td>
                </tr>
@@ -66,15 +74,15 @@
                     <td>
                          Course objectives:
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{.Objectives}}
                     </td>
                </tr>
                <tr>
-                    <td>
+                    <td >
                          Skills & competences
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{.SkillsCompetences}}
                     </td>
                </tr>
@@ -82,7 +90,7 @@
                     <td>
                         Course learning outcomes
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{.LearningOutcomes}}
                     </td>
                </tr>
@@ -90,7 +98,7 @@
                     <td>
                         Course instructor(s)
                     </td>
-                    <td>
+                    <td style="text-align:left">
                         {{.Instructors}}
                     </td>
 
