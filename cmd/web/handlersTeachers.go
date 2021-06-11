@@ -129,11 +129,12 @@ func (app *application) sendSyllabus(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
-
-	err = app.student.SendSyllabus(id)
+	fmt.Println("aidana")
+	err = app.student.SendSyllabus(id, "approvement")
 
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
+		fmt.Println("aidana")
 		println(err.Error())
 		return
 	}
@@ -162,7 +163,7 @@ func (app *application) deleteStudent(w http.ResponseWriter, r *http.Request) {
 func (app *application) updateSyllabus(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	fmt.Println(id)
+	//fmt.Println(id)
 
 	syllabus, err := app.student.SelectSyllabusTableRow(id)
 	if err != nil {
@@ -311,6 +312,75 @@ func (app *application) updateIndepTopicOpen(w http.ResponseWriter, r *http.Requ
 		IndepTopicOneRow: indep,
 	})
 }
+
+func (app *application) confirmSyllabus(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	fmt.Println("id: ", id)
+	fmt.Println("aidana ")
+
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+	fmt.Println("aidana")
+	err = app.student.SendSyllabus(id, "confirmed")
+
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		println(err.Error())
+		return
+	}
+
+	url := "/coordinator"
+	http.Redirect(w, r, url, http.StatusSeeOther)
+}
+
+//
+//func (app *application) rejectSyllabus(w http.ResponseWriter, r *http.Request) {
+//	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+//	if err != nil {
+//		app.notFound(w)
+//		return
+//	}
+//
+//	err = app.student.SendSyllabus(id, "in_process")
+//
+//	if err != nil {
+//		app.clientError(w, http.StatusBadRequest)
+//		println(err.Error())
+//		return
+//	}
+//
+//	url := "/coordinator"
+//	http.Redirect(w, r, url, http.StatusSeeOther)
+//}
+
+func (app *application) getSyllabusByIdForCoordinator(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+
+	topic, independent, syllabus, teacher, assessment, err := app.student.GetSyllabusById(id)
+
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "selectCoordinator.page.tmpl", &templateData{
+		Flash:          flash,
+		Syllabus:       syllabus,
+		Topic:          topic,
+		Independent:    independent,
+		Teacher:        teacher,
+		AssessmentType: assessment,
+	})
+}
+
 func (app *application) updateIndepTopic(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 

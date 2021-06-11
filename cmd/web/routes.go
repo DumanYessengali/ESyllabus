@@ -28,7 +28,11 @@ func (app *application) routes() http.Handler {
 	mux.Post("/admin/updateIndep", dynamicMiddleware.Append(app.requireAuthentication, app.requireTeacher).ThenFunc(app.updateIndepTopic))
 	mux.Get("/admin/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication, app.requireTeacher).ThenFunc(app.getSyllabusById))
 
+	mux.Get("/coordinator/confirm/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication, app.requireCoordinator).ThenFunc(app.confirmSyllabus))
+	//mux.Get("/coordinator/reject/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication, app.requireTeacher).ThenFunc(app.rejectSyllabus))
+
 	mux.Get("/coordinator", dynamicMiddleware.Append(app.requireAuthentication, app.requireCoordinator).ThenFunc(app.getMainPageCoordinator))
+	mux.Get("/coordinator/syllabusinfo", dynamicMiddleware.ThenFunc(app.getSyllabusByIdForCoordinator))
 
 	mux.Get("/", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.home))
 	mux.Get("/syllabusinfo", dynamicMiddleware.ThenFunc(app.getSyllabusByIdForStudents))

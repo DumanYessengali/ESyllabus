@@ -195,8 +195,9 @@ func (m *PgModel) DeleteStudentById(id int) error {
 	return nil
 }
 
-func (m *PgModel) SendSyllabus(id int) error {
-	_, err := m.Pool.Exec(context.Background(), updateStatus, "approvement", id)
+func (m *PgModel) SendSyllabus(id int, status string) error {
+	fmt.Println("status: ", status, "id: ", id)
+	_, err := m.Pool.Exec(context.Background(), updateStatus, status, id)
 	if err != nil {
 		return err
 	}
