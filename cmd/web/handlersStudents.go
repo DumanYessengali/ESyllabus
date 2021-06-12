@@ -75,6 +75,10 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 		app.session.Put(r, "adminCoordinatorID", id)
 		http.Redirect(w, r, "/coordinator", http.StatusSeeOther)
 		return
+	} else if role.Role == "dean" {
+		app.session.Put(r, "adminCoordinatorID", id)
+		http.Redirect(w, r, "/dean", http.StatusSeeOther)
+		return
 	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)

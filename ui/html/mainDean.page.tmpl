@@ -1,7 +1,6 @@
 {{template "base" .}}
 {{define "title"}}Home{{end}}
 {{define "main"}}
-
     <table class="cinereousTable">
         <thead>
             <tr>
@@ -16,15 +15,13 @@
                         #{{.Title}}
                     </td>
                     <td style="text-align:right">
-                        <a href="https://localhost:4000/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Go</a>
+                        <a href="https://localhost:4000/dean/ready/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Ready</a>
+                        <a href="https://localhost:4000/dean/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Go</a>
+
                     </td>
                 </tr>
              {{end}}
         </tbody>
     </table>
-    <br>
-
-
-
-
+    <br><br>
 {{end}}

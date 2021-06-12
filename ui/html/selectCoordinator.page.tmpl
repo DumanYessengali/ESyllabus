@@ -103,11 +103,6 @@
                     </td>
 
                </tr>
-               <tr>
-                   <td >
-                      <a href="https://localhost:4000/admin/updateSyllabus?id={{.SyllabusInfoID}}"  class="myButton">&nbsp;Update </a>
-                    </td>
-               </tr>
             {{end}}
         </tbody>
     </table>
@@ -135,9 +130,6 @@
                     <td>
                         Assignment
                     </td>
-                    <td>
-                        Update
-                    </td>
                </tr>
             {{range .Topic}}
                <tr>
@@ -158,9 +150,6 @@
                     </td>
                     <td>
                         {{.Assignment}}
-                    </td>
-                    <td>
-                        <a href="https://localhost:4000/admin/updateTopicOpen?id={{.TopicWeekID}}"  class="myButton">&nbsp;Update </a>
                     </td>
                </tr>
             {{end}}
@@ -185,9 +174,6 @@
                     <td>
                         Submission Form
                     </td>
-                    <td>
-                        Update
-                    </td>
                </tr>
             {{range .Independent}}
                <tr>
@@ -205,9 +191,6 @@
                     </td>
                     <td>
                         {{.SubmissionForm}}
-                    </td>
-                    <td>
-                        <a href="https://localhost:4000/admin/updateIndepOpen?id={{.StudentTopicWeekID}}"  class="myButton">&nbsp;Update </a>
                     </td>
                </tr>
             {{end}}
@@ -413,7 +396,16 @@
                    </tr>
                </tbody>
            </table>
-         <form action="https://localhost:4000/coordinator/reject/syllabusinfo?id={{.StudentTopicWeekID}}" method="POST">
-
-            </form>
+           <br><br>
+         {{range .Syllabus}}
+             <form action="https://localhost:4000/coordinator/reject/syllabusinfo?id={{.SyllabusInfoID}}" method="POST">
+         {{end}}
+                {{with .Form}}
+                    <label>Write your feedback:</label>
+                    <textarea name="feedback" style="width:100%" placeholder="Write your feedback"></textarea>
+                    <div>
+                        <input type='submit' value='Reject' style="background-color:red">
+                    </div>
+                {{end}}
+             </form>
 {{end}}

@@ -74,7 +74,12 @@
                content: "\2212";
            }
 
-
+           #delete {
+                background-color:red
+           }
+           #send {
+                background-color:green
+           }
             </style>
         </head>
         <body>
@@ -86,7 +91,7 @@
 
                     {{if .IsAdmin}}
 
-                        <a href='/admin'>Confirmed</a>
+                        <a href='/admin'>Ready</a>
                         <a href='/inProcess'>In process</a>
                         <a href='/approvement'>Adjustment</a>
 
@@ -99,9 +104,8 @@
                 <div>
                  {{if  .IsAdmin}}
                       <a href="https://localhost:4000/admin/create" >Create </a>
-                            {{end}}
-                    {{if .IsAuthenticated}}
-
+                 {{end}}
+                 {{if .IsAuthenticated}}
                         <form action='/logout' method='POST'>
                             <button>Logout</button>
                         </form>

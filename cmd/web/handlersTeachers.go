@@ -13,7 +13,7 @@ func (app *application) getMainPageTeacherConfirmed(w http.ResponseWriter, r *ht
 
 	app.student.GetTeacherId()
 
-	syllabus, err := app.student.GetNameSyllabus("confirmed")
+	syllabus, err := app.student.GetNameSyllabus("ready")
 
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
@@ -55,6 +55,29 @@ func (app *application) getMainPageCoordinator(w http.ResponseWriter, r *http.Re
 	})
 }
 
+func (app *application) showFeedback(w http.ResponseWriter, r *http.Request) {
+
+	app.student.GetCoordinatorId()
+
+	syllabus, err := app.student.GetNameSyllabusFromCoordinator("in_process")
+
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "coordinatorFeedback.page.tmpl", &templateData{
+		Flash:    flash,
+		Syllabus: syllabus,
+	})
+}
+
 func (app *application) getMainPageTeacherInProcess(w http.ResponseWriter, r *http.Request) {
 
 	app.student.GetTeacherId()
@@ -77,6 +100,53 @@ func (app *application) getMainPageTeacherInProcess(w http.ResponseWriter, r *ht
 		Syllabus: syllabus,
 	})
 }
+
+func (app *application) getDeanFeedback(w http.ResponseWriter, r *http.Request) {
+	syllabus, err := app.student.GetSyllabusForDean("confirmed")
+
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "mainDean.page.tmpl", &templateData{
+		Flash:    flash,
+		Syllabus: syllabus,
+	})
+}
+
+//
+//func (app *application) showFeedback(w http.ResponseWriter, r *http.Request) {
+//	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+//	if err != nil {
+//		app.notFound(w)
+//		return
+//	}
+//
+//	feedback, err := app.student.GetFeedback(id)
+//
+//	if err != nil {
+//		if errors.Is(err, models.ErrNoRecord) {
+//			app.notFound(w)
+//		} else {
+//			app.serverError(w, err)
+//		}
+//		return
+//	}
+//
+//	flash := app.session.PopString(r, "flash")
+//
+//	app.render(w, r, "feedback.page.tmpl", &templateData{
+//		Flash:    flash,
+//		syllabus: feedback,
+//	})
+//}
 
 func (app *application) getMainPageTeacherApprovement(w http.ResponseWriter, r *http.Request) {
 
@@ -315,14 +385,11 @@ func (app *application) updateIndepTopicOpen(w http.ResponseWriter, r *http.Requ
 
 func (app *application) confirmSyllabus(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	fmt.Println("id: ", id)
-	fmt.Println("aidana ")
 
 	if err != nil {
 		app.notFound(w)
 		return
 	}
-	fmt.Println("aidana")
 	err = app.student.SendSyllabus(id, "confirmed")
 
 	if err != nil {
@@ -335,25 +402,63 @@ func (app *application) confirmSyllabus(w http.ResponseWriter, r *http.Request) 
 	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
-//
-//func (app *application) rejectSyllabus(w http.ResponseWriter, r *http.Request) {
-//	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-//	if err != nil {
-//		app.notFound(w)
-//		return
-//	}
-//
-//	err = app.student.SendSyllabus(id, "in_process")
-//
-//	if err != nil {
-//		app.clientError(w, http.StatusBadRequest)
-//		println(err.Error())
-//		return
-//	}
-//
-//	url := "/coordinator"
-//	http.Redirect(w, r, url, http.StatusSeeOther)
-//}
+func (app *application) readySyllabus(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+	err = app.student.SendSyllabus(id, "ready")
+
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		println(err.Error())
+		return
+	}
+	url := "/dean"
+	http.Redirect(w, r, url, http.StatusSeeOther)
+}
+
+func (app *application) rejectSyllabus(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	_, err = app.student.InsertFeedback(form.Get("feedback"), id)
+
+	err = app.student.SendSyllabus(id, "in_process")
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+	url := "/coordinator"
+	http.Redirect(w, r, url, http.StatusSeeOther)
+}
+
+func (app *application) rejectSyllabusDean(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	_, err = app.student.InsertFeedback(form.Get("feedback"), id)
+
+	err = app.student.SendSyllabus(id, "approvement")
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+	url := "/dean"
+	http.Redirect(w, r, url, http.StatusSeeOther)
+}
 
 func (app *application) getSyllabusByIdForCoordinator(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
@@ -372,6 +477,7 @@ func (app *application) getSyllabusByIdForCoordinator(w http.ResponseWriter, r *
 	flash := app.session.PopString(r, "flash")
 
 	app.render(w, r, "selectCoordinator.page.tmpl", &templateData{
+		Form:           forms.New(nil),
 		Flash:          flash,
 		Syllabus:       syllabus,
 		Topic:          topic,
@@ -381,6 +487,32 @@ func (app *application) getSyllabusByIdForCoordinator(w http.ResponseWriter, r *
 	})
 }
 
+func (app *application) getSyllabusByIdForDean(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+
+	topic, independent, syllabus, teacher, assessment, err := app.student.GetSyllabusById(id)
+
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "selectDean.page.tmpl", &templateData{
+		Form:           forms.New(nil),
+		Flash:          flash,
+		Syllabus:       syllabus,
+		Topic:          topic,
+		Independent:    independent,
+		Teacher:        teacher,
+		AssessmentType: assessment,
+	})
+}
 func (app *application) updateIndepTopic(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 
@@ -761,7 +893,6 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 			Assignment:    form.Get("assignment9"),
 		},
 	}
-
 	var t2 = []*models.StudentTopicWeek{
 		&models.StudentTopicWeek{
 			StudentTopicWeekID:    0,

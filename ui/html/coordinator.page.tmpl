@@ -1,7 +1,6 @@
 {{template "base" .}}
 {{define "title"}}Home{{end}}
 {{define "main"}}
-
     <table class="cinereousTable">
         <thead>
             <tr>
@@ -10,22 +9,20 @@
             </tr>
         </thead>
         <tbody>
-         {{range .Syllabus}}
-            <tr>
-                <td style="text-align:left">
-                    #{{.Title}}
-                </td>
-                <td style="text-align:right">
-                    <a href="https://localhost:4000/coordinator/confirm/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Confirm</a>
-                    <a href="https://localhost:4000/coordinator/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Go</a>
-                </td>
-            </tr>
-            {{end}}
-            </tbody>
+             {{range .Syllabus}}
+                <tr>
+                    <td style="text-align:left">
+                        #{{.Title}}
+                    </td>
+                    <td style="text-align:right">
+                        <a href="https://localhost:4000/coordinator/confirm/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Confirm</a>
+                        <a href="https://localhost:4000/coordinator/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Go</a>
+
+                    </td>
+                </tr>
+             {{end}}
+        </tbody>
     </table>
-    <br>
-
-
-
-
+    <br><br>
+    <a href="https://localhost:4000/coordinator/feedback"  class="myButton">Feedback</a>
 {{end}}
