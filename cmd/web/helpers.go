@@ -47,10 +47,29 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 	}
 	td.Flash = app.session.PopString(r, "flash")
 	td.IsAuthenticated = app.isAuthenticated(r)
-	td.IsAdmin = app.isAdmin(r)
+	if app.IsTeacher(r) {
+		td.IsTeacher = app.IsTeacher(r)
+	} else if app.IsStudent(r) {
+		td.IsStudent = app.IsStudent(r)
+	} else if app.IsCoordinator(r) {
+		td.IsCoordinator = app.IsCoordinator(r)
+	} else if app.IsDean(r) {
+		td.IsDean = app.IsDean(r)
+	}
 	return td
 }
+func (app *application) IsTeacher(r *http.Request) bool {
+	return app.session.Exists(r, "sessionTeacherID")
+}
 
-func (app *application) isAdmin(r *http.Request) bool {
-	return app.session.Exists(r, "adminUserID")
+func (app *application) IsStudent(r *http.Request) bool {
+	return app.session.Exists(r, "sessionStudentsID")
+}
+
+func (app *application) IsCoordinator(r *http.Request) bool {
+	return app.session.Exists(r, "sessionCoordinatorID")
+}
+
+func (app *application) IsDean(r *http.Request) bool {
+	return app.session.Exists(r, "sessionDeanID")
 }

@@ -8,111 +8,178 @@
             <link rel='shortcut icon' href='/static/img/favicon.ico' type='image/x-icon'>
             <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700'>
             <style>
-           /* скрываем чекбоксы и блоки с содержанием */
-           .hide,
-           .hide + label ~ div {
-               display: none;
-           }
-           /* вид текста label */
-           .hide + label {
-               margin: 0;
-               padding: 0;
-               color: green;
-               cursor: pointer;
-               display: inline-block;
-           }
-           /* вид текста label при активном переключателе */
-           .hide:checked + label {
-               color: red;
-               border-bottom: 0;
-           }
-           /* когда чекбокс активен показываем блоки с содержанием  */
-           .hide:checked + label + div {
-               display: block;
-               background: #efefef;
-               -moz-box-shadow: inset 3px 3px 10px #7d8e8f;
-               -webkit-box-shadow: inset 3px 3px 10px #7d8e8f;
-               box-shadow: inset 3px 3px 10px #7d8e8f;
-               margin-left: 20px;
-               padding: 10px;
-               /* чуточку анимации при появлении */
-                -webkit-animation:fade ease-in 0.5s;
-                -moz-animation:fade ease-in 0.5s;
-                animation:fade ease-in 0.5s;
-           }
-           /* анимация при появлении скрытых блоков */
-           @-moz-keyframes fade {
-               from { opacity: 0; }
-           to { opacity: 1 }
-           }
-           @-webkit-keyframes fade {
-               from { opacity: 0; }
-           to { opacity: 1 }
-           }
-           @keyframes fade {
-               from { opacity: 0; }
-           to { opacity: 1 }
-           }
-           .hide + label:before {
-               background-color: #1e90ff;
-               color: #fff;
-               content: "\002B";
-               display: block;
-               float: left;
-               font-size: 20px;
-               font-weight: bold;
-               height: 20px;
-               line-height: 20px;
-               margin: 3px 5px;
-               text-align: center;
-               width: 20px;
-               -webkit-border-radius: 50%;
-               -moz-border-radius: 50%;
-               border-radius: 50%;
-           }
-           .hide:checked + label:before {
-               content: "\2212";
-           }
+                /* скрываем чекбоксы и блоки с содержанием */
+                .hide,
+                .hide + label ~ div {
+                    display: none;
+                }
 
-           #delete {
-                background-color:red
-           }
-           #send {
-                background-color:green
-           }
+                /* вид текста label */
+                .hide + label {
+                    margin: 0;
+                    padding: 0;
+                    color: green;
+                    cursor: pointer;
+                    display: inline-block;
+                }
+
+                /* вид текста label при активном переключателе */
+                .hide:checked + label {
+                    color: red;
+                    border-bottom: 0;
+                }
+
+                /* когда чекбокс активен показываем блоки с содержанием  */
+                .hide:checked + label + div {
+                    display: block;
+                    background: #efefef;
+                    -moz-box-shadow: inset 3px 3px 10px #7d8e8f;
+                    -webkit-box-shadow: inset 3px 3px 10px #7d8e8f;
+                    box-shadow: inset 3px 3px 10px #7d8e8f;
+                    margin-left: 20px;
+                    padding: 10px;
+                    /* чуточку анимации при появлении */
+                    -webkit-animation: fade ease-in 0.5s;
+                    -moz-animation: fade ease-in 0.5s;
+                    animation: fade ease-in 0.5s;
+                }
+
+                /* анимация при появлении скрытых блоков */
+                @-moz-keyframes fade {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1
+                    }
+                }
+
+                @-webkit-keyframes fade {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1
+                    }
+                }
+
+                @keyframes fade {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1
+                    }
+                }
+
+                .hide + label:before {
+                    background-color: #1e90ff;
+                    color: #fff;
+                    content: "\002B";
+                    display: block;
+                    float: left;
+                    font-size: 20px;
+                    font-weight: bold;
+                    height: 20px;
+                    line-height: 20px;
+                    margin: 3px 5px;
+                    text-align: center;
+                    width: 20px;
+                    -webkit-border-radius: 50%;
+                    -moz-border-radius: 50%;
+                    border-radius: 50%;
+                }
+
+                .hide:checked + label:before {
+                    content: "\2212";
+                }
+
+                #delete {
+                    background: #ed2939;
+                    border-color: #ff5c33;
+                }
+
+                #send {
+                    background: #50c878;
+                    border-color: #5cd65c;
+                }
+
+                #delete:hover {
+                    background: #ed2939;
+                    background-color: #ed2939;
+                    text-decoration: none;
+                    color: black;
+                }
+
+                #delete:active {
+                    position: relative;
+                    top: 1px;
+                }
+
+                #send:hover {
+                    background: #50c878;
+                    border-color: #5cd65c;
+                    text-decoration: none;
+                    color: black;
+                }
+
+                #send:active {
+                    position: relative;
+                    top: 1px;
+                }
+
+                #confirm {
+                    background: #FF7F50;
+                    border-color: #FF6347;
+                }
+
+                #confirm:hover {
+                    background: #FF6347;
+                    border-color: #FF7F50;
+                    text-decoration: none;
+                    color: black;
+                }
+
+                #confirm:active {
+                    position: relative;
+                    top: 1px;
+                }
+
             </style>
         </head>
         <body>
             <header>
-                <h1><a href='/'>Силлабус</a></h1>
+                <h1><a>Syllabus</a></h1>
             </header>
             <nav>
-                <div>
-
-                    {{if .IsAdmin}}
-
+                <div style="width:60%">
+                    {{if .IsTeacher}}
                         <a href='/admin'>Ready</a>
                         <a href='/inProcess'>In process</a>
                         <a href='/approvement'>Adjustment</a>
-
+                        <a href="https://localhost:4000/admin/create">Create </a>
                     {{end}}
-                    {{if not .IsAdmin }}
-                         <a href='/'>Home</a>
+                    {{if .IsStudent}}
+                        <a href='/'>Home</a>
+                    {{end}}
+                    {{if.IsCoordinator}}
+                        <a href='/coordinator'>Home</a>
+                    {{end}}
 
+                   >Home</a>
                     {{end}}
                 </div>
-                <div>
-                 {{if  .IsAdmin}}
-                      <a href="https://localhost:4000/admin/create" >Create </a>
-                 {{end}}
-                 {{if .IsAuthenticated}}
+                {{if .IsAuthenticated}}
+                    <div style="width:40%">
                         <form action='/logout' method='POST'>
                             <button>Logout</button>
                         </form>
-                    {{else}}
+                    </div>
+                {{else}}
+                    <div style="text-align:right; width:100%">
                         <a href='/signin'>Sign In</a>
-                    {{end}}
-                </div>
+                    </div>
+                {{end}}
             </nav>
             <main>
                 {{with .Flash}}

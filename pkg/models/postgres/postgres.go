@@ -109,7 +109,6 @@ func (m *PgModel) GetNameSyllabusWithStudent() ([]*models.Syllabus, error) {
 func (m *PgModel) GetSyllabusForDean(status string) ([]*models.Syllabus, error) {
 	var students []*models.Syllabus
 	rows, err := m.Pool.Query(context.Background(), getSyllabusForDean, status)
-	fmt.Println("qwer")
 
 	if err != nil {
 		return nil, err
@@ -117,7 +116,6 @@ func (m *PgModel) GetSyllabusForDean(status string) ([]*models.Syllabus, error) 
 	for rows.Next() {
 		s := &models.Syllabus{}
 		err = rows.Scan(&s.ID, &s.SyllabusInfoID, &s.Status, &s.Title, &s.Feedback)
-		fmt.Println("title: ", s.Title)
 		if err != nil {
 			return nil, err
 		}
@@ -158,43 +156,22 @@ func (m *PgModel) GetNameSyllabus(status string) ([]*models.Syllabus, error) {
 	return students, nil
 }
 
-//
-//func (m *PgModel) GetFeedback(id int) (*models.Syllabus, error) {
-//	feedback := &models.Syllabus{}
-//	err := m.Pool.QueryRow(context.Background(), getFeedback, id).Scan(&feedback.Feedback)
-//
-//	if err != nil {
-//		if err.Error() == "no rows in result set" {
-//			return nil, models.ErrNoRecord
-//		} else {
-//			return nil, err
-//		}
-//	}
-//
-//	return feedback, nil
-//}
-
 func (m *PgModel) GetNameSyllabusFromCoordinator(status string) ([]*models.Syllabus, error) {
 	var students []*models.Syllabus
 	rows, err := m.Pool.Query(context.Background(), getNameSyllabusForCoordinator, iDFromSyllabus, status)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("перед for")
 	for rows.Next() {
 		s := &models.Syllabus{}
 		err = rows.Scan(&s.ID, &s.Title, &s.SyllabusInfoID, &s.Status, &s.Feedback)
 		if err != nil {
-			fmt.Println("err: ", err)
 			return nil, err
 		}
 		if s.Status == status {
 			students = append(students, s)
 		}
-
 	}
-	fmt.Println("после for")
-
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
@@ -209,7 +186,6 @@ func (m *PgModel) GetTeacherId() (int, error) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	fmt.Println("Teacher id", id)
 	iDFromSyllabus = id
 	return id, nil
 }
@@ -219,10 +195,8 @@ func (m *PgModel) GetCoordinatorId() (int, error) {
 	err := m.Pool.QueryRow(context.Background(), getCoordinatorId, authID).
 		Scan(&id)
 	if err != nil {
-		fmt.Println(id)
 		fmt.Println(err.Error())
 	}
-	fmt.Println("Coordinator id", id)
 	iDFromSyllabus = id
 	return id, nil
 }
@@ -244,7 +218,6 @@ func (m *PgModel) DeleteStudentById(id int) error {
 }
 
 func (m *PgModel) SendSyllabus(id int, status string) error {
-	fmt.Println("status: ", status, "id: ", id)
 	_, err := m.Pool.Exec(context.Background(), updateStatus, status, id)
 	if err != nil {
 		return err
@@ -300,10 +273,8 @@ func (m *PgModel) InsertSyllabusInfo(syllabus *models.Syllabus) (int, error) {
 	err := row.Scan(&syllabusInfoId)
 
 	if err != nil {
-		fmt.Println("err2: ", err)
 		return 0, err
 	}
-	fmt.Println("syllabusInfoId", syllabusInfoId)
 	return int(syllabusInfoId), nil
 }
 
@@ -321,7 +292,6 @@ func (m *PgModel) InsertSessionPlan(table1 []*models.TopicWeek, syllabusInfoId i
 			topic.LectureTopic, topic.LectureHours, topic.PracticeTopic, topic.PracticeHours, topic.Assignment, topic.WeekNumber, planId)
 		err := row.Scan(&topicId)
 		if err != nil {
-			fmt.Println(err)
 			return 0, err
 		}
 	}
@@ -342,7 +312,6 @@ func (m *PgModel) InsertIndependentStudyPlan(table2 []*models.StudentTopicWeek, 
 			topic.WeekNumber, topic.Topics, topic.Hours, topic.RecommendedLiterature, topic.SubmissionForm, independentStudyPlanId)
 		err := row.Scan(&topicId)
 		if err != nil {
-			fmt.Println(err)
 			return 0, err
 		}
 	}
@@ -356,9 +325,7 @@ func (m *PgModel) InsertSyllabus(syllabus *models.Syllabus, teacherId int, name 
 	_, err = m.InsertIndependentStudyPlan(syllabus.Table2, syllabusInfoId)
 	row := m.Pool.QueryRow(context.Background(), insertSyllabus, teacherId, syllabusInfoId, name, "in_process", "")
 	err = row.Scan(&syllabusId)
-	fmt.Println("syllabusId: ", syllabusId, syllabusInfoId)
 	if err != nil {
-		fmt.Println("err: ", err)
 		return 0, 0, err
 	}
 
@@ -371,7 +338,6 @@ func (m *PgModel) InsertDiscipline(dId, sId int) (int64, error) {
 		dId, sId)
 	err := row.Scan(&id)
 	if err != nil {
-		fmt.Println(err)
 		return 0, err
 	}
 
@@ -383,7 +349,6 @@ func (m *PgModel) InsertFeedback(feed string, sId int) (int64, error) {
 	row := m.Pool.QueryRow(context.Background(), updateFeedback, feed, sId)
 	err := row.Scan(&id)
 	if err != nil {
-		fmt.Println(err)
 		return 0, err
 	}
 
@@ -397,7 +362,6 @@ func (m *PgModel) GetStudentId() (int, error) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	fmt.Println("Student id", id)
 	iDFromSyllabus = id
 	return id, nil
 }
@@ -577,7 +541,6 @@ func (m *PgModel) SelectAllDiscipline() ([]*models.Discipline, error) {
 
 		discipline = append(discipline, d)
 	}
-	fmt.Println(discipline)
 	return discipline, nil
 }
 

@@ -2,11 +2,11 @@
 {{define "title"}}Create Syllabus{{end}}
 {{define "main"}}
     <form action='/admin/create' method='POST'>
-       <select name="discipline">
-                   {{range .Discipline}}
-                       <option value="{{.DisciplineId}}">{{.Title}}</option>
-                   {{end}}
-               </select>
+        <select name="discipline">
+            {{range .Discipline}}
+                <option value="{{.DisciplineId}}">{{.Title}}</option>
+            {{end}}
+        </select>
         {{with .Form}}
             <div>
                 <label>Discipline name:</label>
@@ -75,69 +75,86 @@
             <div>
                 <label>Instructors:</label>
                     {{with .Errors.Get "instructors"}}
-                        <label class='instructors'>{{.}}</label>
+                <label class='instructors'>{{.}}</label>
                     {{end}}
                 <input type='text' name='instructors' value='{{.Get "instructors"}}'>
             </div>
-              <div>
-                    <label>Assessment type:</label>
-                        {{with .Errors.Get "Assessment"}}
-                            <label class='Assessment'>{{.}}</label>
-                        {{end}}
-                    <input type='text' name='assessment' value='{{.Get "Assessment"}}' placeholder='take from image'>
-                </div>
-
+            <div>
+                <label>Assessment type:</label>
+                    {{with .Errors.Get "Assessment"}}
+                <label class='Assessment'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='assessment' value='{{.Get "Assessment"}}' placeholder='take from image'>
+            </div>
 
 
             <div style="display:grid">
-                <input class="hide" id="hd-25" type="checkbox" >
+                <input class="hide" id="hd-25" type="checkbox">
                 <label for="hd-25">Assessment type:</label>
                 <div>
                     <div>
                         <div>
-                            <span>1: </span><center><img src="/static/img/1.png" width="500" height="300" alt="Italian Trulli"></center>
+                            <span>1: </span>
+                            <center><img src="/static/img/1.png" width="500" height="300" alt="Italian Trulli"></center>
                         </div>
-                            <span>2: </span><center><img src="/static/img/2.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <span>2: </span>
+                        <center><img src="/static/img/2.png" width="500" height="300" alt="Italian Trulli"></center>
                         <div>
-                            <span>3: </span><center><img src="/static/img/3.png" width="500" height="300" alt="Italian Trulli"></center>
-                        </div>
-                        <div>
-                            <span>4: </span><center><img src="/static/img/4.png" width="500" height="300" alt="Italian Trulli"></center>
-                        </div>
-                            <span>5: </span><center><img src="/static/img/5.png" width="500" height="300" alt="Italian Trulli"></center>
-                        <div>
-                            <span>6: </span><center><img src="/static/img/6.png" width="500" height="300" alt="Italian Trulli"></center>
+                            <span>3: </span>
+                            <center><img src="/static/img/3.png" width="500" height="300" alt="Italian Trulli"></center>
                         </div>
                         <div>
-                            <span>7: </span><center><img src="/static/img/7.png" width="500" height="300" alt="Italian Trulli"></center>
+                            <span>4: </span>
+                            <center><img src="/static/img/4.png" width="500" height="300" alt="Italian Trulli"></center>
                         </div>
-                            <span>8: </span><center><img src="/static/img/8.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <span>5: </span>
+                        <center><img src="/static/img/5.png" width="500" height="300" alt="Italian Trulli"></center>
                         <div>
-                            <span>9: </span><center><img src="/static/img/9.png" width="500" height="300" alt="Italian Trulli"></center>
-                        </div>
-                        <div>
-                            <span>10: </span><center><img src="/static/img/10.png" width="500" height="300" alt="Italian Trulli"></center>
-                        </div>
-                            <span>11: </span><center><img src="/static/img/11.png" width="500" height="300" alt="Italian Trulli"></center>
-                        <div>
-                            <span>12: </span><center><img src="/static/img/12.png" width="500" height="300" alt="Italian Trulli"></center>
+                            <span>6: </span>
+                            <center><img src="/static/img/6.png" width="500" height="300" alt="Italian Trulli"></center>
                         </div>
                         <div>
-                            <span>13: </span><center><img src="/static/img/13.png" width="500" height="300" alt="Italian Trulli"></center>
+                            <span>7: </span>
+                            <center><img src="/static/img/7.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                        <span>8: </span>
+                        <center><img src="/static/img/8.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <div>
+                            <span>9: </span>
+                            <center><img src="/static/img/9.png" width="500" height="300" alt="Italian Trulli"></center>
                         </div>
                         <div>
-                            <span>14: </span><center><img src="/static/img/14.png" width="500" height="300" alt="Italian Trulli"></center>
+                            <span>10: </span>
+                            <center><img src="/static/img/10.png" width="500" height="300" alt="Italian Trulli"></center>
                         </div>
-                            <span>15: </span><center><img src="/static/img/15.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <span>11: </span>
+                        <center><img src="/static/img/11.png" width="500" height="300" alt="Italian Trulli"></center>
                         <div>
-                            <span>16: </span><center><img src="/static/img/16.png" width="500" height="300" alt="Italian Trulli"></center>
+                            <span>12: </span>
+                            <center><img src="/static/img/12.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                        <div>
+                            <span>13: </span>
+                            <center><img src="/static/img/13.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                        <div>
+                            <span>14: </span>
+                            <center><img src="/static/img/14.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                        <span>15: </span>
+                        <center><img src="/static/img/15.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <div>
+                            <span>16: </span>
+                            <center><img src="/static/img/16.png" width="500" height="300" alt="Italian Trulli"></center>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <label>Lecture! practical/seminar/laboratory sessiion plan:</label>
             <div style="display:grid">
-                <input class="hide" id="hd-11" type="checkbox" >
+                <input class="hide" id="hd-11" type="checkbox">
                 <label for="hd-11">Week 1!</label>
                 <div>
                     <div>
@@ -192,7 +209,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-12" type="checkbox" >
+                <input class="hide" id="hd-12" type="checkbox">
                 <label for="hd-12">Week 2!</label>
                 <div>
                     <div>
@@ -247,7 +264,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-13" type="checkbox" >
+                <input class="hide" id="hd-13" type="checkbox">
                 <label for="hd-13">Week 3!</label>
                 <div>
                     <div>
@@ -302,7 +319,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-14" type="checkbox" >
+                <input class="hide" id="hd-14" type="checkbox">
                 <label for="hd-14">Week 4!</label>
                 <div>
                     <div>
@@ -357,7 +374,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-15" type="checkbox" >
+                <input class="hide" id="hd-15" type="checkbox">
                 <label for="hd-15">Week 5!</label>
                 <div>
                     <div>
@@ -412,7 +429,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-16" type="checkbox" >
+                <input class="hide" id="hd-16" type="checkbox">
                 <label for="hd-16">Week 6!</label>
                 <div>
                     <div>
@@ -467,7 +484,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-17" type="checkbox" >
+                <input class="hide" id="hd-17" type="checkbox">
                 <label for="hd-17">Week 7!</label>
                 <div>
                     <div>
@@ -522,7 +539,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-18" type="checkbox" >
+                <input class="hide" id="hd-18" type="checkbox">
                 <label for="hd-18">Week 8!</label>
                 <div>
                     <div>
@@ -577,7 +594,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-19" type="checkbox" >
+                <input class="hide" id="hd-19" type="checkbox">
                 <label for="hd-19">Week 9!</label>
                 <div>
                     <div>
@@ -632,7 +649,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-20" type="checkbox" >
+                <input class="hide" id="hd-20" type="checkbox">
                 <label for="hd-20">Week 10!</label>
                 <div>
                     <div>
@@ -690,14 +707,9 @@
             </div>
 
 
-
-
-
-
             <label>List of assignments for Student Independent Study:</label>
-
             <div style="display:grid">
-                <input class="hide" id="hd-1" type="checkbox" >
+                <input class="hide" id="hd-1" type="checkbox">
                 <label for="hd-1">Week 1!</label>
                 <div>
                     <div>
@@ -742,7 +754,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-2" type="checkbox" >
+                <input class="hide" id="hd-2" type="checkbox">
                 <label for="hd-2">Week 2!</label>
                 <div>
                     <div>
@@ -787,7 +799,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-3" type="checkbox" >
+                <input class="hide" id="hd-3" type="checkbox">
                 <label for="hd-3">Week 3!</label>
                 <div>
                     <div>
@@ -832,7 +844,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-4" type="checkbox" >
+                <input class="hide" id="hd-4" type="checkbox">
                 <label for="hd-4">Week 4!</label>
                 <div>
                     <div>
@@ -877,7 +889,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-5" type="checkbox" >
+                <input class="hide" id="hd-5" type="checkbox">
                 <label for="hd-5">Week 5!</label>
                 <div>
                     <div>
@@ -922,7 +934,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-6" type="checkbox" >
+                <input class="hide" id="hd-6" type="checkbox">
                 <label for="hd-6">Week 6!</label>
                 <div>
                     <div>
@@ -967,7 +979,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-7" type="checkbox" >
+                <input class="hide" id="hd-7" type="checkbox">
                 <label for="hd-7">Week 7!</label>
                 <div>
                     <div>
@@ -1012,7 +1024,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-8" type="checkbox" >
+                <input class="hide" id="hd-8" type="checkbox">
                 <label for="hd-8">Week 8!</label>
                 <div>
                     <div>
@@ -1057,7 +1069,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-9" type="checkbox" >
+                <input class="hide" id="hd-9" type="checkbox">
                 <label for="hd-9">Week 9!</label>
                 <div>
                     <div>
@@ -1102,7 +1114,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="hide" id="hd-10" type="checkbox" >
+                <input class="hide" id="hd-10" type="checkbox">
                 <label for="hd-10">Week 10!</label>
                 <div>
                     <div>
@@ -1148,12 +1160,6 @@
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
             <div>
                 <input type='submit' value='Create Student'>
             </div>

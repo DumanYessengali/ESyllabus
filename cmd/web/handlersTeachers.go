@@ -171,40 +171,16 @@ func (app *application) getMainPageTeacherApprovement(w http.ResponseWriter, r *
 	})
 }
 
-//func (app *application) createStudent(w http.ResponseWriter, r *http.Request) {
-//	if err := r.ParseForm(); err != nil {
-//		app.serverError(w, err)
-//		return
-//	}
-//
-//	form := forms.New(r.PostForm)
-//	form.Required("username", "password", "groupName", "subjectName")
-//	form.MaxLength("username", 100)
-//
-//	if !form.Valid() {
-//		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
-//		return
-//	}
-//
-//	app.student.InsertSyllabus(form.Get("username"), form.Get("password"), form.Get("groupName"), form.Get("subjectName"))
-//
-//	app.session.Put(r, "flash", "Student successfully created!")
-//
-//	http.Redirect(w, r, fmt.Sprintf("/admin"), http.StatusSeeOther)
-//}
-
 func (app *application) sendSyllabus(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
 		app.notFound(w)
 		return
 	}
-	fmt.Println("aidana")
 	err = app.student.SendSyllabus(id, "approvement")
 
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
-		fmt.Println("aidana")
 		println(err.Error())
 		return
 	}
@@ -231,17 +207,13 @@ func (app *application) deleteStudent(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) updateSyllabus(w http.ResponseWriter, r *http.Request) {
-
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	//fmt.Println(id)
 
 	syllabus, err := app.student.SelectSyllabusTableRow(id)
 	if err != nil {
 		app.notFound(w)
 		return
 	}
-
-	//err = app.student.UpdateSyllabusInfo()
 
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
@@ -295,17 +267,13 @@ func (app *application) updateSyllabuss(w http.ResponseWriter, r *http.Request) 
 }
 
 func (app *application) updateTopicOpen(w http.ResponseWriter, r *http.Request) {
-
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	fmt.Println(id)
 
 	topic, err := app.student.SelecOnlyOneTopic(id)
 	if err != nil {
 		app.notFound(w)
 		return
 	}
-
-	//err = app.student.UpdateSyllabusInfo()
 
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
@@ -347,11 +315,9 @@ func (app *application) updateTopic(w http.ResponseWriter, r *http.Request) {
 		PracticeHours: int(practiceHours),
 		Assignment:    form.Get("Assignment"),
 	}
-	fmt.Println("L hOURS", int(lectureHours))
 	err = app.student.UpdateTopicWeek(topic, id)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
-		fmt.Println("Hello")
 		println(err.Error())
 		return
 	}
@@ -360,9 +326,7 @@ func (app *application) updateTopic(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) updateIndepTopicOpen(w http.ResponseWriter, r *http.Request) {
-
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	fmt.Println(id)
 
 	indep, err := app.student.SelecOnlyOneIndep(id)
 	if err != nil {
@@ -739,7 +703,6 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 	//	"submission10",
 	//)
 	//form.MaxLength("username", 100)
-	fmt.Println("Pered valid")
 	if !form.Valid() {
 		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
 		return
@@ -992,15 +955,10 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 		Table2:            t2,
 	}
 
-	fmt.Println(syllabus.Goals)
-	fmt.Println("week number: ", form.Get("week_num"))
-	//disciplineId, _ := strconv.ParseInt(form.Get("discipline"), 10, 64)
 	teacherId, _ := app.student.GetTeacherId()
-	syllabusId, sId, _ := app.student.InsertSyllabus(syllabus, teacherId, form.Get("title"))
+	_, sId, _ := app.student.InsertSyllabus(syllabus, teacherId, form.Get("title"))
 	dId, _ := strconv.ParseInt(r.PostFormValue("discipline"), 10, 64)
-	disciplineId, _ := app.student.InsertDiscipline(int(dId), sId)
-	fmt.Println(syllabusId, disciplineId)
-	fmt.Println(" disciplineId ", dId)
+	_, _ = app.student.InsertDiscipline(int(dId), sId)
 	app.session.Put(r, "flash", "Syllabus successfully created!")
 
 	http.Redirect(w, r, fmt.Sprintf("/inProcess"), http.StatusSeeOther)

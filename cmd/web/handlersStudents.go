@@ -26,7 +26,6 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		Flash:    flash,
 		Syllabus: syllabus,
 	})
-
 }
 
 //loginUserForm
@@ -62,32 +61,36 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 		fmt.Print(err.Error())
 	}
 	if role.Role == "teacher" {
-		fmt.Print(role.ID)
-		app.session.Put(r, "adminUserID", id)
+		app.session.Put(r, "sessionTeacherID", id)
 		http.Redirect(w, r, "/admin", http.StatusSeeOther)
-		app.student.GetNameSyllabus("confirmed")
 		return
 	} else if role.Role == "student" {
-		app.session.Put(r, "adminStudentsID", id)
+		app.session.Put(r, "sessionStudentsID", id)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	} else if role.Role == "coordinator" {
-		app.session.Put(r, "adminCoordinatorID", id)
+		app.session.Put(r, "sessionCoordinatorID", id)
 		http.Redirect(w, r, "/coordinator", http.StatusSeeOther)
 		return
 	} else if role.Role == "dean" {
-		app.session.Put(r, "adminCoordinatorID", id)
+		app.session.Put(r, "sessionDeanID", id)
 		http.Redirect(w, r, "/dean", http.StatusSeeOther)
 		return
 	}
-
 	http.Redirect(w, r, "/", http.StatusSeeOther)
-
 }
 
 func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 	app.session.Remove(r, "authenticatedUserID")
-	app.session.Remove(r, "adminUserID")
+	if app.IsTeacher(r) {
+		app.session.Remove(r, "sessionTeacherID")
+	} else if app.IsStudent(r) {
+		app.session.Remove(r, "sessionStudentsID")
+	} else if app.IsCoordinator(r) {
+		app.session.Remove(r, "sessionCoordinatorID")
+	} else if app.IsDean(r) {
+		app.session.Remove(r, "sessionDeanID")
+	}
 	app.session.Put(r, "flash", "You've been logged out successfully!")
 	http.Redirect(w, r, "/signin", http.StatusSeeOther)
 }

@@ -3,24 +3,24 @@
 {{define "main"}}
     <table class="cinereousTable">
         <thead>
-            <tr>
-                <th>Название силлабуса</th>
-                <th> </th>
-            </tr>
+        <tr>
+            <th>Syllabus name</th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
-             {{range .Syllabus}}
+            {{range .Syllabus}}
                 <tr>
                     <td style="text-align:left">
                         #{{.Title}}
                     </td>
                     <td style="text-align:right">
-                        <a href="https://localhost:4000/dean/ready/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Ready</a>
-                        <a href="https://localhost:4000/dean/syllabusinfo?id={{.SyllabusInfoID}}"  class="myButton">Go</a>
-
+                        <a href="https://localhost:4000/dean/ready/syllabusinfo?id={{.SyllabusInfoID}}" id="confirm"
+                           class="myButton">Ready</a>
+                        <a href="https://localhost:4000/dean/syllabusinfo?id={{.SyllabusInfoID}}" id="send" class="myButton">Go</a>
                     </td>
                 </tr>
-             {{end}}
+            {{end}}
         </tbody>
     </table>
     <br><br>

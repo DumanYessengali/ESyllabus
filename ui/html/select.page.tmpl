@@ -4,53 +4,53 @@
     <table>
         <p align="center" style="font-size:30px;">Syllabus</p>
         <thead>
-            <tr>
-                <th colspan=2 style="padding: 0 40% 0 35%;">General information</th>
-            </tr>
+        <tr>
+            <th colspan=2 style="padding: 0 40% 0 35%;">General information</th>
+        </tr>
         </thead>
-        <tbody>
-            {{range .Syllabus}}
-               <tr>
+        {{range .Syllabus}}
+            <tbody>
+                <tr>
                     <td>
                         Syllabus title
                     </td>
                     <td style="text-align:left">
                         {{.Title}}
                     </td>
-               </tr>
-                 <tr>
-                      <td>
-                          Discipline
-                      </td>
-                      <td style="text-align:left">
-                          {{.Discipline}}
-                      </td>
-                 </tr>
-               <tr>
+                </tr>
+                <tr>
+                    <td>
+                        Discipline
+                    </td>
+                    <td style="text-align:left">
+                        {{.Discipline}}
+                    </td>
+                </tr>
+                <tr>
                     <td>
                         Number of credits
                     </td>
                     <td style="text-align:left">
                         {{.Credits}}
                     </td>
-               </tr>
-               <tr>
+                </tr>
+                <tr>
                     <td>
                         Prerequisites
                     </td>
                     <td style="text-align:left">
                         {{.Prerequisites}}
                     </td>
-               </tr>
-               <tr>
+                </tr>
+                <tr>
                     <td>
                         Postrequisites
                     </td>
                     <td style="text-align:left">
                         {{.Postrequisites}}
                     </td>
-               </tr>
-            {{end}}
+                </tr>
+                {{end}}
                 <tr>
                     <td>
                         Lecturer(s)
@@ -60,87 +60,88 @@
                             {{.FullName}}, {{.Degree}}, {{.Rank}}, {{.Position}}, {{.Contacts}}, {{.Interests}}
                         {{end}}
                     </td>
-               </tr>
-            {{range .Syllabus}}
-               <tr>
+                </tr>
+                {{range .Syllabus}}
+                <tr>
                     <td>
                         Course goal(s)
                     </td>
                     <td style="text-align:left">
                         {{.Goals}}
                     </td>
-               </tr>
-               <tr>
+                </tr>
+                <tr>
                     <td>
-                         Course objectives:
+                        Course objectives:
                     </td>
                     <td style="text-align:left">
                         {{.Objectives}}
                     </td>
-               </tr>
-               <tr>
+                </tr>
+                <tr>
                     <td>
-                         Skills & competences
+                        Skills & competences
                     </td>
                     <td style="text-align:left">
                         {{.SkillsCompetences}}
                     </td>
-               </tr>
-               <tr>
+                </tr>
+                <tr>
                     <td>
                         Course learning outcomes
                     </td>
                     <td style="text-align:left">
                         {{.LearningOutcomes}}
                     </td>
-               </tr>
-               <tr>
+                </tr>
+                <tr>
                     <td>
                         Course instructor(s)
                     </td>
                     <td style="text-align:left">
                         {{.Instructors}}
                     </td>
-
-               </tr>
-               <tr>
-                   <td >
-                      <a href="https://localhost:4000/admin/updateSyllabus?id={{.SyllabusInfoID}}"  class="myButton">&nbsp;Update </a>
-                    </td>
-               </tr>
-            {{end}}
-        </tbody>
+                </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="2">
+                    <a href="https://localhost:4000/admin/updateSyllabus?id={{.SyllabusInfoID}}" style="text-align:right" id="send" class="myButton">Update </a>
+                </td>
+            </tr>
+            </tfoot>
+        {{end}}
     </table>
 
     <br><br><br>
     <table>
         <p align="center" style="font-size:25px;">Lecture! practical/seminar/laboratory session plans</p>
         <tbody>
-             <tr>
-                    <td>
-                        Week Number
-                    </td>
-                    <td>
-                        Lecture Topic
-                    </td>
-                    <td>
-                        Lecture Hours
-                    </td>
-                    <td>
-                        Practice Topic
-                    </td>
-                    <td>
-                        Practice Hours
-                    </td>
-                    <td>
-                        Assignment
-                    </td>
-                    <td>
-                        Update
-                    </td>
-               </tr>
+            <tr>
+                <td>
+                    Week Number
+                </td>
+                <td>
+                    Lecture Topic
+                </td>
+                <td>
+                    Lecture Hours
+                </td>
+                <td>
+                    Practice Topic
+                </td>
+                <td>
+                    Practice Hours
+                </td>
+                <td>
+                    Assignment
+                </td>
+                <td>
+                    Update
+                </td>
+            </tr>
             {{range .Topic}}
-               <tr>
+                <tr>
                     <td>
                         {{.WeekNumber}}
                     </td>
@@ -160,61 +161,61 @@
                         {{.Assignment}}
                     </td>
                     <td>
-                        <a href="https://localhost:4000/admin/updateTopicOpen?id={{.TopicWeekID}}"  class="myButton">&nbsp;Update </a>
+                        <a href="https://localhost:4000/admin/updateTopicOpen?id={{.TopicWeekID}}" style="text-align:right" id="send" class="myButton">&nbsp;Update </a>
                     </td>
-               </tr>
+                </tr>
             {{end}}
         </tbody>
     </table><br><br><br>
     <table>
         <p align="center" style="font-size:25px;">List of assignments for Student Independent Study</p>
         <tbody>
-             <tr>
-                    <td>
-                        Week Number
-                    </td>
-                    <td>
-                        Topics
-                    </td>
-                    <td>
-                        Hours
-                    </td>
-                    <td>
-                        Recommended Literature
-                    </td>
-                    <td>
-                        Submission Form
-                    </td>
-                    <td>
-                        Update
-                    </td>
-               </tr>
-            {{range .Independent}}
-               <tr>
-                    <td>
-                        {{.WeekNumber}}
-                    </td>
-                    <td>
-                        {{.Topics}}
-                    </td>
-                    <td>
-                        {{.Hours}}
-                    </td>
-                    <td>
-                        {{.RecommendedLiterature}}
-                    </td>
-                    <td>
-                        {{.SubmissionForm}}
-                    </td>
-                    <td>
-                        <a href="https://localhost:4000/admin/updateIndepOpen?id={{.StudentTopicWeekID}}"  class="myButton">&nbsp;Update </a>
-                    </td>
-               </tr>
-            {{end}}
+        <tr>
+            <td>
+                Week Number
+            </td>
+            <td>
+                Topics
+            </td>
+            <td>
+                Hours
+            </td>
+            <td>
+                Recommended Literature
+            </td>
+            <td>
+                Submission Form
+            </td>
+            <td>
+                Update
+            </td>
+        </tr>
+        {{range .Independent}}
+        <tr>
+            <td>
+                {{.WeekNumber}}
+            </td>
+            <td>
+                {{.Topics}}
+            </td>
+            <td>
+                {{.Hours}}
+            </td>
+            <td>
+                {{.RecommendedLiterature}}
+            </td>
+            <td>
+                {{.SubmissionForm}}
+            </td>
+            <td>
+                <a href="https://localhost:4000/admin/updateIndepOpen?id={{.StudentTopicWeekID}}" style="text-align:right" id="send" class="myButton">&nbsp;Update </a>
+            </td>
+        </tr>
+        {{end}}
         </tbody>
     </table>
     <br><br><br>
-   {{with .AssessmentType}}
+    {{with .AssessmentType}}
     <table>
         <p align="center" style="font-size:25px;">Student performance evaluation system for the course</p>
         <tbody>
@@ -238,13 +239,13 @@
                 1st attestation
             </td>{{end}}
             <td>{{range .AssessmentType.Assignment1}}
-                {{.}}<br>
+                    {{.}}<br>
                 {{end}}
             </td>
             <td>
                 {{range .AssessmentType.PointsNum1}}
-                            {{.}}<br>
-                  {{end}}
+                    {{.}}<br>
+                {{end}}
             </td>
             <td>
                 100
@@ -257,13 +258,13 @@
                 2nd attestation
             </td>
             <td>
-              {{range .AssessmentType.Assignment2}}
-                          {{.}}<br>
+                {{range .AssessmentType.Assignment2}}
+                    {{.}}<br>
                 {{end}}
             </td>
             <td>
-             {{range .AssessmentType.PointsNum2}}
-                             {{.}}<br>
+                {{range .AssessmentType.PointsNum2}}
+                    {{.}}<br>
                 {{end}}
             </td>
             <td>
@@ -303,136 +304,136 @@
         </tr>
         </tbody>
     </table>
-        <br><br><br>
+    <br><br><br>
 
-         <table>
-               <p align="center" style="font-size:30px;">Based on the specific grade for each assignment, and the final grade, following criteria must be satisfied:</p>
-               <thead>
-                   <tr>
-                       <th>Grade</th>
-                       <th colspan=4 style="text-align:left">Criteria to be satisfied</th>
-                   </tr>
-               </thead>
-               <tbody>
-                   <tr>
-                       <td>A</td>
-                       <td colspan=4 style="text-align:left">Performs accurate calculations. Uses adequate mathematical operations without errors. Draws logical conclusions, supported by a graph. Provides detailed and correct explanations for the calculations performed.</td>
-                   </tr>
-                   <tr>
-                       <td>В</td>
-                       <td colspan=4 style="text-align:left">Performs well calculations. Uses adequate mathematical operations with few errors. Draws logical conclusions, supported by a graph. Explains the calculations done well.</td>
-                   </tr>
-                   <tr>
-                       <td>C</td>
-                       <td colspan=4 style="text-align:left">I tried to make calculations, but many of them are not accurate. Uses inappropriate mathematical operations, but no errors. Draws conclusions that are not supported by a graph. Provides a small explanation for the calculations performed.</td>
-                   </tr>
-                   <tr>
-                       <td>D</td>
-                       <td colspan=4 style="text-align:left">Does inaccurate calculations. Uses inappropriate mathematical operations. Doesn't draw any conclusions on the schedule. Does not offer an explanation for the calculations performed.</td>
-                   </tr>
-                   <tr>
-                       <td>F</td>
-                       <td colspan="4" style="text-align:left">No response. The student did not try to complete the assignment.</td>
-                   </tr>
-               </tbody>
-           </table><br><br>
-           <table >
+    <table>
+        <p align="center" style="font-size:30px;">Based on the specific grade for each assignment, and the final grade, following criteria must be satisfied:</p>
+        <thead>
+        <tr>
+            <th>Grade</th>
+            <th colspan=4 style="text-align:left">Criteria to be satisfied</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>A</td>
+            <td colspan=4 style="text-align:left">Performs accurate calculations. Uses adequate mathematical operations without errors. Draws logical conclusions, supported by a graph. Provides detailed and correct explanations for the calculations performed.</td>
+        </tr>
+        <tr>
+            <td>В</td>
+            <td colspan=4 style="text-align:left">Performs well calculations. Uses adequate mathematical operations with few errors. Draws logical conclusions, supported by a graph. Explains the calculations done well.</td>
+        </tr>
+        <tr>
+            <td>C</td>
+            <td colspan=4 style="text-align:left">I tried to make calculations, but many of them are not accurate. Uses inappropriate mathematical operations, but no errors. Draws conclusions that are not supported by a graph. Provides a small explanation for the calculations performed.</td>
+        </tr>
+        <tr>
+            <td>D</td>
+            <td colspan=4 style="text-align:left">Does inaccurate calculations. Uses inappropriate mathematical operations. Doesn't draw any conclusions on the schedule. Does not offer an explanation for the calculations performed.</td>
+        </tr>
+        <tr>
+            <td>F</td>
+            <td colspan="4" style="text-align:left">No response. The student did not try to complete the assignment.</td>
+        </tr>
+        </tbody>
+    </table><br><br>
+    <table >
 
-               <p align="center" style="font-size:30px;">Syllabus</p>
-               <thead>
-                   <tr>
-                       <th>Letter Grade</th>
-                       <th>Numerical equivalent</th>
-                       <th>Percentage</th>
-                       <th colspan=2>Grade according to the traditional system</th>
+        <p align="center" style="font-size:30px;">Syllabus</p>
+        <thead>
+        <tr>
+            <th>Letter Grade</th>
+            <th>Numerical equivalent</th>
+            <th>Percentage</th>
+            <th colspan=2>Grade according to the traditional system</th>
 
-                   </tr>
-               </thead>
-               <tbody >
-                   <tr>
-                       <td>A</td>
-                       <td>4,0</td>
-                       <td>95-100</td>
-                       <td rowspan="2" style="text-align:center" colspan=2>Excellent</td>
-                   </tr>
-                   <tr>
-                       <td>А-</td>
-                       <td>3,67</td>
-                       <td style="text-align:left" >90-94</td>
-                   </tr>
-                   <tr>
-                       <td>В+</td>
-                       <td>3,33</td>
-                       <td>85-89</td>
-                       <td colspan=2 style="text-align:center">Good</td>
-                   </tr>
-                   <tr>
-                       <td>В</td>
-                       <td>3,0</td>
-                       <td>80-84</td>
-                       <td rowspan="2" style="text-align:center" colspan=2>Good</td>
-                   </tr>
-                   <tr>
-                       <td>В-</td>
-                       <td>2,67</td>
-                       <td style="text-align:left">75-79</td>
-                   </tr>
-                   <tr>
-                       <td>С+</td>
-                       <td>2,33</td>
-                       <td>70-74</td>
-                       <td colspan=2 style="text-align:center">Satisfactory</td>
-                   </tr>
-                   <tr>
-                       <td>С</td>
-                       <td>2,0</td>
-                       <td>65-69</td>
-                       <td rowspan="3" style="text-align:center">Satisfactory</td>
-                   </tr>
-                   <tr>
-                       <td>С-</td>
-                       <td>1,67</td>
-                       <td style="text-align:left">60-64</td>
-                   </tr>
-                   <tr>
-                       <td>D+</td>
-                       <td>1,33</td>
-                       <td style="text-align:left">55-59</td>
-                  </tr>
-                   <tr>
-                       <td>D</td>
-                       <td>1,0</td>
-                       <td>50-54</td>
-                       <td colspan=2 style="text-align:center">Satisfactory</td>
-                   </tr>
-                   <tr>
-                       <td>F</td>
-                       <td>0</td>
-                       <td>0-49</td>
-                       <td colspan=2 style="text-align:center">Fail</td>
-                   </tr>
-               </tbody>
+        </tr>
+        </thead>
+        <tbody >
+        <tr>
+            <td>A</td>
+            <td>4,0</td>
+            <td>95-100</td>
+            <td rowspan="2" style="text-align:center" colspan=2>Excellent</td>
+        </tr>
+        <tr>
+            <td>А-</td>
+            <td>3,67</td>
+            <td style="text-align:left" >90-94</td>
+        </tr>
+        <tr>
+            <td>В+</td>
+            <td>3,33</td>
+            <td>85-89</td>
+            <td colspan=2 style="text-align:center">Good</td>
+        </tr>
+        <tr>
+            <td>В</td>
+            <td>3,0</td>
+            <td>80-84</td>
+            <td rowspan="2" style="text-align:center" colspan=2>Good</td>
+        </tr>
+        <tr>
+            <td>В-</td>
+            <td>2,67</td>
+            <td style="text-align:left">75-79</td>
+        </tr>
+        <tr>
+            <td>С+</td>
+            <td>2,33</td>
+            <td>70-74</td>
+            <td colspan=2 style="text-align:center">Satisfactory</td>
+        </tr>
+        <tr>
+            <td>С</td>
+            <td>2,0</td>
+            <td>65-69</td>
+            <td rowspan="3" style="text-align:center">Satisfactory</td>
+        </tr>
+        <tr>
+            <td>С-</td>
+            <td>1,67</td>
+            <td style="text-align:left">60-64</td>
+        </tr>
+        <tr>
+            <td>D+</td>
+            <td>1,33</td>
+            <td style="text-align:left">55-59</td>
+        </tr>
+        <tr>
+            <td>D</td>
+            <td>1,0</td>
+            <td>50-54</td>
+            <td colspan=2 style="text-align:center">Satisfactory</td>
+        </tr>
+        <tr>
+            <td>F</td>
+            <td>0</td>
+            <td>0-49</td>
+            <td colspan=2 style="text-align:center">Fail</td>
+        </tr>
+        </tbody>
 
-           </table>
-           <br><br>
-         <table>
-            <thead>
-                <tr>
-                    <th style="text-align:left">
-                        Feedback:
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="text-align:left;color:red">
-                        {{range .Syllabus}}
-                            {{.Feedback}}
-                        {{end}}
-                    </td>
-                </tr>
-            </tbody>
-         </table>
+    </table>
+    <br><br>
+    <table>
+        <thead>
+        <tr>
+            <th style="text-align:left">
+                Feedback:
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="text-align:left;color:red">
+                {{range .Syllabus}}
+                    {{.Feedback}}
+                {{end}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
 {{end}}
 
 

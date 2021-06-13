@@ -46,9 +46,32 @@ func (app *application) requireAuthentication(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
 func (app *application) requireTeacher(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if app.student.GetRole() != "teacher" {
+			http.Redirect(w, r, "/admin", http.StatusSeeOther)
+			return
+		}
+		w.Header().Add("Cache-Control", "no-store")
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (app *application) requireCoordinator(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if app.student.GetRole() != "coordinator" {
+			http.Redirect(w, r, "/coordinator", http.StatusSeeOther)
+			return
+		}
+		w.Header().Add("Cache-Control", "no-store")
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (app *application) requireStudent(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if app.student.GetRole() != "student" {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 			return
 		}
@@ -56,10 +79,11 @@ func (app *application) requireTeacher(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-func (app *application) requireCoordinator(next http.Handler) http.Handler {
+
+func (app *application) requireDean(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if app.student.GetRole() != "coordinator" {
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+		if app.student.GetRole() != "dean" {
+			http.Redirect(w, r, "/dean", http.StatusSeeOther)
 			return
 		}
 		w.Header().Add("Cache-Control", "no-store")
