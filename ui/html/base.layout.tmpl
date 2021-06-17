@@ -165,8 +165,8 @@
                     {{if.IsCoordinator}}
                         <a href='/coordinator'>Home</a>
                     {{end}}
-
-                   >Home</a>
+                    {{if.IsDean}}
+                        <a href='/dean'>Home</a>
                     {{end}}
                 </div>
                 {{if .IsAuthenticated}}

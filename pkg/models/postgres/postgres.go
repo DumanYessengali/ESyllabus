@@ -2,7 +2,9 @@ package postgres
 
 import (
 	"context"
+	"crypto/md5"
 	"database/sql"
+	"encoding/hex"
 	"errors"
 	"examFortune/pkg/models"
 	"fmt"
@@ -230,7 +232,7 @@ func (m *PgModel) Authenticate(username, password string) (int, error) {
 	var pass string
 	row := m.Pool.QueryRow(context.Background(), auth, username)
 	err := row.Scan(&id, &pass)
-
+	passwordWithoutHash := []byte(password)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return 0, models.ErrInvalidCredentials
@@ -238,10 +240,14 @@ func (m *PgModel) Authenticate(username, password string) (int, error) {
 			return 0, err
 		}
 	}
-	if pass != password {
+	md5HashInBytes := md5.Sum(passwordWithoutHash)
+	md5HashInString := hex.EncodeToString(md5HashInBytes[:])
+
+	if pass != md5HashInString {
 		return 0, models.ErrInvalidCredentials
 	}
 	authID = id
+
 	return id, nil
 }
 

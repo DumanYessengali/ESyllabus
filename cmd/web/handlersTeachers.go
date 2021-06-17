@@ -5,6 +5,7 @@ import (
 	"examFortune/pkg/forms"
 	"examFortune/pkg/models"
 	"fmt"
+	"github.com/jung-kurt/gofpdf"
 	"net/http"
 	"strconv"
 )
@@ -513,6 +514,43 @@ func (app *application) updateIndepTopic(w http.ResponseWriter, r *http.Request)
 	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
+func (app *application) getCreatePDF(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+	fmt.Println(id)
+	topic, independent, syllabus, teacher, _, err := app.student.GetSyllabusById(id)
+
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+	pdf.SetFont("Arial", "B", 16)
+
+	// CellFormat(width, height, text, border, position after, align, fill, link, linkStr)
+	pdf.CellFormat(190, 7, syllabus[0].Goals, "0", 5, "CM", false, 0, "")
+	pdf.CellFormat(190, 7, topic[0].LectureTopic, "0", 0, "CM", false, 0, "")
+	pdf.CellFormat(190, 7, independent[0].RecommendedLiterature, "0", 0, "CM", false, 0, "")
+	pdf.CellFormat(190, 7, teacher[0].FullName, "0", 0, "CM", false, 0, "")
+	// ImageOptions(src, x, y, width, height, flow, options, link, linkStr)
+
+	err = pdf.OutputFileAndClose(syllabus[0].Title + ".pdf")
+	if err != nil {
+		panic(err)
+	}
+
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "pdf.page.tmpl", &templateData{
+		Flash: flash,
+	})
+}
+
 func (app *application) getSyllabusById(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
@@ -962,4 +1000,25 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 	app.session.Put(r, "flash", "Syllabus successfully created!")
 
 	http.Redirect(w, r, fmt.Sprintf("/inProcess"), http.StatusSeeOther)
+}
+func GeneratePdf(filename string) error {
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+	pdf.SetFont("Arial", "B", 16)
+
+	// CellFormat(width, height, text, border, position after, align, fill, link, linkStr)
+	pdf.CellFormat(190, 7, "Welcome to golangcode.com", "0", 0, "CM", false, 0, "")
+
+	// ImageOptions(src, x, y, width, height, flow, options, link, linkStr)
+	pdf.ImageOptions(
+		"avatar.jpg",
+		80, 20,
+		0, 0,
+		false,
+		gofpdf.ImageOptions{ImageType: "JPG", ReadDpi: true},
+		0,
+		"",
+	)
+
+	return pdf.OutputFileAndClose(filename)
 }
