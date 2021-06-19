@@ -7,13 +7,13 @@
 <table>
 <p align="center" style="font-size:30px;">Syllabus</p>
 {{with .TopicOneRow}}
- <form action="https://localhost:4000/admin/updateTopic?id={{.TopicWeekID}}" method="POST">
+ <form action="https://localhost:4000/admin/updateTopic?id={{.SyllabusInfoId}}&weekNum={{.WeekNumber}}" method="POST">
 
-        <thead >
-            <tr>
-                <th colspan=2 style="padding: 0 40% 0 35%;">Lecture! practical/seminar/laboratory session plans</th>
-            </tr>
-        </thead>
+<!--        <thead >-->
+<!--            <tr>-->
+<!--                <th colspan=2 style="padding: 0 40% 0 35%;">Lecture! practical/seminar/laboratory session plans</th>-->
+<!--            </tr>-->
+<!--        </thead>-->
         <tbody>
 
                <tr>
@@ -29,7 +29,12 @@
                         Lecture Topic
                     </td>
                     <td>
-                        <input type="text" name="LectureTopic" style="width:100%" placeholder="LectureTopic" value="{{.LectureTopic}}"/>
+                        <select name="lectureTopic">
+                        {{range .LectureTopic}}
+                        <option value="{{.Content}}">{{.Content}}</option>
+                        {{end}}
+                        </select>
+                        <input type="text" name="LectureTopic" style="width:100%" placeholder="Lecture Topic"/>
                     </td>
                </tr>
                <tr>
@@ -37,7 +42,12 @@
                         Lecture Hours
                     </td>
                     <td>
-                        <input type="text" name="LectureHours" style="width:100%" placeholder="LectureHours" value="{{.LectureHours}}"/>
+                        <select name="lectureHours">
+                            {{range .LectureHours}}
+                            <option value="{{.ContentInt}}">{{.ContentInt}}</option>
+                            {{end}}
+                        </select>
+                        <input type="text" name="LectureHours" style="width:100%" placeholder="Lecture Hours"/>
                     </td>
                </tr>
                <tr>
@@ -45,7 +55,12 @@
                         Practice Topic
                     </td>
                     <td>
-                        <input type="text" name="PracticeTopic" style="width:100%" placeholder="PracticeTopic" value="{{.PracticeTopic}}"/>
+                        <select name="practiceTopic">
+                            {{range .PracticeTopic}}
+                            <option value="{{.Content}}">{{.Content}}</option>
+                            {{end}}
+                        </select>
+                        <input type="text" name="PracticeTopic" style="width:100%" placeholder="Practice Topic"/>
                     </td>
                </tr>
 
@@ -54,7 +69,12 @@
                         Practice Hours
                     </td>
                     <td>
-                        <input type="text" name="PracticeHours" style="width:100%" placeholder="PracticeHours" value="{{.PracticeHours}}"/>
+                        <select name="practiceHours">
+                            {{range .PracticeHours}}
+                            <option value="{{.ContentInt}}">{{.ContentInt}}</option>
+                            {{end}}
+                        </select>
+                        <input type="text" name="PracticeHours" style="width:100%" placeholder="Practice Hours"/>
                     </td>
                </tr>
                <tr>
@@ -62,7 +82,12 @@
                          Assignment
                     </td>
                     <td>
-                         <input type="text" name="Assignment" style="width:100%" placeholder="Assignment" value="{{.Assignment}}"/>
+                        <select name="assignment">
+                            {{range .Assignment}}
+                            <option value="{{.Content}}">{{.Content}}</option>
+                            {{end}}
+                        </select>
+                         <input type="text" name="Assignment" style="width:100%" placeholder="Assignment"/>
                     </td>
                </tr>
 

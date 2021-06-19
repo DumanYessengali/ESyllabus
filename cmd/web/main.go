@@ -5,8 +5,11 @@ import (
 	"crypto/tls"
 	"examFortune/pkg/models/postgres"
 	"flag"
+	"fmt"
 	"github.com/golangcollege/sessions"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"html/template"
 	"log"
 	"net/http"
@@ -19,6 +22,7 @@ type application struct {
 	infoLog       *log.Logger
 	session       *sessions.Session
 	student       *postgres.PgModel
+	tempSyl       *postgres.MongoModel
 	templateCache map[string]*template.Template
 }
 
@@ -31,12 +35,31 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	pool, err := pgxpool.Connect(context.Background(), "user=postgres password=1234 host=localhost port=5432 dbname=esyllabus sslmode=disable pool_max_conns=10")
+	pool, err := pgxpool.Connect(context.Background(), "user=postgres password=1972 host=localhost port=5432 dbname=esyllabus sslmode=disable pool_max_conns=10")
 	if err != nil {
 		log.Fatalf("Unable to connection to database: %v\n", err)
 	}
 
 	defer pool.Close()
+
+	// Set client options
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+
+	// Connect to MongoDB
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Check the connection
+	err = client.Ping(context.TODO(), nil)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("MONGO: Connected to MongoDB!")
 
 	templateCache, err := newTemplateCache("./ui/html/")
 	if err != nil {
@@ -52,6 +75,7 @@ func main() {
 		infoLog:       infoLog,
 		session:       session,
 		student:       &postgres.PgModel{Pool: pool},
+		tempSyl:       &postgres.MongoModel{Pool: client.Database("esyllabus")},
 		templateCache: templateCache,
 	}
 

@@ -9,5 +9,5 @@ require (
 	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/justinas/alice v1.2.0
 	github.com/rongfengliang/maroto v1.1.2
-	github.com/utahta/go-openuri v0.1.0
+	go.mongodb.org/mongo-driver v1.5.3
 )

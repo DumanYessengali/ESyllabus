@@ -11,21 +11,30 @@ type templateData struct {
 	Form             *forms.Form
 	Flash            string
 	Prediction       string
+	Time             bool
 	AssessmentType   *models.Assessment
 	syllabus         *models.Syllabus
 	Syllabus         []*models.Syllabus
-	TopicOneRow      *models.TopicWeek
-	IndepTopicOneRow *models.StudentTopicWeek
+	TopicOneRow      *models.SessionWeek
+	IndepTopicOneRow *models.StudentWeek
 	Topic            []*models.TopicWeek
 	Independent      []*models.StudentTopicWeek
 	Teacher          []*models.TeacherInfo
 	Discipline       []*models.Discipline
-	IsTeacher        bool
-	IsStudent        bool
-	IsCoordinator    bool
-	IsDean           bool
-	IsAuthenticated  bool
-	IsDied           bool
+
+	TempTable1 []*models.SessionWeek
+	TempTable2 []*models.StudentWeek
+
+	TempGoals      []*models.TempFields
+	TempObjectives []*models.TempFields
+	TempOutcomes   []*models.TempFields
+
+	IsTeacher       bool
+	IsStudent       bool
+	IsCoordinator   bool
+	IsDean          bool
+	IsAuthenticated bool
+	IsDied          bool
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {

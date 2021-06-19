@@ -29,6 +29,9 @@ type Syllabus struct {
 	Assessment        int
 	Table1            []*TopicWeek
 	Table2            []*StudentTopicWeek
+	TempGoals         []string
+	TempObjectives    []string
+	TempOutcomes      []string
 }
 type Discipline struct {
 	DisciplineId int
@@ -46,18 +49,24 @@ type TeacherInfo struct {
 }
 
 type TopicWeek struct {
-	TopicWeekID   int
-	WeekNumber    int
-	LectureTopic  string
-	LectureHours  int
-	PracticeTopic string
-	PracticeHours int
-	Assignment    string
+	TopicWeekID    int
+	WeekNumber     int
+	SyllabusInfoId int
+	TeacherId      int
+	TeacherName    string
+	LectureTopic   string
+	LectureHours   int
+	PracticeTopic  string
+	PracticeHours  int
+	Assignment     string
 }
 
 type StudentTopicWeek struct {
 	StudentTopicWeekID    int
+	SyllabusInfoId        int
 	WeekNumber            int
+	TeacherId             int
+	TeacherName           string
 	Topics                string
 	Hours                 int
 	RecommendedLiterature string
@@ -77,4 +86,53 @@ type Assessment struct {
 	PointsNum1   []string
 	Assignment2  []string
 	PointsNum2   []string
+}
+
+//----------------------FOR TEMP
+
+type SessionWeek struct {
+	SyllabusInfoId int
+	WeekNumber     int
+	LectureTopic   []*TempFields
+	LectureHours   []*TempFields
+	PracticeTopic  []*TempFields
+	PracticeHours  []*TempFields
+	Assignment     []*TempFields
+}
+
+type StudentWeek struct {
+	SyllabusInfoId        int
+	WeekNumber            int
+	Topics                []*TempFields
+	Hours                 []*TempFields
+	RecommendedLiterature []*TempFields
+	SubmissionForm        []*TempFields
+}
+
+type TempFields struct {
+	TeacherId      int
+	TeacherName    string
+	SyllabusInfoId int
+	Content        string
+	ContentInt     int
+}
+
+type TempSessionTopic struct {
+	SyllabusInfoId int
+	TeacherID      int
+	TeacherName    string
+	WeekNumber     int
+	Topic          string
+	Hours          int
+}
+
+type TempStudentTopic struct {
+	SyllabusInfoId        int
+	TeacherId             int
+	TeacherName           string
+	WeekNumber            int
+	Topic                 string
+	Hours                 int
+	RecommendedLiterature string
+	SubmissionForm        string
 }

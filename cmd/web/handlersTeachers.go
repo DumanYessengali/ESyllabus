@@ -39,6 +39,14 @@ func (app *application) getMainPageCoordinator(w http.ResponseWriter, r *http.Re
 
 	syllabus, err := app.student.GetNameSyllabusFromCoordinator("approvement")
 
+	for i := 0; i < len(syllabus)-1; i++ {
+		for j := i + 1; j < len(syllabus); j++ {
+			if syllabus[i].SyllabusInfoID == syllabus[j].SyllabusInfoID {
+				syllabus = removeSyllabusSlice(syllabus, i)
+			}
+		}
+	}
+
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)
@@ -105,6 +113,13 @@ func (app *application) getMainPageTeacherInProcess(w http.ResponseWriter, r *ht
 func (app *application) getDeanFeedback(w http.ResponseWriter, r *http.Request) {
 	syllabus, err := app.student.GetSyllabusForDean("confirmed")
 
+	for i := 0; i < len(syllabus)-1; i++ {
+		for j := i + 1; j < len(syllabus); j++ {
+			if syllabus[i].SyllabusInfoID == syllabus[j].SyllabusInfoID {
+				syllabus = removeSyllabusSlice(syllabus, i)
+			}
+		}
+	}
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)
@@ -121,33 +136,6 @@ func (app *application) getDeanFeedback(w http.ResponseWriter, r *http.Request) 
 		Syllabus: syllabus,
 	})
 }
-
-//
-//func (app *application) showFeedback(w http.ResponseWriter, r *http.Request) {
-//	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-//	if err != nil {
-//		app.notFound(w)
-//		return
-//	}
-//
-//	feedback, err := app.student.GetFeedback(id)
-//
-//	if err != nil {
-//		if errors.Is(err, models.ErrNoRecord) {
-//			app.notFound(w)
-//		} else {
-//			app.serverError(w, err)
-//		}
-//		return
-//	}
-//
-//	flash := app.session.PopString(r, "flash")
-//
-//	app.render(w, r, "feedback.page.tmpl", &templateData{
-//		Flash:    flash,
-//		syllabus: feedback,
-//	})
-//}
 
 func (app *application) getMainPageTeacherApprovement(w http.ResponseWriter, r *http.Request) {
 
@@ -178,6 +166,29 @@ func (app *application) sendSyllabus(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
+	//-----------------TABLE 1
+	var table1 []*models.TopicWeek
+	for ind := 1; ind <= 10; ind++ {
+		topic := app.tempSyl.GetTempOneSessionTopic(id, ind, "session_topics")
+		table1 = append(table1, topic)
+	}
+
+	//-----------------TABLE 2
+	var table2 []*models.StudentTopicWeek
+	for ind := 1; ind <= 10; ind++ {
+		topic := app.tempSyl.GetTempOneStudentTopic(id, ind, "student_topics")
+		table2 = append(table2, topic)
+	}
+
+	goals := app.tempSyl.GetTempFields(id, "goals")[0]
+	objectives := app.tempSyl.GetTempFields(id, "objectives")[0]
+	outcomes := app.tempSyl.GetTempFields(id, "outcomes")[0]
+
+	_ = app.student.UpdateSyllabusInfoTemp(goals.Content, objectives.Content, outcomes.Content, id)
+
+	_, err = app.student.InsertSessionPlan(table1, id)
+	_, err = app.student.InsertIndependentStudyPlan(table2, id)
+
 	err = app.student.SendSyllabus(id, "approvement")
 
 	if err != nil {
@@ -209,8 +220,16 @@ func (app *application) deleteStudent(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) updateSyllabus(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-
 	syllabus, err := app.student.SelectSyllabusTableRow(id)
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+
+	goals := app.tempSyl.GetTempFields(id, "goals")
+	objectives := app.tempSyl.GetTempFields(id, "objectives")
+	outcomes := app.tempSyl.GetTempFields(id, "outcomes")
+
 	if err != nil {
 		app.notFound(w)
 		return
@@ -224,8 +243,11 @@ func (app *application) updateSyllabus(w http.ResponseWriter, r *http.Request) {
 
 	flash := app.session.PopString(r, "flash")
 	app.render(w, r, "updateSyllabus.page.tmpl", &templateData{
-		Flash:    flash,
-		Syllabus: syllabus,
+		Flash:          flash,
+		Syllabus:       syllabus,
+		TempGoals:      goals,
+		TempOutcomes:   outcomes,
+		TempObjectives: objectives,
 	})
 }
 
@@ -244,20 +266,41 @@ func (app *application) updateSyllabuss(w http.ResponseWriter, r *http.Request) 
 	}
 
 	form := forms.New(r.PostForm)
-
-	syllabus := &models.Syllabus{
-		Title:             form.Get("Title"),
-		Goals:             form.Get("Goals"),
-		SkillsCompetences: form.Get("SkillsCompetences"),
-		Objectives:        form.Get("Objectives"),
-		LearningOutcomes:  form.Get("LearningOutcomes"),
-		Prerequisites:     form.Get("Prerequisites"),
-		Postrequisites:    form.Get("Postrequisites"),
-		Instructors:       form.Get("Instructors"),
-		SyllabusInfoID:    id,
+	teacherId, _ := app.student.GetTeacherId()
+	username, _ := app.student.GetTeacherUsername(teacherId)
+	tempGoals := &models.TempFields{
+		TeacherId:      teacherId,
+		TeacherName:    username,
+		SyllabusInfoId: id,
+		Content:        form.Get("goals"),
+	}
+	tempObj := &models.TempFields{
+		TeacherId:      teacherId,
+		TeacherName:    username,
+		SyllabusInfoId: id,
+		Content:        form.Get("objectives"),
+	}
+	tempOut := &models.TempFields{
+		TeacherId:      teacherId,
+		TeacherName:    username,
+		SyllabusInfoId: id,
+		Content:        form.Get("outcomes"),
 	}
 
-	err = app.student.UpdateSyllabusInfo(syllabus, id)
+	if form.Get("goals") == "" {
+		tempGoals.Content = form.Get("Goals")
+	}
+	if form.Get("objectives") == "" {
+		tempObj.Content = form.Get("Objectives")
+	}
+	if form.Get("outcomes") == "" {
+		tempOut.Content = form.Get("Outcomes")
+	}
+
+	app.tempSyl.UpdateTempField(tempGoals, "goals")
+	app.tempSyl.UpdateTempField(tempObj, "objectives")
+	app.tempSyl.UpdateTempField(tempOut, "outcomes")
+
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		println(err.Error())
@@ -269,11 +312,58 @@ func (app *application) updateSyllabuss(w http.ResponseWriter, r *http.Request) 
 
 func (app *application) updateTopicOpen(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	weekNum, err := strconv.Atoi(r.URL.Query().Get("weekNum"))
 
-	topic, err := app.student.SelecOnlyOneTopic(id)
-	if err != nil {
-		app.notFound(w)
-		return
+	tempTopics := app.tempSyl.GetTempSessionTopicByWeek(id, weekNum, "session_topics")
+
+	var lt []*models.TempFields
+	var lh []*models.TempFields
+	var pt []*models.TempFields
+	var ph []*models.TempFields
+	var a []*models.TempFields
+
+	for _, t := range tempTopics {
+		if t.LectureTopic != "" {
+			lt = append(lt, &models.TempFields{
+				TeacherId:      t.TeacherId,
+				TeacherName:    t.TeacherName,
+				SyllabusInfoId: id,
+				Content:        t.LectureTopic,
+			})
+		}
+		if t.LectureHours != 0 {
+			lh = append(lh, &models.TempFields{
+				TeacherId:      t.TeacherId,
+				TeacherName:    t.TeacherName,
+				SyllabusInfoId: id,
+				ContentInt:     t.LectureHours,
+			})
+		}
+		if t.PracticeTopic != "" {
+			pt = append(pt, &models.TempFields{
+				TeacherId:      t.TeacherId,
+				TeacherName:    t.TeacherName,
+				SyllabusInfoId: id,
+				Content:        t.PracticeTopic,
+			})
+		}
+		if t.PracticeHours != 0 {
+			ph = append(ph, &models.TempFields{
+				TeacherId:      t.TeacherId,
+				TeacherName:    t.TeacherName,
+				SyllabusInfoId: id,
+				ContentInt:     t.PracticeHours,
+			})
+		}
+
+		if t.Assignment != "" {
+			a = append(a, &models.TempFields{
+				TeacherId:      t.TeacherId,
+				TeacherName:    t.TeacherName,
+				SyllabusInfoId: id,
+				Content:        t.Assignment,
+			})
+		}
 	}
 
 	if err != nil {
@@ -284,8 +374,16 @@ func (app *application) updateTopicOpen(w http.ResponseWriter, r *http.Request) 
 
 	flash := app.session.PopString(r, "flash")
 	app.render(w, r, "updateTopicOpen.page.tmpl", &templateData{
-		Flash:       flash,
-		TopicOneRow: topic,
+		Flash: flash,
+		TopicOneRow: &models.SessionWeek{
+			SyllabusInfoId: id,
+			WeekNumber:     weekNum,
+			LectureTopic:   lt,
+			LectureHours:   lh,
+			PracticeTopic:  pt,
+			PracticeHours:  ph,
+			Assignment:     a,
+		},
 	})
 }
 
@@ -308,15 +406,43 @@ func (app *application) updateTopic(w http.ResponseWriter, r *http.Request) {
 	weekNumber, _ := strconv.ParseInt(form.Get("WeekNumber"), 10, 64)
 	lectureHours, _ := strconv.ParseInt(form.Get("LectureHours"), 10, 64)
 	practiceHours, _ := strconv.ParseInt(form.Get("PracticeHours"), 10, 64)
-	topic := &models.TopicWeek{
-		WeekNumber:    int(weekNumber),
-		LectureTopic:  form.Get("LectureTopic"),
-		LectureHours:  int(lectureHours),
-		PracticeTopic: form.Get("PracticeTopic"),
-		PracticeHours: int(practiceHours),
-		Assignment:    form.Get("Assignment"),
+	lt := form.Get("LectureTopic")
+	pt := form.Get("PracticeTopic")
+	a := form.Get("Assignment")
+
+	//---------------------------TUUUT
+	teacherId, _ := app.student.GetTeacherId()
+	teacherUsername, _ := app.student.GetTeacherUsername(teacherId)
+
+	if lectureHours == 0 {
+		lectureHours, _ = strconv.ParseInt(form.Get("lectureHours"), 10, 64)
 	}
-	err = app.student.UpdateTopicWeek(topic, id)
+	if practiceHours == 0 {
+		practiceHours, _ = strconv.ParseInt(form.Get("practiceHours"), 10, 64)
+	}
+	if pt == "" {
+		pt = form.Get("practiceTopic")
+	}
+	if lt == "" {
+		lt = form.Get("lectureTopic")
+	}
+	if a == "" {
+		a = form.Get("assignment")
+	}
+
+	topic := &models.TopicWeek{
+		WeekNumber:     int(weekNumber),
+		SyllabusInfoId: id,
+		TeacherId:      teacherId,
+		TeacherName:    teacherUsername,
+		LectureTopic:   lt,
+		LectureHours:   int(lectureHours),
+		PracticeTopic:  pt,
+		PracticeHours:  int(practiceHours),
+		Assignment:     a,
+	}
+	app.tempSyl.UpdateTempSessionTopic(topic, "session_topics")
+
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		println(err.Error())
@@ -328,11 +454,51 @@ func (app *application) updateTopic(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) updateIndepTopicOpen(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	weekNum, err := strconv.Atoi(r.URL.Query().Get("weekNum"))
 
-	indep, err := app.student.SelecOnlyOneIndep(id)
-	if err != nil {
-		app.notFound(w)
-		return
+	tempTopics := app.tempSyl.GetTempStudentTopicByWeek(id, weekNum, "student_topics")
+
+	var st []*models.TempFields
+	var h []*models.TempFields
+	var l []*models.TempFields
+	var sf []*models.TempFields
+	for _, t := range tempTopics {
+		if t.Topics != "" {
+			st = append(st, &models.TempFields{
+				TeacherId:      t.TeacherId,
+				TeacherName:    t.TeacherName,
+				SyllabusInfoId: id,
+				Content:        t.Topics,
+				ContentInt:     0,
+			})
+		}
+		if t.Hours != 0 {
+			h = append(h, &models.TempFields{
+				TeacherId:      t.TeacherId,
+				TeacherName:    t.TeacherName,
+				SyllabusInfoId: id,
+				ContentInt:     t.Hours,
+				Content:        "",
+			})
+		}
+		if t.RecommendedLiterature != "" {
+			l = append(l, &models.TempFields{
+				TeacherId:      t.TeacherId,
+				TeacherName:    t.TeacherName,
+				SyllabusInfoId: id,
+				Content:        t.RecommendedLiterature,
+				ContentInt:     0,
+			})
+		}
+		if t.SubmissionForm != "" {
+			sf = append(sf, &models.TempFields{
+				TeacherId:      t.TeacherId,
+				TeacherName:    t.TeacherName,
+				SyllabusInfoId: id,
+				Content:        t.SubmissionForm,
+				ContentInt:     0,
+			})
+		}
 	}
 
 	if err != nil {
@@ -343,9 +509,76 @@ func (app *application) updateIndepTopicOpen(w http.ResponseWriter, r *http.Requ
 
 	flash := app.session.PopString(r, "flash")
 	app.render(w, r, "updateIndepTopicOpen.page.tmpl", &templateData{
-		Flash:            flash,
-		IndepTopicOneRow: indep,
+		Flash: flash,
+		IndepTopicOneRow: &models.StudentWeek{
+			SyllabusInfoId:        id,
+			WeekNumber:            weekNum,
+			Topics:                st,
+			Hours:                 h,
+			RecommendedLiterature: l,
+			SubmissionForm:        sf,
+		},
 	})
+}
+
+func (app *application) updateIndepTopic(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	if r.Method != http.MethodPost {
+		w.Header().Set("Allow", http.MethodPost)
+		app.clientError(w, http.StatusMethodNotAllowed)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+
+	weekNumber, _ := strconv.ParseInt(form.Get("WeekNumber"), 10, 64)
+	hours, _ := strconv.ParseInt(form.Get("Hours"), 10, 64)
+	st := form.Get("Topics")
+	l := form.Get("RecommendedLiterature")
+	sf := form.Get("SubmissionForm")
+
+	teacherId, _ := app.student.GetTeacherId()
+	teacherUsername, _ := app.student.GetTeacherUsername(teacherId)
+
+	if hours == 0 {
+		hours, _ = strconv.ParseInt(form.Get("hours"), 10, 64)
+	}
+	if st == "" {
+		st = form.Get("topics")
+	}
+	if l == "" {
+		l = form.Get("recommendedLiterature")
+	}
+	if sf == "" {
+		sf = form.Get("submissionForm")
+	}
+
+	topic := &models.StudentTopicWeek{
+		StudentTopicWeekID:    0,
+		SyllabusInfoId:        id,
+		WeekNumber:            int(weekNumber),
+		TeacherId:             teacherId,
+		TeacherName:           teacherUsername,
+		Topics:                st,
+		Hours:                 int(hours),
+		RecommendedLiterature: l,
+		SubmissionForm:        sf,
+	}
+	app.tempSyl.UpdateTempStudentTopic(topic, "student_topics")
+
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		println(err.Error())
+		return
+	}
+	url := "/inProcess"
+	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
 func (app *application) confirmSyllabus(w http.ResponseWriter, r *http.Request) {
@@ -355,6 +588,7 @@ func (app *application) confirmSyllabus(w http.ResponseWriter, r *http.Request) 
 		app.notFound(w)
 		return
 	}
+
 	err = app.student.SendSyllabus(id, "confirmed")
 
 	if err != nil {
@@ -394,8 +628,9 @@ func (app *application) rejectSyllabus(w http.ResponseWriter, r *http.Request) {
 	form := forms.New(r.PostForm)
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 
+	err = app.student.DeleteForRejection(id)
 	_, err = app.student.InsertFeedback(form.Get("feedback"), id)
-
+	fmt.Println(err)
 	err = app.student.SendSyllabus(id, "in_process")
 	if err != nil {
 		app.notFound(w)
@@ -478,41 +713,6 @@ func (app *application) getSyllabusByIdForDean(w http.ResponseWriter, r *http.Re
 		AssessmentType: assessment,
 	})
 }
-func (app *application) updateIndepTopic(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-
-	if r.Method != http.MethodPost {
-		w.Header().Set("Allow", http.MethodPost)
-		app.clientError(w, http.StatusMethodNotAllowed)
-		return
-	}
-
-	if err := r.ParseForm(); err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	form := forms.New(r.PostForm)
-
-	weekNumber, _ := strconv.ParseInt(form.Get("WeekNumber"), 10, 64)
-	hours, _ := strconv.ParseInt(form.Get("Hours"), 10, 64)
-	indep := &models.StudentTopicWeek{
-		WeekNumber:            int(weekNumber),
-		Topics:                form.Get("Topics"),
-		Hours:                 int(hours),
-		RecommendedLiterature: form.Get("RecommendedLiterature"),
-		SubmissionForm:        form.Get("SubmissionForm"),
-	}
-
-	err = app.student.UpdateStudentTopicWeek(indep, id)
-	if err != nil {
-		app.clientError(w, http.StatusBadRequest)
-		println(err.Error())
-		return
-	}
-	url := "/inProcess"
-	http.Redirect(w, r, url, http.StatusSeeOther)
-}
 
 func (app *application) getCreatePDF(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
@@ -559,24 +759,269 @@ func (app *application) getSyllabusById(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	topic, independent, syllabus, teacher, assessment, err := app.student.GetSyllabusById(id)
+	syllabus, teacher, assessment, err := app.student.GetSyllabusTeacherInProcess(id)
+
+	//-----------------SYLLABUS INFO
+	goals := app.tempSyl.GetTempFields(id, "goals")
+	objectives := app.tempSyl.GetTempFields(id, "objectives")
+	outcomes := app.tempSyl.GetTempFields(id, "outcomes")
+
+	for i := 0; i < len(goals)-1; i++ {
+		for j := i + 1; j < len(goals); j++ {
+			if goals[i].Content == goals[j].Content {
+				goals[i].TeacherName = ""
+				goals[j].TeacherName = ""
+				goals = remove(goals, i)
+			}
+		}
+	}
+	for i := 0; i < len(outcomes)-1; i++ {
+		for j := i + 1; j < len(outcomes); j++ {
+			if outcomes[i].Content == outcomes[j].Content {
+				outcomes[i].TeacherName = ""
+				outcomes[j].TeacherName = ""
+				outcomes = remove(outcomes, i)
+			}
+		}
+	}
+	for i := 0; i < len(objectives)-1; i++ {
+		for j := i + 1; j < len(objectives); j++ {
+			if objectives[i].Content == objectives[j].Content {
+				objectives[i].TeacherName = ""
+				objectives[j].TeacherName = ""
+				objectives = remove(objectives, i)
+			}
+		}
+	}
+
+	//-----------------TABLE 1
+	var sessionTopics []*models.SessionWeek
+	for ind := 1; ind <= 10; ind++ {
+		t1 := app.tempSyl.GetTempSessionTopicByWeek(id, ind, "session_topics")
+		var lt []*models.TempFields
+		var lh []*models.TempFields
+		var pt []*models.TempFields
+		var ph []*models.TempFields
+		var a []*models.TempFields
+		for _, t := range t1 {
+			if t.LectureTopic != "" {
+				lt = append(lt, &models.TempFields{
+					TeacherId:      t.TeacherId,
+					TeacherName:    t.TeacherName,
+					SyllabusInfoId: id,
+					Content:        t.LectureTopic,
+					ContentInt:     0,
+				})
+			}
+			if t.LectureHours != 0 {
+				lh = append(lh, &models.TempFields{
+					TeacherId:      t.TeacherId,
+					TeacherName:    t.TeacherName,
+					SyllabusInfoId: id,
+					ContentInt:     t.LectureHours,
+					Content:        "",
+				})
+			}
+			if t.PracticeTopic != "" {
+				pt = append(pt, &models.TempFields{
+					TeacherId:      t.TeacherId,
+					TeacherName:    t.TeacherName,
+					SyllabusInfoId: id,
+					Content:        t.PracticeTopic,
+					ContentInt:     0,
+				})
+			}
+			if t.PracticeHours != 0 {
+				ph = append(ph, &models.TempFields{
+					TeacherId:      t.TeacherId,
+					TeacherName:    t.TeacherName,
+					SyllabusInfoId: id,
+					ContentInt:     t.PracticeHours,
+					Content:        "",
+				})
+			}
+
+			if t.Assignment != "" {
+				a = append(a, &models.TempFields{
+					TeacherId:      t.TeacherId,
+					TeacherName:    t.TeacherName,
+					SyllabusInfoId: id,
+					Content:        t.Assignment,
+					ContentInt:     0,
+				})
+			}
+		}
+		sessionTopics = append(sessionTopics, &models.SessionWeek{
+			SyllabusInfoId: id,
+			WeekNumber:     ind,
+			LectureTopic:   lt,
+			LectureHours:   lh,
+			PracticeTopic:  pt,
+			PracticeHours:  ph,
+			Assignment:     a,
+		})
+	}
+	for _, v := range sessionTopics {
+		for i := 0; i < len(v.LectureTopic)-1; i++ {
+			for j := i + 1; j < len(v.LectureTopic); j++ {
+				if v.LectureTopic[i].Content == v.LectureTopic[j].Content {
+					v.LectureTopic[i].TeacherName = ""
+					v.LectureTopic[j].TeacherName = ""
+					v.LectureTopic = remove(v.LectureTopic, i)
+				}
+			}
+		}
+		for i := 0; i < len(v.PracticeTopic)-1; i++ {
+			for j := i + 1; j < len(v.PracticeTopic); j++ {
+				if v.PracticeTopic[i].Content == v.PracticeTopic[j].Content {
+					v.PracticeTopic[i].TeacherName = ""
+					v.PracticeTopic[j].TeacherName = ""
+					v.PracticeTopic = remove(v.PracticeTopic, i)
+				}
+			}
+		}
+		for i := 0; i < len(v.LectureHours)-1; i++ {
+			for j := i + 1; j < len(v.LectureHours); j++ {
+				if v.LectureHours[i].ContentInt == v.LectureHours[j].ContentInt {
+					v.LectureHours[i].TeacherName = ""
+					v.LectureHours[j].TeacherName = ""
+					v.LectureHours = remove(v.LectureHours, i)
+				}
+			}
+		}
+		for i := 0; i < len(v.PracticeHours)-1; i++ {
+			for j := i + 1; j < len(v.PracticeHours); j++ {
+				if v.PracticeHours[i].ContentInt == v.PracticeHours[j].ContentInt {
+					v.PracticeHours[i].TeacherName = ""
+					v.PracticeHours[j].TeacherName = ""
+					v.PracticeHours = remove(v.PracticeHours, i)
+				}
+			}
+		}
+		for i := 0; i < len(v.Assignment)-1; i++ {
+			for j := i + 1; j < len(v.Assignment); j++ {
+				if v.Assignment[i].Content == v.Assignment[j].Content {
+					v.Assignment[i].TeacherName = ""
+					v.Assignment[j].TeacherName = ""
+					v.Assignment = remove(v.Assignment, i)
+				}
+			}
+		}
+	}
+
+	//-----------------TABLE 2
+	var studentTopics []*models.StudentWeek
+	for ind := 1; ind <= 10; ind++ {
+		t2 := app.tempSyl.GetTempStudentTopicByWeek(id, ind, "student_topics")
+		var st []*models.TempFields
+		var h []*models.TempFields
+		var l []*models.TempFields
+		var sf []*models.TempFields
+		for _, t := range t2 {
+			if t.Topics != "" {
+				st = append(st, &models.TempFields{
+					TeacherId:      t.TeacherId,
+					TeacherName:    t.TeacherName,
+					SyllabusInfoId: id,
+					Content:        t.Topics,
+					ContentInt:     0,
+				})
+			}
+			if t.Hours != 0 {
+				h = append(h, &models.TempFields{
+					TeacherId:      t.TeacherId,
+					TeacherName:    t.TeacherName,
+					SyllabusInfoId: id,
+					ContentInt:     t.Hours,
+					Content:        "",
+				})
+			}
+			if t.RecommendedLiterature != "" {
+				l = append(l, &models.TempFields{
+					TeacherId:      t.TeacherId,
+					TeacherName:    t.TeacherName,
+					SyllabusInfoId: id,
+					Content:        t.RecommendedLiterature,
+					ContentInt:     0,
+				})
+			}
+			if t.SubmissionForm != "" {
+				sf = append(sf, &models.TempFields{
+					TeacherId:      t.TeacherId,
+					TeacherName:    t.TeacherName,
+					SyllabusInfoId: id,
+					Content:        t.SubmissionForm,
+					ContentInt:     0,
+				})
+			}
+		}
+		studentTopics = append(studentTopics, &models.StudentWeek{
+			SyllabusInfoId:        id,
+			WeekNumber:            ind,
+			Topics:                st,
+			Hours:                 h,
+			RecommendedLiterature: l,
+			SubmissionForm:        sf,
+		})
+	}
+	for _, v := range studentTopics {
+		for i := 0; i < len(v.Topics)-1; i++ {
+			for j := i + 1; j < len(v.Topics); j++ {
+				if v.Topics[i].Content == v.Topics[j].Content {
+					v.Topics[i].TeacherName = ""
+					v.Topics[j].TeacherName = ""
+					v.Topics = remove(v.Topics, i)
+				}
+			}
+		}
+		for i := 0; i < len(v.Hours)-1; i++ {
+			for j := i + 1; j < len(v.Hours); j++ {
+				if v.Hours[i].ContentInt == v.Hours[j].ContentInt {
+					v.Hours[i].TeacherName = ""
+					v.Hours[j].TeacherName = ""
+					v.Hours = remove(v.Hours, i)
+				}
+			}
+		}
+		for i := 0; i < len(v.RecommendedLiterature)-1; i++ {
+			for j := i + 1; j < len(v.RecommendedLiterature); j++ {
+				if v.RecommendedLiterature[i].Content == v.RecommendedLiterature[j].Content {
+					v.RecommendedLiterature[i].TeacherName = ""
+					v.RecommendedLiterature[j].TeacherName = ""
+					v.RecommendedLiterature = remove(v.RecommendedLiterature, i)
+				}
+			}
+		}
+		for i := 0; i < len(v.SubmissionForm)-1; i++ {
+			for j := i + 1; j < len(v.SubmissionForm); j++ {
+				if v.SubmissionForm[i].Content == v.SubmissionForm[j].Content {
+					v.SubmissionForm[i].TeacherName = ""
+					v.SubmissionForm[j].TeacherName = ""
+					v.SubmissionForm = remove(v.SubmissionForm, i)
+				}
+			}
+		}
+	}
 
 	if err != nil {
 		app.notFound(w)
 		return
 	}
-
 	flash := app.session.PopString(r, "flash")
 
 	app.render(w, r, "select.page.tmpl", &templateData{
 		Flash:          flash,
 		Syllabus:       syllabus,
-		Topic:          topic,
-		Independent:    independent,
+		TempGoals:      goals,
+		TempObjectives: objectives,
+		TempOutcomes:   outcomes,
+		TempTable1:     sessionTopics,
+		TempTable2:     studentTopics,
 		Teacher:        teacher,
 		AssessmentType: assessment,
 	})
 }
+
 func (app *application) getSyllabusByIdForStudents(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
@@ -618,6 +1063,139 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	form := forms.New(r.PostForm)
+	if !form.Valid() {
+		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
+		return
+	}
+
+	assesment, _ := strconv.ParseInt(form.Get("assessment"), 10, 64)
+
+	syllabus := &models.Syllabus{
+		ID:                0,
+		Title:             form.Get("title"),
+		Goals:             "",
+		SkillsCompetences: form.Get("skills"),
+		Objectives:        "",
+		LearningOutcomes:  "",
+		Prerequisites:     form.Get("prerequisites"),
+		Postrequisites:    form.Get("post_requisites"),
+		Instructors:       form.Get("instructors"),
+		Assessment:        int(assesment),
+		SyllabusInfoID:    0,
+		Table1:            nil,
+		Table2:            nil,
+	}
+	dId, _ := strconv.ParseInt(r.PostFormValue("discipline"), 10, 64)
+	teacherId, _ := app.student.GetTeacherId()
+	teacherIds, _ := app.student.GetTeacherIds(int(dId))
+	_, sId, _ := app.student.InsertSyllabus(syllabus, teacherId, form.Get("title"))
+	for _, v := range teacherIds {
+		if v != teacherId {
+			_, _ = app.student.InsertSyllabusForOtherTeachers(v, form.Get("title"), sId)
+		}
+	}
+	_, _ = app.student.InsertDiscipline(int(dId), sId)
+
+	//----------------MONGO INSERT
+	teacherUsername, _ := app.student.GetTeacherUsername(teacherId)
+
+	goals := &models.TempFields{
+		TeacherId:      teacherId,
+		TeacherName:    teacherUsername,
+		SyllabusInfoId: sId,
+		Content:        form.Get("course_goal"),
+	}
+	app.tempSyl.InsertTempField(goals, "goals")
+
+	obj := &models.TempFields{
+		TeacherId:      teacherId,
+		TeacherName:    teacherUsername,
+		SyllabusInfoId: sId,
+		Content:        form.Get("objectives"),
+	}
+	app.tempSyl.InsertTempField(obj, "objectives")
+
+	out := &models.TempFields{
+		TeacherId:      teacherId,
+		TeacherName:    teacherUsername,
+		SyllabusInfoId: sId,
+		Content:        form.Get("outcomes"),
+	}
+	app.tempSyl.InsertTempField(out, "outcomes")
+
+	//-----------table 1 and 2 topics
+	var t1 []*models.TopicWeek
+	var t2 []*models.StudentTopicWeek
+
+	for i := 1; i < 11; i++ {
+		lh, _ := strconv.ParseInt(form.Get(fmt.Sprintf("lecture_h%d", i)), 10, 64)
+		ph, _ := strconv.ParseInt(form.Get(fmt.Sprintf("practice_h%d", i)), 10, 64)
+
+		t1 = append(t1, &models.TopicWeek{
+			TopicWeekID:    0,
+			SyllabusInfoId: sId,
+			TeacherId:      teacherId,
+			TeacherName:    teacherUsername,
+			WeekNumber:     i,
+			LectureTopic:   form.Get(fmt.Sprintf("lecture%d", i)),
+			LectureHours:   int(lh),
+			PracticeTopic:  form.Get(fmt.Sprintf("practice%d", i)),
+			PracticeHours:  int(ph),
+			Assignment:     form.Get(fmt.Sprintf("assignment%d", i)),
+		})
+
+		sh, _ := strconv.ParseInt(form.Get(fmt.Sprintf("hours%d", i)), 10, 64)
+
+		t2 = append(t2, &models.StudentTopicWeek{
+			StudentTopicWeekID:    0,
+			SyllabusInfoId:        sId,
+			TeacherId:             teacherId,
+			TeacherName:           teacherUsername,
+			WeekNumber:            i,
+			Topics:                form.Get(fmt.Sprintf("table2_topic%d", i)),
+			Hours:                 int(sh),
+			RecommendedLiterature: form.Get(fmt.Sprintf("literature%d", i)),
+			SubmissionForm:        form.Get(fmt.Sprintf("submission%d", i)),
+		})
+
+	}
+
+	for _, t := range t1 {
+		app.tempSyl.InsertTempSessionTopic(t, "session_topics")
+	}
+
+	//-----------table2: student independent topics
+	for _, t := range t2 {
+		app.tempSyl.InsertTempStudentTopic(t, "student_topics")
+	}
+	//------------------------
+
+	app.session.Put(r, "flash", "Syllabus successfully created!")
+
+	http.Redirect(w, r, fmt.Sprintf("/inProcess"), http.StatusSeeOther)
+}
+
+func GeneratePdf(filename string) error {
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+	pdf.SetFont("Arial", "B", 16)
+
+	// CellFormat(width, height, text, border, position after, align, fill, link, linkStr)
+	pdf.CellFormat(190, 7, "Welcome to golangcode.com", "0", 0, "CM", false, 0, "")
+
+	// ImageOptions(src, x, y, width, height, flow, options, link, linkStr)
+	pdf.ImageOptions(
+		"avatar.jpg",
+		80, 20,
+		0, 0,
+		false,
+		gofpdf.ImageOptions{ImageType: "JPG", ReadDpi: true},
+		0,
+		"",
+	)
+
+	return pdf.OutputFileAndClose(filename)
+
 	//form.Required(
 	//	"title",
 	//	"subjectName",
@@ -741,284 +1319,12 @@ func (app *application) createSyllabus(w http.ResponseWriter, r *http.Request) {
 	//	"submission10",
 	//)
 	//form.MaxLength("username", 100)
-	if !form.Valid() {
-		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
-		return
-	}
-
-	assesment, _ := strconv.ParseInt(form.Get("assessment"), 10, 64)
-	week1_1, _ := strconv.ParseInt(form.Get("week_num"), 10, 64)
-	week1_2, _ := strconv.ParseInt(form.Get("week_num1"), 10, 64)
-	week1_3, _ := strconv.ParseInt(form.Get("week_num2"), 10, 64)
-	week1_4, _ := strconv.ParseInt(form.Get("week_num3"), 10, 64)
-	week1_5, _ := strconv.ParseInt(form.Get("week_num4"), 10, 64)
-	week1_6, _ := strconv.ParseInt(form.Get("week_num5"), 10, 64)
-	week1_7, _ := strconv.ParseInt(form.Get("week_num6"), 10, 64)
-	week1_8, _ := strconv.ParseInt(form.Get("week_num7"), 10, 64)
-	week1_9, _ := strconv.ParseInt(form.Get("week_num8"), 10, 64)
-	week1_10, _ := strconv.ParseInt(form.Get("week_num9"), 10, 64)
-
-	lec1_1, _ := strconv.ParseInt(form.Get("lecture_h"), 10, 64)
-	lec1_2, _ := strconv.ParseInt(form.Get("lecture_h1"), 10, 64)
-	lec1_3, _ := strconv.ParseInt(form.Get("lecture_h2"), 10, 64)
-	lec1_4, _ := strconv.ParseInt(form.Get("lecture_h3"), 10, 64)
-	lec1_5, _ := strconv.ParseInt(form.Get("lecture_h4"), 10, 64)
-	lec1_6, _ := strconv.ParseInt(form.Get("lecture_h5"), 10, 64)
-	lec1_7, _ := strconv.ParseInt(form.Get("lecture_h6"), 10, 64)
-	lec1_8, _ := strconv.ParseInt(form.Get("lecture_h7"), 10, 64)
-	lec1_9, _ := strconv.ParseInt(form.Get("lecture_h8"), 10, 64)
-	lec1_10, _ := strconv.ParseInt(form.Get("lecture_h9"), 10, 64)
-
-	prac1_1, _ := strconv.ParseInt(form.Get("practice_h"), 10, 64)
-	prac1_2, _ := strconv.ParseInt(form.Get("practice_h1"), 10, 64)
-	prac1_3, _ := strconv.ParseInt(form.Get("practice_h2"), 10, 64)
-	prac1_4, _ := strconv.ParseInt(form.Get("practice_h3"), 10, 64)
-	prac1_5, _ := strconv.ParseInt(form.Get("practice_h4"), 10, 64)
-	prac1_6, _ := strconv.ParseInt(form.Get("practice_h5"), 10, 64)
-	prac1_7, _ := strconv.ParseInt(form.Get("practice_h6"), 10, 64)
-	prac1_8, _ := strconv.ParseInt(form.Get("practice_h7"), 10, 64)
-	prac1_9, _ := strconv.ParseInt(form.Get("practice_h8"), 10, 64)
-	prac1_10, _ := strconv.ParseInt(form.Get("practice_h9"), 10, 64)
-
-	week2_1, _ := strconv.ParseInt(form.Get("week_nums1"), 10, 64)
-	week2_2, _ := strconv.ParseInt(form.Get("week_nums2"), 10, 64)
-	week2_3, _ := strconv.ParseInt(form.Get("week_nums3"), 10, 64)
-	week2_4, _ := strconv.ParseInt(form.Get("week_nums4"), 10, 64)
-	week2_5, _ := strconv.ParseInt(form.Get("week_nums5"), 10, 64)
-	week2_6, _ := strconv.ParseInt(form.Get("week_nums6"), 10, 64)
-	week2_7, _ := strconv.ParseInt(form.Get("week_nums7"), 10, 64)
-	week2_8, _ := strconv.ParseInt(form.Get("week_nums8"), 10, 64)
-	week2_9, _ := strconv.ParseInt(form.Get("week_nums9"), 10, 64)
-	week2_10, _ := strconv.ParseInt(form.Get("week_nums10"), 10, 64)
-
-	lec2_1, _ := strconv.ParseInt(form.Get("hours1"), 10, 64)
-	lec2_2, _ := strconv.ParseInt(form.Get("hours2"), 10, 64)
-	lec2_3, _ := strconv.ParseInt(form.Get("hours3"), 10, 64)
-	lec2_4, _ := strconv.ParseInt(form.Get("hours4"), 10, 64)
-	lec2_5, _ := strconv.ParseInt(form.Get("hours5"), 10, 64)
-	lec2_6, _ := strconv.ParseInt(form.Get("hours6"), 10, 64)
-	lec2_7, _ := strconv.ParseInt(form.Get("hours7"), 10, 64)
-	lec2_8, _ := strconv.ParseInt(form.Get("hours8"), 10, 64)
-	lec2_9, _ := strconv.ParseInt(form.Get("hours9"), 10, 64)
-	lec2_10, _ := strconv.ParseInt(form.Get("hours10"), 10, 64)
-	//form.Get("username")
-	var t1 = []*models.TopicWeek{
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_1),
-			LectureTopic:  form.Get("lecture"),
-			LectureHours:  int(lec1_1),
-			PracticeTopic: form.Get("practice"),
-			PracticeHours: int(prac1_1),
-			Assignment:    form.Get("assignment"),
-		},
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_2),
-			LectureTopic:  form.Get("lecture1"),
-			LectureHours:  int(lec1_2),
-			PracticeTopic: form.Get("practice1"),
-			PracticeHours: int(prac1_2),
-			Assignment:    form.Get("assignment1"),
-		},
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_3),
-			LectureTopic:  form.Get("lecture2"),
-			LectureHours:  int(lec1_3),
-			PracticeTopic: form.Get("practice2"),
-			PracticeHours: int(prac1_3),
-			Assignment:    form.Get("assignment2"),
-		},
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_4),
-			LectureTopic:  form.Get("lecture3"),
-			LectureHours:  int(lec1_4),
-			PracticeTopic: form.Get("practice3"),
-			PracticeHours: int(prac1_4),
-			Assignment:    form.Get("assignment3"),
-		},
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_5),
-			LectureTopic:  form.Get("lecture4"),
-			LectureHours:  int(lec1_5),
-			PracticeTopic: form.Get("practice4"),
-			PracticeHours: int(prac1_5),
-			Assignment:    form.Get("assignment4"),
-		},
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_6),
-			LectureTopic:  form.Get("lecture5"),
-			LectureHours:  int(lec1_6),
-			PracticeTopic: form.Get("practice5"),
-			PracticeHours: int(prac1_6),
-			Assignment:    form.Get("assignment5"),
-		},
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_7),
-			LectureTopic:  form.Get("lecture6"),
-			LectureHours:  int(lec1_7),
-			PracticeTopic: form.Get("practice6"),
-			PracticeHours: int(prac1_7),
-			Assignment:    form.Get("assignment6"),
-		},
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_8),
-			LectureTopic:  form.Get("lecture7"),
-			LectureHours:  int(lec1_8),
-			PracticeTopic: form.Get("practice7"),
-			PracticeHours: int(prac1_8),
-			Assignment:    form.Get("assignment7"),
-		},
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_9),
-			LectureTopic:  form.Get("lecture8"),
-			LectureHours:  int(lec1_9),
-			PracticeTopic: form.Get("practice8"),
-			PracticeHours: int(prac1_9),
-			Assignment:    form.Get("assignment8"),
-		},
-		&models.TopicWeek{
-			TopicWeekID:   0,
-			WeekNumber:    int(week1_10),
-			LectureTopic:  form.Get("lecture9"),
-			LectureHours:  int(lec1_10),
-			PracticeTopic: form.Get("practice9"),
-			PracticeHours: int(prac1_10),
-			Assignment:    form.Get("assignment9"),
-		},
-	}
-	var t2 = []*models.StudentTopicWeek{
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_1),
-			Topics:                form.Get("table2_topic1"),
-			Hours:                 int(lec2_1),
-			RecommendedLiterature: form.Get("literature1"),
-			SubmissionForm:        form.Get("submission1"),
-		},
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_2),
-			Topics:                form.Get("table2_topic2"),
-			Hours:                 int(lec2_2),
-			RecommendedLiterature: form.Get("literature2"),
-			SubmissionForm:        form.Get("submission2"),
-		},
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_3),
-			Topics:                form.Get("table2_topic3"),
-			Hours:                 int(lec2_3),
-			RecommendedLiterature: form.Get("literature3"),
-			SubmissionForm:        form.Get("submission3"),
-		},
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_4),
-			Topics:                form.Get("table2_topic4"),
-			Hours:                 int(lec2_4),
-			RecommendedLiterature: form.Get("literature4"),
-			SubmissionForm:        form.Get("submission4"),
-		},
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_5),
-			Topics:                form.Get("table2_topic5"),
-			Hours:                 int(lec2_5),
-			RecommendedLiterature: form.Get("literature5"),
-			SubmissionForm:        form.Get("submission5"),
-		},
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_6),
-			Topics:                form.Get("table2_topic6"),
-			Hours:                 int(lec2_6),
-			RecommendedLiterature: form.Get("literature6"),
-			SubmissionForm:        form.Get("submission6"),
-		},
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_7),
-			Topics:                form.Get("table2_topic7"),
-			Hours:                 int(lec2_7),
-			RecommendedLiterature: form.Get("literature7"),
-			SubmissionForm:        form.Get("submission7"),
-		},
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_8),
-			Topics:                form.Get("table2_topic8"),
-			Hours:                 int(lec2_8),
-			RecommendedLiterature: form.Get("literature8"),
-			SubmissionForm:        form.Get("submission8"),
-		},
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_9),
-			Topics:                form.Get("table2_topic9"),
-			Hours:                 int(lec2_9),
-			RecommendedLiterature: form.Get("literature9"),
-			SubmissionForm:        form.Get("submission9"),
-		},
-		&models.StudentTopicWeek{
-			StudentTopicWeekID:    0,
-			WeekNumber:            int(week2_10),
-			Topics:                form.Get("table2_topic10"),
-			Hours:                 int(lec2_10),
-			RecommendedLiterature: form.Get("literature10"),
-			SubmissionForm:        form.Get("submission10"),
-		},
-	}
-
-	syllabus := &models.Syllabus{
-		ID:                0,
-		Title:             form.Get("title"),
-		Goals:             form.Get("course_goal"),
-		SkillsCompetences: form.Get("skills"),
-		Objectives:        form.Get("objectives"),
-		LearningOutcomes:  form.Get("outcomes"),
-		Prerequisites:     form.Get("prerequisites"),
-		Postrequisites:    form.Get("post_requisites"),
-		Instructors:       form.Get("instructors"),
-		Assessment:        int(assesment),
-		SyllabusInfoID:    0,
-		Table1:            t1,
-		Table2:            t2,
-	}
-
-	teacherId, _ := app.student.GetTeacherId()
-	_, sId, _ := app.student.InsertSyllabus(syllabus, teacherId, form.Get("title"))
-	dId, _ := strconv.ParseInt(r.PostFormValue("discipline"), 10, 64)
-	_, _ = app.student.InsertDiscipline(int(dId), sId)
-	app.session.Put(r, "flash", "Syllabus successfully created!")
-
-	http.Redirect(w, r, fmt.Sprintf("/inProcess"), http.StatusSeeOther)
 }
-func GeneratePdf(filename string) error {
-	pdf := gofpdf.New("P", "mm", "A4", "")
-	pdf.AddPage()
-	pdf.SetFont("Arial", "B", 16)
 
-	// CellFormat(width, height, text, border, position after, align, fill, link, linkStr)
-	pdf.CellFormat(190, 7, "Welcome to golangcode.com", "0", 0, "CM", false, 0, "")
+func remove(slice []*models.TempFields, s int) []*models.TempFields {
+	return append(slice[:s], slice[s+1:]...)
+}
 
-	// ImageOptions(src, x, y, width, height, flow, options, link, linkStr)
-	pdf.ImageOptions(
-		"avatar.jpg",
-		80, 20,
-		0, 0,
-		false,
-		gofpdf.ImageOptions{ImageType: "JPG", ReadDpi: true},
-		0,
-		"",
-	)
-
-	return pdf.OutputFileAndClose(filename)
+func removeSyllabusSlice(slice []*models.Syllabus, s int) []*models.Syllabus {
+	return append(slice[:s], slice[s+1:]...)
 }

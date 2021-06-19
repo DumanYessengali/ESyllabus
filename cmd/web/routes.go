@@ -42,9 +42,11 @@ func (app *application) routes() http.Handler {
 
 	mux.Get("/", dynamicMiddleware.Append(app.requireAuthentication, app.requireStudent).ThenFunc(app.home))
 	mux.Get("/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.getSyllabusByIdForStudents))
-	mux.Get("/signin", dynamicMiddleware.ThenFunc(app.signInForm))
+	mux.Get("/signin", dynamicMiddleware.Append().ThenFunc(app.signInForm))
 	mux.Post("/signin", dynamicMiddleware.ThenFunc(app.signIn))
 	mux.Post("/logout", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.logoutUser))
+
+	mux.Get("/wait", dynamicMiddleware.Append().ThenFunc(app.waitPage))
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Get("/static/", http.StripPrefix("/static", fileServer))

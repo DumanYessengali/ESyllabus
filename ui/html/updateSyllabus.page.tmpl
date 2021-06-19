@@ -21,7 +21,7 @@
                         Course title
                     </td>
                     <td >
-                        <input type="text" name="Title" style="width:100%" placeholder="Title" value="{{.Title}}"/>
+                        <input type="text" disabled="disabled"  name="Title" style="width:100%" placeholder="Title" value="{{.Title}}"/>
                     </td>
                </tr>
 
@@ -30,7 +30,7 @@
                         Prerequisites
                     </td>
                     <td>
-                         <input type="text" name="Prerequisites" style="width:100%" placeholder="Title" value="{{.Prerequisites}}"/>
+                         <input type="text" disabled="disabled" name="Prerequisites" style="width:100%" placeholder="Title" value="{{.Prerequisites}}"/>
                     </td>
                </tr>
                <tr>
@@ -38,7 +38,7 @@
                         Postrequisites
                     </td>
                     <td>
-                        <input type="text" name="Postrequisites" style="width:100%" placeholder="Credits" value="{{.Postrequisites}}"/>
+                        <input type="text"  disabled="disabled"  name="Postrequisites" style="width:100%" placeholder="Credits" value="{{.Postrequisites}}"/>
                     </td>
                </tr>
 
@@ -47,15 +47,39 @@
                         Course goal(s)
                     </td>
                     <td>
-                        <input type="text" name="Goals" style="width:100%" placeholder="Goals" value="{{.Goals}}"/>
-                    </td>
+                        {{end}}
+
+                        <select name="Goals">
+                            {{range .TempGoals}}
+                            <option value="{{.Content}}">{{.Content}}</option>
+                            {{end}}
+                            <br/><br/>
+                            OR
+                            <br/><br/>
+                            <input type="text" name="goals" style="width:100%" placeholder="Goals"/>
+                            <br/>
+                        </select>
+                        {{range .Syllabus}}
+                        </td>
                </tr>
                <tr>
                     <td>
                          Course objectives:
                     </td>
                     <td>
-                        <input type="text" name="Objectives" style="width:100%" placeholder="Objectives" value="{{.Objectives}}"/>
+                        {{end}}
+
+                        <select name="Objectives">
+                            {{range .TempObjectives}}
+                            <option value="{{.Content}}">{{.Content}}</option>
+                            {{end}}
+                            <br/><br/>
+                            OR
+                            <br/><br/>
+                            <input type="text" name="objectives" style="width:100%" placeholder="Objectives"/>
+                            <br/>
+                        </select>
+                        {{range .Syllabus}}
                     </td>
                </tr>
                <tr>
@@ -63,7 +87,7 @@
                          Skills & competences
                     </td>
                     <td>
-                        <input type="text" name="SkillsCompetences" style="width:100%" placeholder="SkillsCompetences" value="{{.SkillsCompetences}}"/>
+                        <input type="text" disabled="disabled"  name="SkillsCompetences" style="width:100%" placeholder="SkillsCompetences" value="{{.SkillsCompetences}}"/>
                     </td>
                </tr>
                <tr>
@@ -71,7 +95,19 @@
                         Course learning outcomes
                     </td>
                     <td>
-                         <input type="text" name="LearningOutcomes" style="width:100%" placeholder="LearningOutcomes" value="{{.LearningOutcomes}}"/>
+                        {{end}}
+
+                        <select name="Outcomes">
+                            {{range .TempOutcomes}}
+                            <option value="{{.Content}}">{{.Content}}</option>
+                            {{end}}
+                            <br/><br/>
+                            OR
+                            <br/><br/>
+                            <input type="text" name="outcomes" style="width:100%" placeholder="Outcomes"/>
+                            <br/>
+                        </select>
+                        {{range .Syllabus}}
                     </td>
                </tr>
                <tr>
@@ -79,7 +115,7 @@
                         Course instructor(s)
                     </td>
                     <td>
-                        <input type="text" name="Instructors" style="width:100%" placeholder="Goals" value="{{.Instructors}}"/>
+                        <input type="text" disabled="disabled"  name="Instructors" style="width:100%" placeholder="Goals" value="{{.Instructors}}"/>
                     </td>
 
                </tr>

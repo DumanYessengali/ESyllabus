@@ -67,7 +67,12 @@
                         Course goal(s)
                     </td>
                     <td style="text-align:left">
-                        {{.Goals}}
+                        {{end}}
+                        {{range .TempGoals}}
+                        <p style="color:blue">{{.TeacherName}}</p>
+                        <p>{{.Content}}</p>
+                        {{end}}
+                        {{range .Syllabus}}
                     </td>
                 </tr>
                 <tr>
@@ -75,7 +80,12 @@
                         Course objectives:
                     </td>
                     <td style="text-align:left">
-                        {{.Objectives}}
+                        {{end}}
+                        {{range .TempObjectives}}
+                        <p style="color:blue">{{.TeacherName}}</p>
+                        <p>{{.Content}}</p>
+                        {{end}}
+                        {{range .Syllabus}}
                     </td>
                 </tr>
                 <tr>
@@ -91,7 +101,12 @@
                         Course learning outcomes
                     </td>
                     <td style="text-align:left">
-                        {{.LearningOutcomes}}
+                        {{end}}
+                        {{range .TempOutcomes}}
+                        <p style="color:blue">{{.TeacherName}}</p>
+                        <p>{{.Content}}</p>
+                        {{end}}
+                        {{range .Syllabus}}
                     </td>
                 </tr>
                 <tr>
@@ -140,28 +155,43 @@
                     Update
                 </td>
             </tr>
-            {{range .Topic}}
+            {{range .TempTable1}}
                 <tr>
                     <td>
                         {{.WeekNumber}}
                     </td>
                     <td>
-                        {{.LectureTopic}}
+                        {{range .LectureTopic}}
+                        <p style="color: blue">{{.TeacherName}}</p>
+                        <p>{{.Content}}</p>
+                        {{end}}
                     </td>
                     <td>
-                        {{.LectureHours}}
+                        {{range .LectureHours}}
+                        <p style="color: blue">{{.TeacherName}}</p>
+                        <p>{{.ContentInt}}</p>
+                        {{end}}
                     </td>
                     <td>
-                        {{.PracticeTopic}}
+                        {{range .PracticeTopic}}
+                        <p style="color: blue">{{.TeacherName}}</p>
+                        <p>{{.Content}}</p>
+                        {{end}}
                     </td>
                     <td>
-                        {{.PracticeHours}}
+                        {{range .PracticeHours}}
+                        <p style="color: blue">{{.TeacherName}}</p>
+                        <p>{{.ContentInt}}</p>
+                        {{end}}
                     </td>
                     <td>
-                        {{.Assignment}}
+                        {{range .Assignment}}
+                        <p style="color: blue">{{.TeacherName}}</p>
+                        <p>{{.Content}}</p>
+                        {{end}}
                     </td>
                     <td>
-                        <a href="https://localhost:4000/admin/updateTopicOpen?id={{.TopicWeekID}}" style="text-align:right" id="send" class="myButton">&nbsp;Update </a>
+                        <a href="https://localhost:4000/admin/updateTopicOpen?id={{.SyllabusInfoId}}&weekNum={{.WeekNumber}}" style="text-align:right" id="send" class="myButton">&nbsp;Update </a>
                     </td>
                 </tr>
             {{end}}
@@ -190,25 +220,37 @@
                 Update
             </td>
         </tr>
-        {{range .Independent}}
+        {{range .TempTable2}}
         <tr>
             <td>
                 {{.WeekNumber}}
             </td>
             <td>
-                {{.Topics}}
+                {{range .Topics}}
+                <p style="color: blue">{{.TeacherName}}</p>
+                <p>{{.Content}}</p>
+                {{end}}
             </td>
             <td>
-                {{.Hours}}
+                {{range .Hours}}
+                <p style="color: blue">{{.TeacherName}}</p>
+                <p>{{.ContentInt}}</p>
+                {{end}}
             </td>
             <td>
-                {{.RecommendedLiterature}}
+                {{range .RecommendedLiterature}}
+                <p style="color: blue">{{.TeacherName}}</p>
+                <p>{{.Content}}</p>
+                {{end}}
             </td>
             <td>
-                {{.SubmissionForm}}
+                {{range .SubmissionForm}}
+                <p style="color: blue">{{.TeacherName}}</p>
+                <p>{{.Content}}</p>
+                {{end}}
             </td>
             <td>
-                <a href="https://localhost:4000/admin/updateIndepOpen?id={{.StudentTopicWeekID}}" style="text-align:right" id="send" class="myButton">&nbsp;Update </a>
+                <a href="https://localhost:4000/admin/updateIndepOpen?id={{.SyllabusInfoId}}&weekNum={{.WeekNumber}}" style="text-align:right" id="send" class="myButton">&nbsp;Update </a>
             </td>
         </tr>
         {{end}}

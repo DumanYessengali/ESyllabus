@@ -1,0 +1,9 @@
+{{template "base" .}}
+{{define "title"}}Home{{end}}
+{{define "main"}}
+   Go back to the page.
+            {{if .Time}}
+                <a href='/signin'>Signin</a>
+            {{end}}
+    <br>
+{{end}}

@@ -35,7 +35,11 @@ func (app *application) signInForm(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+var wait string
+
 //loginUser
+var newI = 0
+
 func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -46,15 +50,25 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 	username := form.Get("username")
 	password := form.Get("password")
 	id, err := app.student.Authenticate(username, password)
+
 	if err != nil {
+
 		//if errors.Is(err, models.ErrInvalidCredentials) {
 		form.Errors.Add("generic", "Username or Password is incorrect")
+		newI++
+
 		app.render(w, r, "login.page.tmpl", &templateData{Form: form})
 		//} else {
 		//	app.serverError(w, err)
 		//}
+		fmt.Println(newI)
+		if newI >= 5 {
+			http.Redirect(w, r, "/wait", http.StatusSeeOther)
+			newI = 0
+		}
 		return
 	}
+
 	app.session.Put(r, "authenticatedUserID", id)
 	role, err := app.student.GetRoleByUsername(username)
 	if err != nil {
@@ -78,6 +92,17 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+	return
+}
+
+func (app *application) waitPage(w http.ResponseWriter, r *http.Request) {
+
+	flash := app.session.PopString(r, "flash")
+
+	app.render(w, r, "wait.page.tmpl", &templateData{
+		Flash: flash,
+		Time:  true,
+	})
 }
 
 func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {

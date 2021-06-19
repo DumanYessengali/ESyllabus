@@ -7,13 +7,13 @@
 <table>
 <p align="center" style="font-size:30px;">Syllabus</p>
 {{with .IndepTopicOneRow}}
- <form action="https://localhost:4000/admin/updateIndep?id={{.StudentTopicWeekID}}" method="POST">
+ <form action="https://localhost:4000/admin/updateIndep?id={{.SyllabusInfoId}}&weekNum={{.WeekNumber}}" method="POST">
 
-        <thead >
-            <tr>
-                <th colspan=2 style="padding: 0 40% 0 35%;">Lecture! practical/seminar/laboratory session plans</th>
-            </tr>
-        </thead>
+<!--        <thead >-->
+<!--            <tr>-->
+<!--                <th colspan=2 style="padding: 0 40% 0 35%;">Lecture! practical/seminar/laboratory session plans</th>-->
+<!--            </tr>-->
+<!--        </thead>-->
         <tbody>
 
                <tr>
@@ -28,34 +28,54 @@
                     <td>
                         Topic
                     </td>
-                    <td>
-                        <input type="text" name="Topics" style="width:100%" placeholder="Topics" value="{{.Topics}}"/>
-                    </td>
+                   <td>
+                       <select name="topics">
+                           {{range .Topics}}
+                           <option value="{{.Content}}">{{.Content}}</option>
+                           {{end}}
+                       </select>
+                       <input type="text" name="Topics" style="width:100%" placeholder="Topics"/>
+                   </td>
                </tr>
                <tr>
                     <td>
                         Hours
                     </td>
-                    <td>
-                        <input type="text" name="Hours" style="width:100%" placeholder="Hours" value="{{.Hours}}"/>
-                    </td>
+                   <td>
+                       <select name="hours">
+                           {{range .Hours}}
+                           <option value="{{.ContentInt}}">{{.ContentInt}}</option>
+                           {{end}}
+                       </select>
+                       <input type="text" name="Hours" style="width:100%" placeholder="Hours"/>
+                   </td>
                </tr>
                <tr>
                     <td>
                         Recommended Literature
                     </td>
-                    <td>
-                        <input type="text" name="RecommendedLiterature" style="width:100%" placeholder="RecommendedLiterature" value="{{.RecommendedLiterature}}"/>
-                    </td>
+                   <td>
+                       <select name="recommendedLiterature">
+                           {{range .RecommendedLiterature}}
+                           <option value="{{.Content}}">{{.Content}}</option>
+                           {{end}}
+                       </select>
+                       <input type="text" name="RecommendedLiterature" style="width:100%" placeholder="Recommended Literature"/>
+                   </td>
                </tr>
 
                <tr>
                     <td>
                         Submission Form
                     </td>
-                    <td>
-                        <input type="text" name="SubmissionForm" style="width:100%" placeholder="SubmissionForm" value="{{.SubmissionForm}}"/>
-                    </td>
+                   <td>
+                       <select name="submissionForm">
+                           {{range .SubmissionForm}}
+                           <option value="{{.Content}}">{{.Content}}</option>
+                           {{end}}
+                       </select>
+                       <input type="text" name="SubmissionForm" style="width:100%" placeholder="Submission Form"/>
+                   </td>
                </tr>
 
 
