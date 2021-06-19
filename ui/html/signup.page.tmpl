@@ -1,0 +1,50 @@
+{{template "base" .}}
+{{define "title"}}Sign Up{{end}}
+{{define "main"}}
+    <form action='/signup' method='POST' novalidate>
+        {{with .Form}}
+            {{with .Errors.Get "generic"}}
+                <div class='error'>{{.}}</div>
+            {{end}}
+            <div>
+                <label>Username:</label>
+                <input type='text' name='username' value='{{.Get "username"}}'>
+            </div>
+            <div>
+                <label>Password:</label>
+                <input type='password' name='password' value='{{.Get "password"}}'>
+            </div>
+            <div>
+                <label>Write one more time password:</label>
+                <input type='password' name='password2' value='{{.Get "password2"}}'>
+            </div>
+            <div>
+                <label>Full name:</label>
+                <input type='text' name='fullname' value='{{.Get "fullname"}}'>
+            </div>
+            <div>
+                <label>Degree:</label>
+                <input type='text' name='degree' value='{{.Get "degree"}}'>
+            </div>
+            <div>
+                <label>Rank:</label>
+                <input type='text' name='rank' value='{{.Get "rank"}}'>
+            </div>
+            <div>
+                <label>Position:</label>
+                <input type='text' name='position' value='{{.Get "position"}}'>
+            </div>
+            <div>
+                <label>Contacts:</label>
+                <input type='text' name='contacts' value='{{.Get "contacts"}}'>
+            </div>
+            <div>
+                <label>Interests:</label>
+                <input type='text' name='interests' value='{{.Get "interests"}}'>
+            </div>
+            <div>
+                <input type='submit' value='Sign Up'>
+            </div>
+        {{end}}
+    </form>
+{{end}}

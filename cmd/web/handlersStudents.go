@@ -28,6 +28,84 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+//signupUserForm
+func (app *application) signUpForm(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, "signup.page.tmpl", &templateData{
+		Form: forms.New(nil),
+	})
+}
+
+//signupUser
+func (app *application) signUp(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+	if !form.Valid() {
+		app.render(w, r, "signup.page.tmpl", &templateData{Form: form})
+		return
+	}
+	username := form.Get("username")
+	password := form.Get("password")
+	password2 := form.Get("password2")
+	fullname := form.Get("fullname")
+	degree := form.Get("degree")
+	rank := form.Get("rank")
+	position := form.Get("position")
+	contacts := form.Get("contacts")
+	interests := form.Get("interests")
+	form.Required(
+		"username",
+		"password",
+		"password2",
+		"fullname",
+		"degree",
+		"rank",
+		"position",
+		"contacts",
+		"interests",
+	)
+
+	fmt.Println("password: ", password)
+	fmt.Println("password2: ", password2)
+	if password != password2 {
+		form.Errors.Add("generic", "Password should be same")
+		newI++
+
+		app.render(w, r, "signup.page.tmpl", &templateData{Form: form})
+		return
+	}
+	user := &models.User{
+		ID:       0,
+		Username: username,
+		Password: password,
+		Role:     "teacher",
+	}
+	teacherInfo := &models.TeacherInfo{
+		FullName:  fullname,
+		Degree:    degree,
+		Rank:      rank,
+		Position:  position,
+		Contacts:  contacts,
+		Interests: interests,
+	}
+
+	id, err := app.student.InsertTeacherAuthTable(user)
+	fmt.Println(id)
+	_, err = app.student.InsertTeacherTable(teacherInfo, id)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		println(err.Error())
+		return
+	}
+
+	app.session.Put(r, "flash", "Teacher successfully created!")
+
+	http.Redirect(w, r, fmt.Sprintf("/signin"), http.StatusSeeOther)
+}
+
 //loginUserForm
 func (app *application) signInForm(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "login.page.tmpl", &templateData{

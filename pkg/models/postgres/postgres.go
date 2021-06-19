@@ -56,6 +56,11 @@ const (
 	insertIndependentStudyPlan      = "insert into independent_study_plan(total_time, syllabus_info_id) values($1, $2) returning independent_study_plan_id"
 	insertIndependentStudyPlanTopic = "insert into independent_study_topic (week_numbers, topics, hours, recommended_literature, sudmission_form, independent_study_plan_id)" +
 		"values ($1, $2, $3, $4, $5, $6) returning independent_study_topic_id"
+	insertTeacherAuthTable = "insert into auth(username, password, role)" +
+		"values ($1,md5($2),$3) returning authorization_id"
+	insertTeacherTable = "insert into teacher(fullname, degree, rank, position, contacts, interests, authorization_id)" +
+		"values ($1,$2, $3, $4,$5,$6,$7) returning teacher_id"
+
 	GetStudentId = "SELECT student_id from student where authorization_id=$1"
 
 	updateTopicWeek = "update topic set lecture=$1, lecture_hours=$2, " +
@@ -409,7 +414,7 @@ func (m *PgModel) InsertSyllabus(syllabus *models.Syllabus, teacherId int, name 
 
 func (m *PgModel) InsertSyllabusForOtherTeachers(teacherId int, name string, sId int) (int, error) {
 	var syllabusId uint32
-	fmt.Println(teacherId, name, sId)
+	//fmt.Println(teacherId, name, sId)
 	row := m.Pool.QueryRow(context.Background(), insertSyllabus, teacherId, sId, name, "in_process", "")
 	err := row.Scan(&syllabusId)
 	if err != nil {
@@ -440,6 +445,31 @@ func (m *PgModel) InsertFeedback(feed string, sId int) (int64, error) {
 	}
 
 	return int64(id), nil
+}
+
+func (m *PgModel) InsertTeacherAuthTable(user *models.User) (int, error) {
+	var authId uint32
+	row := m.Pool.QueryRow(context.Background(), insertTeacherAuthTable,
+		user.Username, user.Password, "teacher")
+	err := row.Scan(&authId)
+
+	fmt.Println(authId)
+	if err != nil {
+		return 0, err
+	}
+	return int(authId), nil
+}
+
+func (m *PgModel) InsertTeacherTable(teacher *models.TeacherInfo, authId int) (int, error) {
+	var teacherId uint32
+	row := m.Pool.QueryRow(context.Background(), insertTeacherTable,
+		teacher.FullName, teacher.Degree, teacher.Rank, teacher.Position, teacher.Contacts, teacher.Interests, authId)
+	err := row.Scan(&teacherId)
+
+	if err != nil {
+		return 0, err
+	}
+	return int(teacherId), nil
 }
 
 func (m *PgModel) GetStudentId() (int, error) {

@@ -44,6 +44,8 @@ func (app *application) routes() http.Handler {
 	mux.Get("/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.getSyllabusByIdForStudents))
 	mux.Get("/signin", dynamicMiddleware.Append().ThenFunc(app.signInForm))
 	mux.Post("/signin", dynamicMiddleware.ThenFunc(app.signIn))
+	mux.Get("/signup", dynamicMiddleware.Append().ThenFunc(app.signUpForm))
+	mux.Post("/signup", dynamicMiddleware.ThenFunc(app.signUp))
 	mux.Post("/logout", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.logoutUser))
 
 	mux.Get("/wait", dynamicMiddleware.Append().ThenFunc(app.waitPage))
