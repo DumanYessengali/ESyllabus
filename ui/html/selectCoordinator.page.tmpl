@@ -410,6 +410,24 @@
         </tbody>
     </table>
     <br><br>
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="text-align:left">
+                            Feedback:
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style="text-align:left;color:red">
+                            {{range .Syllabus}}
+                            {{.Feedback}}
+                            {{end}}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
     {{range .Syllabus}}
          <form action="https://localhost:4000/coordinator/reject/syllabusinfo?id={{.SyllabusInfoID}}" method="POST">
     {{end}}

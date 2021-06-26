@@ -406,6 +406,7 @@ func (m *PgModel) InsertSessionPlan(table1 []*models.TopicWeek, syllabusInfoId i
 			topic.LectureTopic, topic.LectureHours, topic.PracticeTopic, topic.PracticeHours, topic.Assignment, topic.WeekNumber, planId)
 		err := row.Scan(&topicId)
 		if err != nil {
+			fmt.Println("error: - ", err)
 			return 0, err
 		}
 	}
