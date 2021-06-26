@@ -19,13 +19,13 @@
                     </td>
                </tr>
                  <tr>
-                      <td>
-                          Discipline
-                      </td>
-                      <td style="text-align:left">
-                          {{.Discipline}}
-                      </td>
-                 </tr>
+                     <td>
+                         Discipline
+                     </td>
+                     <td style="text-align:left">
+                         {{.Discipline}}
+                     </td>
+                </tr>
                <tr>
                     <td>
                         Number of credits
@@ -63,7 +63,7 @@
                </tr>
             {{range .Syllabus}}
                <tr>
-                    <td>
+                    <td >
                         Course goal(s)
                     </td>
                     <td style="text-align:left">
@@ -79,7 +79,7 @@
                     </td>
                </tr>
                <tr>
-                    <td>
+                    <td >
                          Skills & competences
                     </td>
                     <td style="text-align:left">
@@ -103,6 +103,7 @@
                     </td>
 
                </tr>
+
             {{end}}
         </tbody>
     </table>
@@ -130,6 +131,7 @@
                     <td>
                         Assignment
                     </td>
+
                </tr>
             {{range .Topic}}
                <tr>
@@ -151,6 +153,7 @@
                     <td>
                         {{.Assignment}}
                     </td>
+
                </tr>
             {{end}}
         </tbody>
@@ -174,6 +177,7 @@
                     <td>
                         Submission Form
                     </td>
+
                </tr>
             {{range .Independent}}
                <tr>
@@ -192,6 +196,7 @@
                     <td>
                         {{.SubmissionForm}}
                     </td>
+
                </tr>
             {{end}}
         </tbody>
@@ -322,7 +327,7 @@
            <table >
 
                <p align="center" style="font-size:30px;">Achievement level as per course curriculum shall be assessed according to the evaluation chart
-                                                         adopted by the academic credit system.</p>
+                                                         adopted by the academic credit system </p>
                <thead>
                    <tr>
                        <th>Letter Grade</th>
@@ -397,16 +402,9 @@
                    </tr>
                </tbody>
            </table>
-           <br><br>
-         {{range .Syllabus}}
-             <form action="https://localhost:4000/dean/reject/syllabusinfo?id={{.SyllabusInfoID}}" method="POST">
-         {{end}}
-                {{with .Form}}
-                    <label>Write your feedback:</label>
-                    <textarea name="feedback" style="width:100%" placeholder="Write your feedback"></textarea>
-                    <div>
-                        <input type='submit' value='Reject' style="background-color:red">
-                    </div>
-                {{end}}
-             </form>
+
+
 {{end}}
+
+
+

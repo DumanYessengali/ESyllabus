@@ -26,7 +26,7 @@ func (app *application) routes() http.Handler {
 	mux.Post("/admin/updateTopic", dynamicMiddleware.Append(app.requireAuthentication, app.requireTeacher).ThenFunc(app.updateTopic))
 	mux.Get("/admin/updateIndepOpen", dynamicMiddleware.Append(app.requireAuthentication, app.requireTeacher).ThenFunc(app.updateIndepTopicOpen))
 	mux.Post("/admin/updateIndep", dynamicMiddleware.Append(app.requireAuthentication, app.requireTeacher).ThenFunc(app.updateIndepTopic))
-	mux.Get("/admin/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication, app.requireTeacher).ThenFunc(app.getSyllabusById))
+	mux.Get("/admin/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.getSyllabusById))
 	mux.Get("/createPDF", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.getCreatePDF2))
 
 	mux.Get("/coordinator/confirm/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication, app.requireCoordinator).ThenFunc(app.confirmSyllabus))
@@ -40,12 +40,19 @@ func (app *application) routes() http.Handler {
 	mux.Post("/dean/reject/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication, app.requireDean).ThenFunc(app.rejectSyllabusDean))
 	mux.Get("/dean/ready/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication, app.requireDean).ThenFunc(app.readySyllabus))
 
+	mux.Get("/true_admin", dynamicMiddleware.Append(app.requireAuthentication, app.requireAdmin).ThenFunc(app.AdminHomePage))
+	mux.Get("/signup", dynamicMiddleware.Append(app.requireAuthentication, app.requireAdmin).ThenFunc(app.signUpForm))
+	mux.Post("/signup", dynamicMiddleware.Append(app.requireAuthentication, app.requireAdmin).ThenFunc(app.signUp))
+
+	mux.Get("/new_teacher", dynamicMiddleware.Append(app.requireAuthentication, app.requireNewTeacher).ThenFunc(app.NewTeacherHomePage))
+	mux.Get("/new_teacher/create", dynamicMiddleware.Append(app.requireAuthentication, app.requireNewTeacher).ThenFunc(app.createSyllabusGetForNewTeacher))
+	mux.Post("/new_teacher/create", dynamicMiddleware.Append(app.requireAuthentication, app.requireNewTeacher).ThenFunc(app.createSyllabusForNewTeacher))
+	mux.Get("/new_teacher/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication, app.requireNewTeacher).ThenFunc(app.getSyllabusByIdFOrNewTeacher))
+
 	mux.Get("/", dynamicMiddleware.Append(app.requireAuthentication, app.requireStudent).ThenFunc(app.home))
 	mux.Get("/syllabusinfo", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.getSyllabusByIdForStudents))
 	mux.Get("/signin", dynamicMiddleware.Append().ThenFunc(app.signInForm))
 	mux.Post("/signin", dynamicMiddleware.ThenFunc(app.signIn))
-	mux.Get("/signup", dynamicMiddleware.Append().ThenFunc(app.signUpForm))
-	mux.Post("/signup", dynamicMiddleware.ThenFunc(app.signUp))
 	mux.Post("/logout", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.logoutUser))
 
 	mux.Get("/wait", dynamicMiddleware.Append().ThenFunc(app.waitPage))

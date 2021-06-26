@@ -14,6 +14,7 @@ import (
 
 const (
 	getNameSyllabusWithTeacher    = "select syllabus_id,name,syllabus_info_id,status from syllabus where teacher_id=$1"
+	getInfoForAdmin               = "select authorization_id,username,role from auth"
 	getNameSyllabusForCoordinator = "select s.syllabus_id,s.name,s.syllabus_info_id,s.status,s.feedback\nfrom syllabus s\ninner join syllabus_info si on s.syllabus_info_id = si.syllabus_info_id\ninner join discipline d on si.discipline_id = d.discipline_id\ninner join coordinator_discipline cd on d.discipline_id = cd.discipline_id\nwhere cd.coordinator_id=$1 and s.status=$2"
 	getNameSyllabusWithStudent    = "select s.syllabus_id, s.name, s.syllabus_info_id\nfrom syllabus s\n    inner join student_syllabus ss on s.syllabus_id = ss.syllabus_id\nwhere ss.student_id=$1 and status = $2"
 	getTeacherId                  = "SELECT teacher_id from teacher where authorization_id=$1"
@@ -83,6 +84,17 @@ const (
 		"where syllabus_info_id=$4"
 
 	getSyllabusForDean = "select syllabus_id,syllabus_info_id,status,name, feedback from syllabus where status=$1"
+
+	insertSyllabusForNewTeacher     = "insert into syllabus (teacher_id, syllabus_info_id, name,status,feedback) values ($1, $2,$3,$4,$5) returning syllabus_id"
+	insertDisciplineForNewTeacher   = "update syllabus_info set discipline_id=$1 where syllabus_info_id=$2 returning discipline_id"
+	insertSyllabusInfoForNewTeacher = "insert into syllabus_info( goals, skills_competences, objectives, learning_outcomes," +
+		"prerequisites, postrequisites, instructors,assessment_id) values($1, $2, $3, $4, $5, $6, $7, $8) returning syllabus_info_id"
+	insertSessionPlanForNewTeacher  = "insert into session_plan(total_time, syllabus_info_id) values($1, $2) returning plan_id"
+	insertSessionTopicForNewTeacher = "insert into topic (lecture, lecture_hours, practice, practice_hours, assignment, week_number, plan_id)" +
+		"values ($1, $2, $3, $4, $5, $6, $7) returning topic_id"
+	insertIndependentStudyPlanForNewTeacher      = "insert into independent_study_plan(total_time, syllabus_info_id) values($1, $2) returning independent_study_plan_id"
+	insertIndependentStudyPlanTopicForNewTeacher = "insert into independent_study_topic (week_numbers, topics, hours, recommended_literature, sudmission_form, independent_study_plan_id)" +
+		"values ($1, $2, $3, $4, $5, $6) returning independent_study_topic_id"
 )
 
 type PgModel struct {
@@ -169,6 +181,28 @@ func (m *PgModel) GetNameSyllabus(status string) ([]*models.Syllabus, error) {
 	}
 
 	return students, nil
+}
+
+func (m *PgModel) GetInfoForAdmin() ([]*models.User, error) {
+	var admin []*models.User
+	rows, err := m.Pool.Query(context.Background(), getInfoForAdmin)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		s := &models.User{}
+		err = rows.Scan(&s.ID, &s.Username, &s.Role)
+		if err != nil {
+			return nil, err
+		}
+		admin = append(admin, s)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return admin, nil
 }
 
 func (m *PgModel) GetFullInfoByTeacherId() (*models.TeacherInfo, error) {
@@ -449,10 +483,11 @@ func (m *PgModel) InsertFeedback(feed string, sId int) (int64, error) {
 
 func (m *PgModel) InsertTeacherAuthTable(user *models.User) (int, error) {
 	var authId uint32
-	row := m.Pool.QueryRow(context.Background(), insertTeacherAuthTable,
-		user.Username, user.Password, "teacher")
-	err := row.Scan(&authId)
 
+	row := m.Pool.QueryRow(context.Background(), insertTeacherAuthTable,
+		user.Username, user.Password, user.Role)
+	err := row.Scan(&authId)
+	fmt.Println(err)
 	fmt.Println(authId)
 	if err != nil {
 		return 0, err
@@ -569,14 +604,17 @@ func (m *PgModel) SelectSyllabusTableRow(id int) ([]*models.Syllabus, error) {
 		err = rows3.Scan(&s.Title, &s.Feedback)
 		err = rows4.Scan(&s.SyllabusInfoID, &s.Goals, &s.SkillsCompetences, &s.Objectives, &s.LearningOutcomes, &s.Prerequisites, &s.Postrequisites, &s.Instructors)
 		if err != nil {
+			fmt.Println(err)
 			return nil, err
 		}
 		s.Discipline, s.Credits, err = m.SelectSyllabusDiscipline(id)
 		syllabus = append(syllabus, s)
 	}
 	if err = rows3.Err(); err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
+	fmt.Println(syllabus)
 	return syllabus, nil
 }
 
@@ -735,4 +773,86 @@ func (m *PgModel) UpdateSyllabusInfoTemp(goals string, objectives string, outcom
 		return err
 	}
 	return nil
+}
+
+func (m *PgModel) InsertSyllabusInfoForNewTeacher(syllabus *models.Syllabus) (int, error) {
+	var syllabusInfoId uint32
+	row := m.Pool.QueryRow(context.Background(), insertSyllabusInfoForNewTeacher,
+		syllabus.Goals, syllabus.SkillsCompetences, syllabus.Objectives,
+		syllabus.LearningOutcomes, syllabus.Prerequisites, syllabus.Postrequisites, syllabus.Instructors, syllabus.Assessment)
+	err := row.Scan(&syllabusInfoId)
+	if err != nil {
+		return 0, err
+	}
+	return int(syllabusInfoId), nil
+}
+
+func (m *PgModel) InsertSessionPlanForNewTeacher(table1 []*models.TopicWeek, syllabusInfoId int) (int, error) {
+	var planId uint32
+	row := m.Pool.QueryRow(context.Background(), insertSessionPlanForNewTeacher,
+		0, syllabusInfoId)
+	err := row.Scan(&planId)
+	if err != nil {
+		return 0, err
+	}
+	for _, topic := range table1 {
+		var topicId uint32
+		row := m.Pool.QueryRow(context.Background(), insertSessionTopicForNewTeacher,
+			topic.LectureTopic, topic.LectureHours, topic.PracticeTopic, topic.PracticeHours, topic.Assignment, topic.WeekNumber, planId)
+		err := row.Scan(&topicId)
+		if err != nil {
+			fmt.Println(err)
+			return 0, err
+		}
+	}
+	return int(planId), nil
+}
+
+func (m *PgModel) InsertIndependentStudyPlanForNewTeacher(table2 []*models.StudentTopicWeek, syllabusInfoId int) (int, error) {
+	var independentStudyPlanId uint32
+	row := m.Pool.QueryRow(context.Background(), insertIndependentStudyPlanForNewTeacher,
+		0, syllabusInfoId)
+	err := row.Scan(&independentStudyPlanId)
+	if err != nil {
+		return 0, err
+	}
+	for _, topic := range table2 {
+		var topicId uint32
+		row := m.Pool.QueryRow(context.Background(), insertIndependentStudyPlanTopicForNewTeacher,
+			topic.WeekNumber, topic.Topics, topic.Hours, topic.RecommendedLiterature, topic.SubmissionForm, independentStudyPlanId)
+		err := row.Scan(&topicId)
+		if err != nil {
+			fmt.Println(err)
+			return 0, err
+		}
+	}
+	return int(independentStudyPlanId), nil
+}
+
+func (m *PgModel) InsertSyllabusForNewTeacher(syllabus *models.Syllabus, teacherId int, name string) (int, int, error) {
+	var syllabusId uint32
+	syllabusInfoId, err := m.InsertSyllabusInfo(syllabus)
+	_, err = m.InsertSessionPlan(syllabus.Table1, syllabusInfoId)
+	_, err = m.InsertIndependentStudyPlan(syllabus.Table2, syllabusInfoId)
+	row := m.Pool.QueryRow(context.Background(), insertSyllabusForNewTeacher, teacherId, syllabusInfoId, name, syllabus.Status, syllabus.Feedback)
+	err = row.Scan(&syllabusId)
+	fmt.Println("Ot dushi syllabusInfoId", syllabusInfoId)
+	if err != nil {
+		return 0, 0, err
+	}
+	return int(syllabusId), syllabusInfoId, nil
+}
+
+func (m *PgModel) InsertDisciplineForNewTeacher(dId, sId int) (int64, error) {
+	var id uint32
+	row := m.Pool.QueryRow(context.Background(), insertDisciplineForNewTeacher,
+		dId, sId)
+	err := row.Scan(&id)
+	fmt.Println("sIIIIIIId", sId)
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+
+	return int64(id), nil
 }

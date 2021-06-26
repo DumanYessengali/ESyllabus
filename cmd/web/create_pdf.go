@@ -111,7 +111,7 @@ func (app *application) getCreatePDF2(w http.ResponseWriter, r *http.Request) {
 	headersForTable(m, "3.1 Lecture, practical/seminar/laboratory session plans")
 	m.SetBorder(true)
 	tableRow2(m, topicTableWeek, 10)
-	e := os.Remove("./ui/pdf/aaa.pdf")
+	e := os.Remove("./ui/pdf/Syllabus.pdf")
 	if e != nil {
 		log.Fatal(e)
 	}
@@ -132,7 +132,7 @@ func (app *application) getCreatePDF2(w http.ResponseWriter, r *http.Request) {
 	headersForTable(m, "Achievement level as per course curriculum shall be assessed according to the evaluation chart adopted by the academic credit system")
 	m.SetBorder(true)
 	tableRow4(m, gradeTable, 10)
-	err = m.OutputFileAndClose("./ui/pdf/aaa.pdf")
+	err = m.OutputFileAndClose("./ui/pdf/Syllabus.pdf")
 	if err != nil {
 		fmt.Println("Could not save PDF:", err)
 		os.Exit(1)

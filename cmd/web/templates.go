@@ -15,6 +15,7 @@ type templateData struct {
 	AssessmentType   *models.Assessment
 	syllabus         *models.Syllabus
 	Syllabus         []*models.Syllabus
+	Admin            []*models.User
 	TopicOneRow      *models.SessionWeek
 	IndepTopicOneRow *models.StudentWeek
 	Topic            []*models.TopicWeek
@@ -35,6 +36,8 @@ type templateData struct {
 	IsDean          bool
 	IsAuthenticated bool
 	IsDied          bool
+	IsAdmin         bool
+	IsNewTeacher    bool
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {

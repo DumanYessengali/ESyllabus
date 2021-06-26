@@ -77,12 +77,14 @@ func (app *application) signUp(w http.ResponseWriter, r *http.Request) {
 		app.render(w, r, "signup.page.tmpl", &templateData{Form: form})
 		return
 	}
+
 	user := &models.User{
 		ID:       0,
 		Username: username,
 		Password: password,
-		Role:     "teacher",
+		Role:     "newTeacher",
 	}
+	fmt.Println(user.ID)
 	teacherInfo := &models.TeacherInfo{
 		FullName:  fullname,
 		Degree:    degree,
@@ -103,7 +105,7 @@ func (app *application) signUp(w http.ResponseWriter, r *http.Request) {
 
 	app.session.Put(r, "flash", "Teacher successfully created!")
 
-	http.Redirect(w, r, fmt.Sprintf("/signin"), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/true_admin"), http.StatusSeeOther)
 }
 
 //loginUserForm
@@ -168,6 +170,14 @@ func (app *application) signIn(w http.ResponseWriter, r *http.Request) {
 		app.session.Put(r, "sessionDeanID", id)
 		http.Redirect(w, r, "/dean", http.StatusSeeOther)
 		return
+	} else if role.Role == "admin" {
+		app.session.Put(r, "sessionAdminID", id)
+		http.Redirect(w, r, "/true_admin", http.StatusSeeOther)
+		return
+	} else if role.Role == "newTeacher" {
+		app.session.Put(r, "sessionNewTeacherID", id)
+		http.Redirect(w, r, "/new_teacher", http.StatusSeeOther)
+		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	return
@@ -193,6 +203,10 @@ func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 		app.session.Remove(r, "sessionCoordinatorID")
 	} else if app.IsDean(r) {
 		app.session.Remove(r, "sessionDeanID")
+	} else if app.IsAdmin(r) {
+		app.session.Remove(r, "sessionAdminID")
+	} else if app.IsNewTeacher(r) {
+		app.session.Remove(r, "sessionNewTeacherID")
 	}
 	app.session.Put(r, "flash", "You've been logged out successfully!")
 	http.Redirect(w, r, "/signin", http.StatusSeeOther)

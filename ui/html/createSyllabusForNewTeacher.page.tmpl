@@ -1,0 +1,1162 @@
+{{template "base" .}}
+{{define "title"}}Create Syllabus{{end}}
+{{define "main"}}
+    <form action='/new_teacher/create' method='POST'>
+       <select name="discipline">
+                   {{range .Discipline}}
+                       <option value="{{.DisciplineId}}">{{.Title}}</option>
+                   {{end}}
+               </select>
+        {{with .Form}}
+            <div>
+                <label>Discipline name:</label>
+                    {{with .Errors.Get "title"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='title' value='{{.Get "title"}}'>
+            </div>
+
+            <div>
+                <label>Discipline title:</label>
+                    {{with .Errors.Get "subjectName"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='subjectName' value='{{.Get "subjectName"}}'>
+            </div>
+
+
+            <div>
+                <label>Course goal(s):</label>
+                    {{with .Errors.Get "course_goal"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='course_goal' value='{{.Get "course_goal"}}'>
+            </div>
+
+            <div>
+                <label>Skills & Competences:</label>
+                    {{with .Errors.Get "skills"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='skills' value='{{.Get "skills"}}'>
+            </div>
+
+            <div>
+                <label>Course objectives::</label>
+                    {{with .Errors.Get "objectives"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='objectives' value='{{.Get "objectives"}}'>
+            </div>
+            <div>
+                <label> Course learning outcomes:</label>
+                    {{with .Errors.Get "outcomes"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='outcomes' value='{{.Get "outcomes"}}'>
+            </div>
+
+            <div>
+                <label>Prerequisites:</label>
+                    {{with .Errors.Get "prerequisites"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='prerequisites' value='{{.Get "prerequisites"}}'>
+            </div>
+
+            <div>
+                <label>Post-requisites:</label>
+                    {{with .Errors.Get "post_requisites"}}
+                        <label class='error'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='post_requisites' value='{{.Get "post_requisites"}}'>
+            </div>
+
+            <div>
+                <label>Instructors:</label>
+                    {{with .Errors.Get "instructors"}}
+                        <label class='instructors'>{{.}}</label>
+                    {{end}}
+                <input type='text' name='instructors' value='{{.Get "instructors"}}'>
+            </div>
+              <div>
+                    <label>Assessment type:</label>
+                        {{with .Errors.Get "Assessment"}}
+                            <label class='Assessment'>{{.}}</label>
+                        {{end}}
+                    <input type='text' name='assessment' value='{{.Get "Assessment"}}' placeholder='take from image'>
+                </div>
+
+
+
+            <div style="display:grid">
+                <input class="hide" id="hd-25" type="checkbox" >
+                <label for="hd-25">Assessment type:</label>
+                <div>
+                    <div>
+                        <div>
+                            <span>1: </span><center><img src="/static/img/1.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                            <span>2: </span><center><img src="/static/img/2.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <div>
+                            <span>3: </span><center><img src="/static/img/3.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                        <div>
+                            <span>4: </span><center><img src="/static/img/4.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                            <span>5: </span><center><img src="/static/img/5.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <div>
+                            <span>6: </span><center><img src="/static/img/6.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                        <div>
+                            <span>7: </span><center><img src="/static/img/7.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                            <span>8: </span><center><img src="/static/img/8.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <div>
+                            <span>9: </span><center><img src="/static/img/9.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                        <div>
+                            <span>10: </span><center><img src="/static/img/10.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                            <span>11: </span><center><img src="/static/img/11.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <div>
+                            <span>12: </span><center><img src="/static/img/12.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                        <div>
+                            <span>13: </span><center><img src="/static/img/13.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                        <div>
+                            <span>14: </span><center><img src="/static/img/14.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                            <span>15: </span><center><img src="/static/img/15.png" width="500" height="300" alt="Italian Trulli"></center>
+                        <div>
+                            <span>16: </span><center><img src="/static/img/16.png" width="500" height="300" alt="Italian Trulli"></center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <label>Lecture! practical/seminar/laboratory sessiion plan:</label>
+            <div style="display:grid">
+                <input class="hide" id="hd-11" type="checkbox" >
+                <label for="hd-11">Week 1!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num' value='{{.Get "week_num"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture' value='{{.Get "lecture"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h' value='{{.Get "lecture_h"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice' value='{{.Get "practice"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h' value='{{.Get "practice_h"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment' value='{{.Get "assignment"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-12" type="checkbox" >
+                <label for="hd-12">Week 2!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num1"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num1' value='{{.Get "week_num1"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture1"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture1' value='{{.Get "lecture1"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h1"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h1' value='{{.Get "lecture_h1"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice1"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice1' value='{{.Get "practice1"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h1"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h1' value='{{.Get "practice_h1"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment1"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment1' value='{{.Get "assignment1"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-13" type="checkbox" >
+                <label for="hd-13">Week 3!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num2"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num2' value='{{.Get "week_num2"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture2"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture2' value='{{.Get "lecture2"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h2"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h2' value='{{.Get "lecture_h2"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice2"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice2' value='{{.Get "practice2"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h2"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h2' value='{{.Get "practice_h2"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment2"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment2' value='{{.Get "assignment2"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-14" type="checkbox" >
+                <label for="hd-14">Week 4!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num3"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num3' value='{{.Get "week_num3"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture3"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture3' value='{{.Get "lecture3"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h3"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h3' value='{{.Get "lecture_h3"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice3"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice3' value='{{.Get "practice3"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h3"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h3' value='{{.Get "practice_h3"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment3"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment3' value='{{.Get "assignment3"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-15" type="checkbox" >
+                <label for="hd-15">Week 5!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num4"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num4' value='{{.Get "week_num4"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture4"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture4' value='{{.Get "lecture4"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h4"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h4' value='{{.Get "lecture_h4"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice4"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice4' value='{{.Get "practice4"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h4"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h4' value='{{.Get "practice_h4"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment4"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment4' value='{{.Get "assignment4"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-16" type="checkbox" >
+                <label for="hd-16">Week 6!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num5"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num5' value='{{.Get "week_num5"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture5"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture5' value='{{.Get "lecture5"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h5"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h5' value='{{.Get "lecture_h5"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice5"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice5' value='{{.Get "practice5"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h5"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h5' value='{{.Get "practice_h5"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment5"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment5' value='{{.Get "assignment5"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-17" type="checkbox" >
+                <label for="hd-17">Week 7!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num6"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num6' value='{{.Get "week_num6"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture6"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture6' value='{{.Get "lecture6"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h6"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h6' value='{{.Get "lecture_h6"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice6"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice6' value='{{.Get "practice6"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h6"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h6' value='{{.Get "practice_h6"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment6"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment6' value='{{.Get "assignment6"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-18" type="checkbox" >
+                <label for="hd-18">Week 8!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num7"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num7' value='{{.Get "week_num7"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture7"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture7' value='{{.Get "lecture7"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h7"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h7' value='{{.Get "lecture_h7"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice7"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice7' value='{{.Get "practice7"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h7"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h7' value='{{.Get "practice_h7"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment7"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment7' value='{{.Get "assignment7"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-19" type="checkbox" >
+                <label for="hd-19">Week 9!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num8"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num8' value='{{.Get "week_num8"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture8"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture8' value='{{.Get "lecture8"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h8"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h8' value='{{.Get "lecture_h8"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice8"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice8' value='{{.Get "practice8"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h8"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h8' value='{{.Get "practice_h8"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment8"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment8' value='{{.Get "assignment8"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-20" type="checkbox" >
+                <label for="hd-20">Week 10!</label>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <label>Week number:</label>
+                                    {{with .Errors.Get "week_num9"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='week_num9' value='{{.Get "week_num9"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture:</label>
+                                    {{with .Errors.Get "lecture9"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture9' value='{{.Get "lecture9"}}'>
+                            </div>
+
+                            <div>
+                                <label>Lecture hours:</label>
+                                    {{with .Errors.Get "lecture_h9"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='lecture_h9' value='{{.Get "lecture_h9"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice:</label>
+                                    {{with .Errors.Get "practice9"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice9' value='{{.Get "practice9"}}'>
+                            </div>
+
+                            <div>
+                                <label>Practice hours:</label>
+                                    {{with .Errors.Get "practice_h9"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='practice_h9' value='{{.Get "practice_h9"}}'>
+                            </div>
+
+                            <div>
+                                <label>Assignment:</label>
+                                    {{with .Errors.Get "assignment9"}}
+                                        <label class='error'>{{.}}</label>
+                                    {{end}}
+                                <input type='text' name='assignment9' value='{{.Get "assignment9"}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <label>List of assignments for Student Independent Study:</label>
+
+            <div style="display:grid">
+                <input class="hide" id="hd-1" type="checkbox" >
+                <label for="hd-1">Week 1!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums1"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums1' value='{{.Get "week_nums1"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic1"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic1' value='{{.Get "table2_topic1"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours1"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours1' value='{{.Get "hours1"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature1"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature1' value='{{.Get "literature1"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission1"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission1' value='{{.Get "submission1"}}'>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-2" type="checkbox" >
+                <label for="hd-2">Week 2!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums2"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums2' value='{{.Get "week_nums2"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic2"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic2' value='{{.Get "table2_topic2"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours2"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours2' value='{{.Get "hours2"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature2"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature2' value='{{.Get "literature2"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission2"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission2' value='{{.Get "submission2"}}'>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-3" type="checkbox" >
+                <label for="hd-3">Week 3!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums3"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums3' value='{{.Get "week_nums3"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic3"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic3' value='{{.Get "table2_topic3"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours3"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours3' value='{{.Get "hours3"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature3"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature3' value='{{.Get "literature3"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission3"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission3' value='{{.Get "submission3"}}'>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-4" type="checkbox" >
+                <label for="hd-4">Week 4!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums4"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums4' value='{{.Get "week_nums4"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic4"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic4' value='{{.Get "table2_topic4"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours4"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours4' value='{{.Get "hours4"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature4"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature4' value='{{.Get "literature4"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission4"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission4' value='{{.Get "submission4"}}'>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-5" type="checkbox" >
+                <label for="hd-5">Week 5!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums5"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums5' value='{{.Get "week_nums5"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic5"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic5' value='{{.Get "table2_topic5"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours5"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours5' value='{{.Get "hours5"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature5"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature5' value='{{.Get "literature5"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission5"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission5' value='{{.Get "submission5"}}'>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-6" type="checkbox" >
+                <label for="hd-6">Week 6!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums6"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums6' value='{{.Get "week_nums6"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic6"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic6' value='{{.Get "table2_topic6"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours6"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours6' value='{{.Get "hours6"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature6"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature6' value='{{.Get "literature6"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission6"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission6' value='{{.Get "submission6"}}'>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-7" type="checkbox" >
+                <label for="hd-7">Week 7!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums7"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums7' value='{{.Get "week_nums7"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic7"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic7' value='{{.Get "table2_topic7"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours7"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours7' value='{{.Get "hours7"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature7"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature7' value='{{.Get "literature7"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission7"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission7' value='{{.Get "submission7"}}'>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-8" type="checkbox" >
+                <label for="hd-8">Week 8!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums8"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums8' value='{{.Get "week_nums8"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic8"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic8' value='{{.Get "table2_topic8"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours8"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours8' value='{{.Get "hours8"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature8"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature8' value='{{.Get "literature8"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission8"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission8' value='{{.Get "submission8"}}'>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-9" type="checkbox" >
+                <label for="hd-9">Week 9!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums9"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums9' value='{{.Get "week_nums9"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic9"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic9' value='{{.Get "table2_topic9"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours9"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours9' value='{{.Get "hours9"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature9"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature9' value='{{.Get "literature9"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission9"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission9' value='{{.Get "submission9"}}'>
+                        </div>
+                    </div>
+                </div>
+                <input class="hide" id="hd-10" type="checkbox" >
+                <label for="hd-10">Week 10!</label>
+                <div>
+                    <div>
+                        <div>
+                            <label>Week number</label>
+                                {{with .Errors.Get "week_nums10"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='week_nums10' value='{{.Get "week_nums10"}}'>
+                        </div>
+
+                        <div>
+                            <label>Topic:</label>
+                                {{with .Errors.Get "table2_topic10"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='table2_topic10' value='{{.Get "table2_topic10"}}'>
+                        </div>
+
+                        <div>
+                            <label>Hours:</label>
+                                {{with .Errors.Get "hours10"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='hours10' value='{{.Get "hours10"}}'>
+                        </div>
+
+                        <div>
+                            <label>Recommended literature and other sources (links):</label>
+                                {{with .Errors.Get "literature10"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='literature10' value='{{.Get "literature10"}}'>
+                        </div>
+
+                        <div>
+                            <label>Form of submission:</label>
+                                {{with .Errors.Get "submission10"}}
+                                    <label class='error'>{{.}}</label>
+                                {{end}}
+                            <input type='text' name='submission10' value='{{.Get "submission10"}}'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div>
+                <input type='submit' value='Create Student'>
+            </div>
+        {{end}}
+    </form>
+{{end}}

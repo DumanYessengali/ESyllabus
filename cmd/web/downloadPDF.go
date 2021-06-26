@@ -54,6 +54,6 @@ func postFile(filename string, targetUrl string) error {
 
 func (app *application) downloadFile(w http.ResponseWriter, r *http.Request) {
 	target_url := "https://localhost:4000/createPDF"
-	filename := ".ui/pdf/aaa.pdf"
+	filename := ".ui/pdf/Syllabus.pdf"
 	postFile(filename, target_url)
 }

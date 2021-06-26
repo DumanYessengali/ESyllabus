@@ -152,7 +152,15 @@
                 <h1><a>Syllabus</a></h1>
             </header>
             <nav>
-                <div style="width:60%">
+                <div style="width:70%">
+                  {{if .IsNewTeacher}}
+                        <a href='/new_teacher'>Home</a>
+                        <a href="https://localhost:4000/new_teacher/create">Create </a>
+                    {{end}}
+                    {{if .IsAdmin}}
+                        <a href='/true_admin'>Home</a>
+                        <a href='/signup'>Create new Teacher</a>
+                    {{end}}
                     {{if .IsTeacher}}
                         <a href='/admin'>Ready</a>
                         <a href='/inProcess'>In process</a>
@@ -170,7 +178,7 @@
                     {{end}}
                 </div>
                 {{if .IsAuthenticated}}
-                    <div style="width:40%">
+                    <div style="width:30%">
                         <form action='/logout' method='POST'>
                             <button>Logout</button>
                         </form>
@@ -178,7 +186,7 @@
                 {{else}}
                     <div style="text-align:right; width:100%">
                         <a href='/signin'>Sign In</a>
-                        <a href='/signup'>Sign Up</a>
+
                     </div>
                 {{end}}
             </nav>

@@ -58,6 +58,28 @@ func (app *application) requireTeacher(next http.Handler) http.Handler {
 	})
 }
 
+func (app *application) requireAdmin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if app.student.GetRole() != "admin" {
+			http.Redirect(w, r, "/true_admin", http.StatusSeeOther)
+			return
+		}
+		w.Header().Add("Cache-Control", "no-store")
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (app *application) requireNewTeacher(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if app.student.GetRole() != "newTeacher" {
+			http.Redirect(w, r, "/new_teacher", http.StatusSeeOther)
+			return
+		}
+		w.Header().Add("Cache-Control", "no-store")
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (app *application) requireCoordinator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if app.student.GetRole() != "coordinator" {

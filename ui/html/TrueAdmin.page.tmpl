@@ -1,0 +1,25 @@
+{{template "base" .}}
+{{define "title"}}Home{{end}}
+{{define "main"}}
+    <table class="cinereousTable">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+        </tr>
+        </thead>
+        <tbody>
+            {{range .Admin}}
+                <tr>
+                    <td >
+                        {{.Username}}
+                    </td>
+                    <td >
+                        {{.Role}}
+                    </td>
+                </tr>
+            {{end}}
+        </tbody>
+    </table>
+    <br>
+{{end}}

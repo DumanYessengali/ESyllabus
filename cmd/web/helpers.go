@@ -55,11 +55,23 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 		td.IsCoordinator = app.IsCoordinator(r)
 	} else if app.IsDean(r) {
 		td.IsDean = app.IsDean(r)
+	} else if app.IsAdmin(r) {
+		td.IsAdmin = app.IsAdmin(r)
+	} else if app.IsNewTeacher(r) {
+		td.IsNewTeacher = app.IsNewTeacher(r)
 	}
 	return td
 }
 func (app *application) IsTeacher(r *http.Request) bool {
 	return app.session.Exists(r, "sessionTeacherID")
+}
+
+func (app *application) IsAdmin(r *http.Request) bool {
+	return app.session.Exists(r, "sessionAdminID")
+}
+
+func (app *application) IsNewTeacher(r *http.Request) bool {
+	return app.session.Exists(r, "sessionNewTeacherID")
 }
 
 func (app *application) IsStudent(r *http.Request) bool {
