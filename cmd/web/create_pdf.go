@@ -142,8 +142,8 @@ func (app *application) getCreatePDF2(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "pdf.page.tmpl", &templateData{
 		Flash: flash,
 	})
-
 }
+
 func headersForTable(m pdf.Maroto, str string) {
 	m.Row(18, func() {
 		m.Col(12, func() {
@@ -314,6 +314,7 @@ func topicTableFor(topicTable [][]string, topic []*models.TopicWeek) [][]string 
 	}
 	return topicTable
 }
+
 func topicTableFor1(independentTable [][]string, independent []*models.StudentTopicWeek) [][]string {
 	for j := 0; j < 10; j++ {
 		arr := []string{strconv.Itoa(independent[j].WeekNumber), string(independent[j].Topics), strconv.Itoa(independent[j].Hours), string(independent[j].RecommendedLiterature), independent[j].SubmissionForm}

@@ -766,6 +766,7 @@ func (m *PgModel) SelectAssesmentInfo(id int) (*models.Assessment, error) {
 
 	return a, nil
 }
+
 func (m *PgModel) UpdateSyllabusInfoTemp(goals string, objectives string, outcomes string, id int) error {
 	_, err := m.Pool.Exec(context.Background(), updateSyllabusInfoTemp,
 		goals, objectives, outcomes, id)

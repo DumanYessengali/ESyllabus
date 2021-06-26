@@ -10,7 +10,6 @@ import (
 )
 
 func (app *application) NewTeacherHomePage(w http.ResponseWriter, r *http.Request) {
-
 	app.student.GetTeacherId()
 
 	syllabus, err := app.student.GetNameSyllabus("ready")

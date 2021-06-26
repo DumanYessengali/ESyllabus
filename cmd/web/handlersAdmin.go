@@ -7,7 +7,6 @@ import (
 )
 
 func (app *application) AdminHomePage(w http.ResponseWriter, r *http.Request) {
-
 	adminInfo, err := app.student.GetInfoForAdmin()
 
 	if err != nil {
@@ -18,7 +17,6 @@ func (app *application) AdminHomePage(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
 	flash := app.session.PopString(r, "flash")
 
 	app.render(w, r, "TrueAdmin.page.tmpl", &templateData{
